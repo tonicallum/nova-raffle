@@ -277,21 +277,30 @@ export const fetchTicketItemsByID = async (itemId: number) => {
 	}
 };
 
-export const idToRaffleItem = async (itemId: number) => {
+export const idToRaffleItem = async () => {
 	try {
 		const Provider: any = new ethers.providers.Web3Provider(
 			window.ethereum
 		);
 		const signer = Provider.getSigner();
-
 		const raffleContract = new Contract(
 			CONFIG.RAFFLE.CONTRACTADDRESS721,
 			CONFIG.RAFFLE.ABI721,
 			signer
 		);
 
-		const res = await raffleContract.idToRaffleItem[itemId];
-		return res;
+		const itemId = await raffleContract.config;
+
+		let endRes = [];
+		for (let i = 0; i < itemId; i++) {
+			const res = await raffleContract.idToRaffleItem[i];
+			if (res.nftId !== 0) {
+				endRes.push(res);
+			}
+		}
+
+		console.log("res : ", endRes);
+		return endRes;
 	} catch (error) {
 		console.log("error", error);
 	}
