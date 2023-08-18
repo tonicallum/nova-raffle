@@ -8,9 +8,9 @@ import RedFavouriteIcon from "../assets/fav-icon.svg";
 import GreyFavouriteIcon from "../assets/grey-fav-icon.svg";
 
 import {
-	fetchRaffleItems,
-	fetchTicketItemsByID,
-	idToRaffleItem,
+    fetchRaffleItems,
+    fetchTicketItemsByID,
+    idToRaffleItem,
 } from "../services/contracts/raffle";
 import {
 	fetchRaffle1155Items,
