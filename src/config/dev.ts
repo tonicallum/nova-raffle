@@ -11,7 +11,7 @@ export const Backend_URL = "https://novaraffle-b98cb5f11cc1.herokuapp.com";
 export const API_URL = `${Backend_URL}/api`;
 
 export const RAFFLE = {
-	CONTRACTADDRESS721: `0xc45f59b6C46b6D2391c32C27A38a622d7df1C795`,
+	CONTRACTADDRESS721: `0x940C356D8b67E1276aAA770772D0cdEDa55b5488`,
 	ABI721: Raffle721Abi,
 	CONTRACTADDRESS1155: `0x3Dfab437F4fa586503d5d08dEE9ac71AfCa52b6E`,
 	ABI1155: Raffle1155Abi,
@@ -31,8 +31,8 @@ export const TOAST_TIME_OUT = 2000;
 export const INTERVAL = 6 * 1000;
 export const DECIMAL = 1000000000000000000;
 // export const CHAINID = '0x5' //Goerli
-export const CHAINID = "0x89"; //Polygon mainnet
-// export const CHAINID = "0x13881"; //polygon
+// export const CHAINID = "0x89"; //Polygon mainnet
+export const CHAINID = "0x13881"; //polygon testnet
 
 export const WALLET_STATUS_LOCALSTORAGE = "wallet";
 export const WALLET_ADRESS_LOCALSTORAGE = "wallet_address";
