@@ -157,7 +157,7 @@ const RaffleItem = (props: any) => {
 						raffle.start_date
 					);
 
-					const idToR = await idToRaffleItem(1);
+					const idToR = await idToRaffleItem();
 					console.log("mahabhayankar", idToR);
 
 					const getTicketByID = await fetchTicketItemsByID(

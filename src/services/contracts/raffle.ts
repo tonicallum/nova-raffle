@@ -289,18 +289,26 @@ export const idToRaffleItem = async () => {
 			signer
 		);
 
-		const itemId = await raffleContract.config;
+		const itemId = await raffleContract.config();
+		const num = itemId.raffleIndex;
+		
+		console.log(num);
+
+		console.log("Raffle Index>>",Number(num.toString()));
+		const RaffleIndex = Number(num.toString());
+		
 
 		let endRes = [];
-		for (let i = 0; i < itemId; i++) {
-			const res = await raffleContract.idToRaffleItem[i];
+		for (let i = 0; i <= RaffleIndex; i++) {
+			const res = await raffleContract.idToRaffleItem(i);
 			if (res.nftId !== 0) {
 				endRes.push(res);
 			}
 		}
+		console.log(endRes);
 
-		console.log("res : ", endRes);
-		return endRes;
+		console.log("endRes : ", endRes);
+		 return endRes;
 	} catch (error) {
 		console.log("error", error);
 	}
