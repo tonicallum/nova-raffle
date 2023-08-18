@@ -8,51 +8,73 @@ export const CreateRaffleContract = async (
 	tokenContract: string,
 	tokenId: number,
 	ticketPrice: number,
-
-	maxTicketAmount: any,
-	startDate: any,
-	endDate: any
+	startDate: number,
+	endDate: number,
+	maxTicketAmount: number
 ) => {
 	try {
-		// const Provider: any = new ethers.providers.Web3Provider(
-		// 	window.ethereum
-		// );
-		// const signer = Provider.getSigner();
-		// const TokenContract = new Contract(
-		// 	tokenContract,
-		// 	CONFIG.TOKENERC721,
-		// 	signer
-		// );
-		// const approveTx = await TokenContract.approve(
-		// 	CONFIG.RAFFLE.CONTRACTADDRESS721,
-		// 	tokenId
-		// );
-		// await approveTx.wait();
+		console.log(
+			"bhaibhai : ",
+			tokenContract,
+			tokenId,
+			ticketPrice * 10 ** 6,
+			startDate,
+			endDate,
+			maxTicketAmount
+		);
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+		// await Provider.send("eth_requestAccounts", []);
+		const signer = Provider.getSigner();
+		const TokenContract = new Contract(
+			tokenContract,
+			CONFIG.TOKENERC721,
+			signer
+		);
+		const approveTx = await TokenContract.approve(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			tokenId
+		);
+		await approveTx.wait();
 
 		console.log(
 			"ticketprice : ",
-			ethers.utils.parseUnits(ticketPrice.toString()).toString()
+			ethers.utils.parseUnits(ticketPrice.toString(), 6)
 		);
 
-		// const raffleContract = new Contract(
-		// 	CONFIG.RAFFLE.CONTRACTADDRESS721,
-		// 	CONFIG.RAFFLE.ABI721,
-		// 	signer
-		// );
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
+		const tx = await raffleContract.createRaffle(
+			tokenContract,
+			tokenId,
+			// ethers.utils.parseUnits(ticketPrice.toString()).toString(),
+			(ticketPrice * 10 ** 6).toString(),
+			startDate.toString(),
+			endDate.toString(),
+			maxTicketAmount
+		);
+
+		// bhaibhai :  0x5d666f215a85b87cb042d59662a7ecd2c8cc44e6
+		// 19039686 10000 89 1692383940 1692470460
 		// const tx = await raffleContract.createRaffle(
-		// 	tokenContract,
-		// 	tokenId,
-		// 	ethers.utils.parseUnits(ticketPrice.toString()).toString(),
-		// 	maxTicketAmount,
-		// 	startDate,
-		// 	endDate
+		// 	"0x5d666f215a85b87cb042d59662a7ecd2c8cc44e6",
+		// 	"19039686",
+		// 	"10000",
+		// 	"1692467260",
+		// 	"1692557660",
+		// 	"50"
 		// );
 
-		// await tx.wait();
-		// if (tx) {
-		// 	return true;
-		// }
-		return true;
+		await tx.wait();
+		if (tx) {
+			return true;
+		}
+
+		// return true;
 	} catch (error) {
 		console.log("error", error);
 		return false;
@@ -291,12 +313,11 @@ export const idToRaffleItem = async () => {
 
 		const itemId = await raffleContract.config();
 		const num = itemId.raffleIndex;
-		
+
 		console.log(num);
 
-		console.log("Raffle Index>>",Number(num.toString()));
+		console.log("Raffle Index>>", Number(num.toString()));
 		const RaffleIndex = Number(num.toString());
-		
 
 		let endRes = [];
 		for (let i = 0; i <= RaffleIndex; i++) {
@@ -308,7 +329,7 @@ export const idToRaffleItem = async () => {
 		console.log(endRes);
 
 		console.log("endRes : ", endRes);
-		 return endRes;
+		return endRes;
 	} catch (error) {
 		console.log("error", error);
 	}
