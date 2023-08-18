@@ -70,11 +70,17 @@ contract NFT721Raffle is
         address _nftAddress,
         uint32 _nftId,
         uint32 _price,
+        uint32 _startTime,
         uint32 _expirationTime,
-        uint16 _totalSupply,
-        address[] memory _holderArray
+        uint16 _totalSupply
     ) external nonReentrant returns (uint64) {
-        uint32 duration = _expirationTime - uint32(block.timestamp);
+        if (_startTime < block.timestamp || _expirationTime < _startTime)
+            revert("InvalidStartDate");
+        if (_startTime < block.timestamp) revert("StartTimeMustBeInTheFuture");
+        if (_expirationTime < _startTime)
+            revert("ExpirationTimeMustBeAfterStartTime");
+
+        uint32 duration = _expirationTime - uint32(_startTime);
         if (duration < 86400 || duration > config.maxDuration)
             revert("DurationLimited");
         if (_totalSupply < 2 || _totalSupply > config.maxSupply)
@@ -83,8 +89,8 @@ contract NFT721Raffle is
         uint256 chainId = getCurrentChainID();
         if (chainId == 137) {
             // POLYGON MAIN
-            if (_price < 1e6 || _price > 3000000000)
-                revert("Price limit 1~3000 MATIC");
+            if (_price < 1e4 || _price > 9999000000)
+                revert("Price limit 0.01~9999 MATIC");
         } else if (chainId == 80001) {
             // POLYGON TEST
             if (_price < 1e4 || _price > 3000000000)
@@ -95,20 +101,13 @@ contract NFT721Raffle is
                 revert("Price limit 0.001~100 ETH");
         }
 
-        // The maximum number of holder conditions can only be set to 3, and cannot be set to empty
-        uint256 holderLenght = _holderArray.length;
-        if (holderLenght > 3) revert("Holder Illegal");
-
-        for (uint256 i = 0; i < holderLenght; i++) {
-            if (_holderArray[i] == address(0)) revert("Holder Illegal");
-        }
-
         IERC721 asset = IERC721(_nftAddress);
         asset.transferFrom(msg.sender, address(this), _nftId);
 
         RaffleStruct memory raffle = RaffleStruct({
             nftAddress: _nftAddress,
             nftId: _nftId,
+            startTime: _startTime,
             expirationTime: _expirationTime,
             totalSupply: _totalSupply,
             currentSupply: 0,
@@ -116,10 +115,7 @@ contract NFT721Raffle is
             price: _price,
             randomIndex: 0,
             settled: false,
-            status: STATUS.NORMAL,
-            holder_1: holderLenght > 0 ? _holderArray[0] : address(0),
-            holder_2: holderLenght > 1 ? _holderArray[1] : address(0),
-            holder_3: holderLenght > 2 ? _holderArray[2] : address(0)
+            status: STATUS.NORMAL
         });
         idToRaffleItem[++config.raffleIndex] = raffle;
 
@@ -150,42 +146,24 @@ contract NFT721Raffle is
         RaffleStruct memory raffle = idToRaffleItem[_raffleId];
         if (raffle.status != STATUS.NORMAL) revert("Wrong status");
         if (msg.sender == raffle.creator) revert("Disallow creator");
+        if (block.timestamp < raffle.startTime) revert("Raffle not started");
+        if (block.timestamp >= raffle.expirationTime) revert("Raffle expired");
         if (msg.value != uint256(raffle.price) * _qty * 1e12)
             revert("Incorrect amount");
         if (_qty == 0 || _qty > raffle.totalSupply - raffle.currentSupply)
             revert("Wrong entries");
 
-        // check holder only
-        if (
-            checkHolderNFTBalance(raffle.holder_1, msg.sender, true) ||
-            checkHolderNFTBalance(raffle.holder_2, msg.sender, false) ||
-            checkHolderNFTBalance(raffle.holder_3, msg.sender, false)
-        ) {
-            uint32 ticketId = uint32(raffleIdToBuyerEntries[_raffleId].length);
-            EntriesBought memory entryBought = EntriesBought({
-                owner: _receiptAddress,
-                currentIndex: raffle.currentSupply + _qty,
-                entryNum: _qty,
-                ticketId: ticketId
-            });
-            raffleIdToBuyerEntries[_raffleId].push(entryBought);
-            idToRaffleItem[_raffleId].currentSupply += _qty;
+        uint32 ticketId = uint32(raffleIdToBuyerEntries[_raffleId].length);
+        EntriesBought memory entryBought = EntriesBought({
+            owner: _receiptAddress,
+            currentIndex: raffle.currentSupply + _qty,
+            entryNum: _qty,
+            ticketId: ticketId
+        });
+        raffleIdToBuyerEntries[_raffleId].push(entryBought);
+        idToRaffleItem[_raffleId].currentSupply += _qty;
 
-            emit RaffleTicketSold(_raffleId, ticketId, msg.sender);
-        } else {
-            revert("Not allowed holder");
-        }
-    }
-
-    function checkHolderNFTBalance(
-        address _nftAddress,
-        address _userAddress,
-        bool _default
-    ) internal view returns (bool) {
-        if (_nftAddress == address(0)) return _default;
-
-        IERC721 asset = IERC721(_nftAddress);
-        return asset.balanceOf(_userAddress) > 0;
+        emit RaffleTicketSold(_raffleId, ticketId, msg.sender);
     }
 
     function initiateRaffleDrawing(
@@ -398,6 +376,17 @@ contract NFT721Raffle is
         config.keyHash = _keyHash;
         config.vrfGasLimit = _vrfGasLimit;
         config.vrfConfirms = _vrfConfirms;
+    }
+
+    function getAllRaffles() public view returns (RaffleStruct[] memory) {
+        uint totalRaffleLength = config.raffleIndex;
+
+        RaffleStruct[] memory raffles = new RaffleStruct[](totalRaffleLength);
+        for (uint64 i = 1; i <= totalRaffleLength; i++) {
+            raffles[i - 1] = idToRaffleItem[i];
+        }
+
+        return raffles;
     }
 
     function getTicketsBought(

@@ -102,6 +102,7 @@ const CreateRaffle = () => {
           walletAddress: storeData.address,
           type: contractType
         }
+        
         const res = await createRaffle(payload);
         if (res) {
           toast("Success in creating raffle", {

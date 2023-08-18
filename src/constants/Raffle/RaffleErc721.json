@@ -470,6 +470,11 @@
 			},
 			{
 				"internalType": "uint32",
+				"name": "_startTime",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
 				"name": "_expirationTime",
 				"type": "uint32"
 			},
@@ -477,11 +482,6 @@
 				"internalType": "uint16",
 				"name": "_totalSupply",
 				"type": "uint16"
-			},
-			{
-				"internalType": "address[]",
-				"name": "_holderArray",
-				"type": "address[]"
 			}
 		],
 		"name": "createRaffle",
@@ -493,6 +493,76 @@
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllRaffles",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "nftAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint32",
+						"name": "nftId",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "startTime",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "expirationTime",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "totalSupply",
+						"type": "uint16"
+					},
+					{
+						"internalType": "uint16",
+						"name": "currentSupply",
+						"type": "uint16"
+					},
+					{
+						"internalType": "address",
+						"name": "creator",
+						"type": "address"
+					},
+					{
+						"internalType": "uint32",
+						"name": "price",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint16",
+						"name": "randomIndex",
+						"type": "uint16"
+					},
+					{
+						"internalType": "bool",
+						"name": "settled",
+						"type": "bool"
+					},
+					{
+						"internalType": "enum STATUS",
+						"name": "status",
+						"type": "uint8"
+					}
+				],
+				"internalType": "struct RaffleStruct[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -619,6 +689,11 @@
 			},
 			{
 				"internalType": "uint32",
+				"name": "startTime",
+				"type": "uint32"
+			},
+			{
+				"internalType": "uint32",
 				"name": "expirationTime",
 				"type": "uint32"
 			},
@@ -656,21 +731,6 @@
 				"internalType": "enum STATUS",
 				"name": "status",
 				"type": "uint8"
-			},
-			{
-				"internalType": "address",
-				"name": "holder_1",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "holder_2",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "holder_3",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",

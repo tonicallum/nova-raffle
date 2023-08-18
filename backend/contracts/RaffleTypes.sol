@@ -18,6 +18,7 @@ enum CLAIM_TYPE {
 struct RaffleStruct {
     address nftAddress;
     uint32 nftId;
+    uint32 startTime;
     uint32 expirationTime;
     uint16 totalSupply;
     uint16 currentSupply;
@@ -26,9 +27,6 @@ struct RaffleStruct {
     uint16 randomIndex;
     bool settled; // Whether creator earnings are settled
     STATUS status;
-    address holder_1; // Holders of NFT collections, maximum 3
-    address holder_2;
-    address holder_3;
 }
 
 struct Config {
