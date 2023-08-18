@@ -8,6 +8,7 @@ export const CreateRaffleContract = async (
 	tokenContract: string,
 	tokenId: number,
 	ticketPrice: number,
+
 	maxTicketAmount: any,
 	startDate: any,
 	endDate: any
@@ -270,6 +271,26 @@ export const fetchTicketItemsByID = async (itemId: number) => {
 		);
 
 		const res = await raffleContract.fetchTicketItemsByID(itemId);
+		return res;
+	} catch (error) {
+		console.log("error", error);
+	}
+};
+
+export const idToRaffleItem = async (itemId: number) => {
+	try {
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+		const signer = Provider.getSigner();
+
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
+
+		const res = await raffleContract.idToRaffleItem[itemId];
 		return res;
 	} catch (error) {
 		console.log("error", error);

@@ -11,7 +11,7 @@ export const Backend_URL = "https://novaraffle-b98cb5f11cc1.herokuapp.com";
 export const API_URL = `${Backend_URL}/api`;
 
 export const RAFFLE = {
-	CONTRACTADDRESS721: `0x70b5425281c7618DbF4d7Ab8a783bc5f725c67Ef`,
+	CONTRACTADDRESS721: `0xc45f59b6C46b6D2391c32C27A38a622d7df1C795`,
 	ABI721: Raffle721Abi,
 	CONTRACTADDRESS1155: `0x3Dfab437F4fa586503d5d08dEE9ac71AfCa52b6E`,
 	ABI1155: Raffle1155Abi,
