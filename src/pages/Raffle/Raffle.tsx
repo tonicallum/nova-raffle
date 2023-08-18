@@ -9,6 +9,8 @@ import { datetimeLocal } from "../../utils";
 import { getAllRaffle } from "../../services/api";
 import RaffleSwiper from "./RaffleSwiper";
 import { isReadable } from "stream";
+import { idToRaffleItem } from "../../services/contracts/raffle";
+
 
 const Raffle = () => {
   const storeData = useSelector((status) => status)
