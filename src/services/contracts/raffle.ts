@@ -8,9 +8,9 @@ export const CreateRaffleContract = async (
 	tokenContract: string,
 	tokenId: number,
 	ticketPrice: number,
-	startDate: number,
-	endDate: number,
-	maxTicketAmount: number
+	startDate: any,
+	endDate: any,
+	maxTicketAmount: any
 ) => {
 	try {
 		console.log(
@@ -40,7 +40,7 @@ export const CreateRaffleContract = async (
 
 		console.log(
 			"ticketprice : ",
-			ethers.utils.parseUnits(ticketPrice.toString(), 6)
+			ethers.utils.parseUnits(Number(ticketPrice).toString(), 6)
 		);
 
 		const raffleContract = new Contract(
@@ -51,11 +51,10 @@ export const CreateRaffleContract = async (
 		const tx = await raffleContract.createRaffle(
 			tokenContract,
 			tokenId,
-			// ethers.utils.parseUnits(ticketPrice.toString()).toString(),
-			(ticketPrice * 10 ** 6).toString(),
+			ethers.utils.parseUnits(Number(ticketPrice).toString(), 6),
 			startDate.toString(),
 			endDate.toString(),
-			maxTicketAmount
+			maxTicketAmount.toString()
 		);
 
 		// bhaibhai :  0x5d666f215a85b87cb042d59662a7ecd2c8cc44e6
