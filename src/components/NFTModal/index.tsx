@@ -45,7 +45,14 @@ const NFTModal = (props: any) => {
 					await Promise.all(
 						lists.result.map(async (nft: any) => {
 							// const ipfs = JSON.parse(nft?.metadata)?.image
-							const ipfs = (await axios.get(nft?.token_uri)).data?.image;
+							let ipfs;
+							try{
+								ipfs = (await axios.get(nft?.token_uri)).data?.image;
+							}
+							catch{
+								ipfs = "";
+							}
+							
 							let get_image = "";
 							if (ipfs?.includes("ipfs://")) {
 								get_image =
