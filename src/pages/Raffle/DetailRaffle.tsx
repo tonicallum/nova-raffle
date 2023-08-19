@@ -223,7 +223,7 @@ const DetailRaffle = () => {
       const Provider: any = new ethers.providers.Web3Provider(window.ethereum);
       const signer = Provider.getSigner();
       const raffleContract = new Contract(CONFIG.RAFFLE.CONTRACTADDRESS721, CONFIG.RAFFLE.ABI721, signer);
-      const fetch_lists = await raffleContract.fetchRaffleItems();
+      const fetch_lists = await raffleContract.getAllRaffles();
       const get_winner: any = fetch_lists.find((item: any, index: number)  => item.tokenId.toNumber() === nftInfo?.tokenId && item.sold === true);
 
       setWinnerAddress(get_winner.winner)
@@ -284,7 +284,7 @@ const DetailRaffle = () => {
     (async () => {
       try {
         setLoading(true);
-        const nftInfoById: any = await getRaffleById(id);
+        const nftInfoById: any = await getRaffleById(id);  //data base se araha
         const dateFormat = new Date(nftInfoById.start_date * 1000)
         const result_date = dateFormat.getMonth() + 1 +
           "/" + (dateFormat.getDate()) +
@@ -319,7 +319,7 @@ const DetailRaffle = () => {
         setCurrentItemId(getRaffleInfo?.itemId + 1)
 
         if (storeData.wallet === 'connected') {
-          const getMyTickets = await fetchMyTickets()
+          const getMyTickets = await fetchMyTickets(getRaffleInfo?.itemId + 1)
           const filter_myTickets = getMyTickets.find((item: any) => item.buyer.toLowerCase() === storeData.address && item.raffleId.toNumber() === getRaffleInfo?.itemId + 1)
           const getBuyTicketAmount = filter_myTickets?.ticketAmount.toNumber()
 
