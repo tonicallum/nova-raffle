@@ -27,6 +27,7 @@ struct RaffleStruct {
     uint16 randomIndex;
     bool settled; // Whether creator earnings are settled
     STATUS status;
+    address winner;
 }
 
 struct Config {

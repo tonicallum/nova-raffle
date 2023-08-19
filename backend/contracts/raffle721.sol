@@ -115,7 +115,8 @@ contract NFT721Raffle is
             price: _price,
             randomIndex: 0,
             settled: false,
-            status: STATUS.NORMAL
+            status: STATUS.NORMAL,
+            winner: address(0)
         });
         idToRaffleItem[++config.raffleIndex] = raffle;
 
@@ -229,12 +230,14 @@ contract NFT721Raffle is
     }
 
     function claimWinnings(uint64 _raffleId) external nonReentrant {
-        RaffleStruct memory raffle = idToRaffleItem[_raffleId];
+        RaffleStruct storage raffle = idToRaffleItem[_raffleId];
         if (raffle.status != STATUS.DRAWED || raffle.currentSupply == 0)
             revert("Wrong status");
 
         address winner = calculateWinner(_raffleId, raffle.randomIndex);
         if (winner != msg.sender) revert("Not the winner");
+
+        raffle.winner = winner;
 
         IERC721 asset = IERC721(raffle.nftAddress);
         asset.transferFrom(address(this), winner, raffle.nftId);
@@ -389,7 +392,7 @@ contract NFT721Raffle is
         return raffles;
     }
 
-    function getTicketsBought (
+    function getTicketsBought(
         uint64 _raffleId
     ) external view returns (EntriesBought[] memory) {
         return raffleIdToBuyerEntries[_raffleId];

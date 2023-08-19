@@ -555,6 +555,11 @@
 						"internalType": "enum STATUS",
 						"name": "status",
 						"type": "uint8"
+					},
+					{
+						"internalType": "address",
+						"name": "winner",
+						"type": "address"
 					}
 				],
 				"internalType": "struct RaffleStruct[]",
@@ -731,6 +736,11 @@
 				"internalType": "enum STATUS",
 				"name": "status",
 				"type": "uint8"
+			},
+			{
+				"internalType": "address",
+				"name": "winner",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
