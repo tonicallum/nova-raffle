@@ -40,17 +40,18 @@ const NFTModal = (props: any) => {
 
 					const lists: any = await getNfts(storeData.address);
 					console.log("lists : ", lists);
-					let filtered_nfts: any = [];
+					let filtered_nfts1: any = [];
+					let filtered_nfts2: any = [];
 
 					await Promise.all(
 						lists.result.map(async (nft: any) => {
 							// const ipfs = JSON.parse(nft?.metadata)?.image
-							let ipfs;
+							let ipfs = "";
 							try{
 								ipfs = (await axios.get(nft?.token_uri)).data?.image;
 							}
 							catch{
-								ipfs = "";
+								console.log("token uri is blocked");
 							}
 							
 							let get_image = "";
@@ -61,20 +62,37 @@ const NFTModal = (props: any) => {
 							} else {
 								get_image = ipfs;
 							}
-							filtered_nfts.push({
-								metadata: JSON.parse(nft?.metadata),
-								name: nft?.name,
-								token_address: nft?.token_address,
-								token_id: nft?.token_id,
-								owner: nft?.owner_of,
-								symbol: nft?.symbol,
-								image: get_image,
-								type: nft?.contract_type,
-								nftAmount: nft?.amount,
-							});
+
+							if(get_image.length > 0) {
+								filtered_nfts1.push({
+									metadata: JSON.parse(nft?.metadata),
+									name: nft?.name,
+									token_address: nft?.token_address,
+									token_id: nft?.token_id,
+									owner: nft?.owner_of,
+									symbol: nft?.symbol,
+									image: get_image,
+									type: nft?.contract_type,
+									nftAmount: nft?.amount,
+								});
+							}
+							else {
+								filtered_nfts2.push({
+									metadata: JSON.parse(nft?.metadata),
+									name: nft?.name,
+									token_address: nft?.token_address,
+									token_id: nft?.token_id,
+									owner: nft?.owner_of,
+									symbol: nft?.symbol,
+									image: get_image,
+									type: nft?.contract_type,
+									nftAmount: nft?.amount,
+								});
+							}
+							
 						})
 					);
-					setNfts(filtered_nfts);
+					setNfts([...filtered_nfts1,...filtered_nfts2]);
 
 					setModalLoading(false);
 				} catch (error) {
