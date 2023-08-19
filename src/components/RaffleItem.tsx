@@ -174,7 +174,7 @@ const RaffleItem = (props: any) => {
 					let totalAmount = 0;
 					for (let i = 0; i < filter_TicketByID.length; i++) {
 						totalAmount +=
-							filter_TicketByID[i].ticketAmount.toNumber();
+							filter_TicketByID[i].ticketAmount;
 					}
 					setSellAmount(totalAmount);
 				}

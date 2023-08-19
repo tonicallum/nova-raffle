@@ -236,16 +236,16 @@ export const fetchRaffleItems = async (
 		
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
-				item.tokenId.toNumber() === tokenId &&
+				item.nftId === tokenId &&
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
-				item.startTime.toNumber() === startDate
+				item.startTime === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
-				item.tokenId.toNumber() === tokenId &&
+				item.nftId === tokenId &&
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
-				item.startTime.toNumber() === startDate
+				item.startTime === startDate
 		);
 
 		return {
