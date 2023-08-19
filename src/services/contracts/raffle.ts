@@ -229,21 +229,22 @@ export const fetchRaffleItems = async (
 
 		const myWalletAddress: any = await connectWallet();
 
+		console.log("fetch", fetch_lists);
 		const filterWinner = fetch_lists.filter(
 			(item: any) => item.winner.toLowerCase() === myWalletAddress.address
 		);
-
+		
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
 				item.tokenId.toNumber() === tokenId &&
-				item.nftContract.toLowerCase() === tokenAddress.toLowerCase() &&
+				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startDate.toNumber() === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
 				item.tokenId.toNumber() === tokenId &&
-				item.nftContract.toLowerCase() === tokenAddress.toLowerCase() &&
+				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startDate.toNumber() === startDate
 		);
 
