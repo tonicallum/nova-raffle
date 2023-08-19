@@ -389,7 +389,7 @@ contract NFT721Raffle is
         return raffles;
     }
 
-    function getTicketsBought(
+    function getTicketsBought (
         uint64 _raffleId
     ) external view returns (EntriesBought[] memory) {
         return raffleIdToBuyerEntries[_raffleId];

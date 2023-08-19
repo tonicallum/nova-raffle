@@ -225,7 +225,7 @@ export const fetchRaffleItems = async (
 			CONFIG.RAFFLE.ABI721,
 			signer
 		);
-		const fetch_lists = await raffleContract.fetchRaffleItems();
+		const fetch_lists = await raffleContract.getAllRaffles()
 
 		const myWalletAddress: any = await connectWallet();
 
@@ -258,7 +258,7 @@ export const fetchRaffleItems = async (
 	}
 };
 
-export const fetchMyTickets = async () => {
+export const fetchMyTickets = async (itemId: number) => {
 	try {
 		const Provider: any = new ethers.providers.Web3Provider(
 			window.ethereum
@@ -271,7 +271,9 @@ export const fetchMyTickets = async () => {
 			signer
 		);
 
-		const res = await raffleContract.fetchMyTicketItems();
+		const res = await raffleContract.getTicketsBought(
+			itemId
+		);
 		return res;
 	} catch (error) {
 		console.log("error", error);
@@ -291,7 +293,7 @@ export const fetchTicketItemsByID = async (itemId: number) => {
 			signer
 		);
 
-		const res = await raffleContract.fetchTicketItemsByID(itemId);
+		const res = await raffleContract.getTicketsBought(itemId);
 		return res;
 	} catch (error) {
 		console.log("error", error);
