@@ -80,9 +80,9 @@ const CreateRaffle = () => {
           raffleValue.tokenAddress,
           raffleValue.tokenId,
           raffleValue.price,
+          raffleValue.total_tickets,
           Math.floor(raffleValue.start_date?.getTime() / 1000),
-          Math.floor(raffleValue.end_date?.getTime() / 1000),
-          raffleValue.total_tickets
+          Math.floor(raffleValue.end_date?.getTime() / 1000)
         )
       }
       if (createRaffleTx) {
