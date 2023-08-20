@@ -122,7 +122,7 @@ const LeaderBoard = () => {
     allRaffle = dayRaffleFilter;
     
     let ans = allRaffle.reduce((agg: any,curr: any) => {
-      
+      console.log("cur", curr)
       let found = agg.find((x: { creator: any }) => x.creator === curr.creator);
       if(found){
         found.sellerCount.push(curr.creator);
@@ -132,7 +132,7 @@ const LeaderBoard = () => {
       }
       else{
         agg.push({
-          seller : curr.creator,
+          seller : curr.creator.toString(),
           sellerCount : [curr.creator],
           ticketPrices: [curr.price],
           soldVolume: Number(ethers.utils.formatEther(curr.price)) * curr.currentSupply,
@@ -173,41 +173,41 @@ const LeaderBoard = () => {
     buyAllRaffle = dayBuyRaffleFilter;
     
     const tempFetchBuyTicket: any[] = await Promise.all(buyAllRaffle.map(async(item: any, index: number) => {
-      const fetchItem = await fetchTicketItemsByID(item.nftId);
-      console.log("fetchItem",fetchItem)
+      const getRaffleInfo = await fetchRaffleItems(
+        item.nftId,
+        item.nftAddress,
+        item.startTime
+      );
+      const fetchItem = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1);
       if(fetchItem.length !==0){
         return { ...fetchItem, winner: item.winner, ticketPrice: item.price }
       }
     }))
-    console.log("tempFetchBuyTicket",tempFetchBuyTicket);
     const resFoundBuyTicket = tempFetchBuyTicket.filter((item: any, index: number) => item !== undefined );
-    console.log("resFoundBuyTicket",resFoundBuyTicket)
     let foundBuy: any = [];
     for(let i = 0; i < resFoundBuyTicket?.length; i++){
       const objKeys  = Object.keys(resFoundBuyTicket[i]);
       for(let j = 0; j < objKeys.length - 2; j++){
-        foundBuy.push({item:resFoundBuyTicket[i][j], winner: resFoundBuyTicket[i].winner, ticketPrice: resFoundBuyTicket[i].price});
+        foundBuy.push({item:resFoundBuyTicket[i][j], winner: resFoundBuyTicket[i].winner, ticketPrice: resFoundBuyTicket[i].ticketPrice});
       }
     }
 
     let foundBuyGroupBy = foundBuy.reduce((agg: any,curr: any) => {
-      console.log("agg",agg);
-      console.log("curr", curr);
-      let found = agg.find((x: { buyer: any }) => x.buyer === curr.item.buyer);
+      let found = agg.find((x: { buyer: any }) => x.buyer === curr.item.owner);
       if(found){
         found.buyerCount += 1;
-        found.ticketPrice.push(curr.price);
-        found.buyVolume+= Number(ethers.utils.formatEther(curr.price)) * curr.item.ticketAmount.toNumber()
-        found.ticketAmount+=curr.item.ticketAmount.toNumber();
+        found.ticketPrice.push(curr.ticketPrice);
+        found.buyVolume+= Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.item.entryNum
+        found.ticketAmount+=curr.item.entryNum;
         found.won.push(curr.winner);
       }
       else{
         agg.push({
-          buyer : curr.item.buyer,
+          buyer : curr.item.owner,
           buyerCount : 1,
           ticketPrice: [curr.ticketPrice],
-          buyVolume: Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.item.ticketAmount.toNumber(),
-          ticketAmount: curr.item.ticketAmount.toNumber(),
+          buyVolume: Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.item.entryNum,
+          ticketAmount: curr.item.entryNum,
           won: [curr.winner],
         });
       }

@@ -312,6 +312,7 @@ const DetailRaffle = () => {
         if (nftInfoById.start_date * 1000 > Date.now() && nftInfoById.walletAddress === storeData.address) {
           setShowEdit(true)
         }
+        console.log("nftInfoById",nftInfoById)
 //
         const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
         console.log('===========getRaffleInfo', getRaffleInfo)
