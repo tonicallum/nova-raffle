@@ -320,8 +320,9 @@ const DetailRaffle = () => {
 
         if (storeData.wallet === 'connected') {
           const getMyTickets = await fetchMyTickets(getRaffleInfo?.itemId + 1)
-          const filter_myTickets = getMyTickets.find((item: any) => item.buyer.toLowerCase() === storeData.address && item.raffleId.toNumber() === getRaffleInfo?.itemId + 1)
-          const getBuyTicketAmount = filter_myTickets?.ticketAmount.toNumber()
+          const filter_myTickets = getMyTickets.find((item: any) => item.owner.toLowerCase() === storeData.address)
+          console.log("filter_myTickets",filter_myTickets)
+          const getBuyTicketAmount = filter_myTickets?.entryNum
 
           if (getBuyTicketAmount > 0) {
             setBuyStatus(1)
@@ -341,17 +342,17 @@ const DetailRaffle = () => {
 
         let filter_TicketByID = getTicketByID.filter(
           (person: any, index: any) => index === getTicketByID.findIndex(
-            (other: any) => person?.buyer === other?.buyer
+            (other: any) => person?.owner === other?.owner
           ));
         setTicketHolder(filter_TicketByID.length)
         let totalAmount = 0
         const res_ticketById = filter_TicketByID.map((item: any) => {
-          totalAmount += item.ticketAmount.toNumber()
-          return { ...item, amount: item?.ticketAmount.toNumber() }
+          totalAmount += item.entryNum
+          return { ...item, amount: item?.entryNum }
         })
         setCurrnetBuyTicket(totalAmount ? totalAmount : 0)
-        const getTicketsOwned = filter_TicketByID.find((item: any) => item.buyer.toLowerCase() === storeData.address)
-        const resTicketsOwned = getTicketsOwned?.ticketAmount ? getTicketsOwned?.ticketAmount.toNumber() : 0
+        const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toLowerCase() === storeData.address)
+        const resTicketsOwned = getTicketsOwned?.entryNum ? getTicketsOwned?.entryNum : 0
         const percentTicketsOwned = 100 * resTicketsOwned / nftInfoById.total_tickets
         setTicketsOwned(percentTicketsOwned)
 
