@@ -74,7 +74,7 @@ export const connectWallet = async () => {
 
         await window.ethereum.request({
           method: "wallet_addEthereumChain",
-          params: [networkMap.MUMBAI_TESTNET],
+          params: [networkMap.POLYGON_MAINNET],
         });
 
         const addressArray = await window.ethereum.request({

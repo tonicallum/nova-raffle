@@ -148,7 +148,7 @@ const SwiperItem = (props: any) => {
           </div>
           <div className="flex justify-between items-center ">
             <p className="text-[15px]">Time Remaining</p>
-            <p className="text-sm text-[#8652FF] font-medium ">
+            <div className="text-sm text-[#8652FF] font-medium ">
               <Countdown
                 ref={setStartCountdownRef}
                 date={item.start_date * 1000}
@@ -156,7 +156,7 @@ const SwiperItem = (props: any) => {
                 // onComplete={() => setShowEdit(false)}
                 renderer={startCountdownRenderer}
               />
-            </p>
+            </div>
           </div>
         </div>
 

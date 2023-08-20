@@ -171,14 +171,14 @@ const AuctionRarticipant = (props: any) => {
                   className="mb-2 w-[60px]"
                 />
                 <h1 className="text-[#878787]">Time Remaining</h1>
-                <p className="text-white">
+                <div className="text-white">
                   <Countdown
                     ref={setStartCountdownRef}
                     date={item?.start_date ? item?.start_date * 1000 : 0}
                     zeroPadTime={3}
                     renderer={startCountdownRenderer}
                   />
-                </p>
+                </div>
               </div>
               <div className="text-center flex flex-col items-center">
                 <img

@@ -147,7 +147,7 @@ const AuctionItem = (props: any) => {
             <div className="flex justify-between">
               <div className="basis-[40%]">
                 <p className="text-sm">Time Remaining</p>
-                <p className="text-sm ">
+                <div className="text-sm ">
                   <Countdown
                     ref={setStartCountdownRef}
                     date={item.start_date * 1000}
@@ -156,7 +156,7 @@ const AuctionItem = (props: any) => {
 
                     renderer={startCountdownRenderer}
                   />
-                </p>
+                </div>
               </div>
               <div className="basis-[29%]">
                 <p className="text-sm">Min. Increment</p>

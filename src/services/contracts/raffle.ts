@@ -237,16 +237,24 @@ export const fetchRaffleItems = async (
 		
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
+<<<<<<< HEAD
 				item.nftId.toNumber() === tokenId &&
+=======
+				item.nftId === tokenId &&
+>>>>>>> 16ff6fdd5f86489a617a18fce6ff12d1c3cb9f7f
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
-				item.startTime.toNumber() === startDate
+				item.startTime === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
+<<<<<<< HEAD
 				item.nftId.toNumber() === tokenId &&
+=======
+				item.nftId === tokenId &&
+>>>>>>> 16ff6fdd5f86489a617a18fce6ff12d1c3cb9f7f
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
-				item.startTime.toNumber() === startDate
+				item.startTime === startDate
 		);
 			console.log("Zindagi barbad", itemId);
 		return {

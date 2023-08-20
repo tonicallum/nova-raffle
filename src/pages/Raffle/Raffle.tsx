@@ -446,13 +446,13 @@ const Raffle = () => {
                             <div className="text-lg">Showing:</div>
                             <button onClick={() => sortListAllRemove() } style={{display:'flex', alignItems:'center !important', fontSize: '12px'}} className="flex gap-[1rem] item-center rounded-[10px] raffle-status-active py-1 px-2 text-[#666666]">
                                   <span>Clear All</span>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width={"20"} height={"20"} viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12 6 6m6 6 6 6m-6-6 6-6m-6 6-6 6"/></svg>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width={"20"} height={"20"} viewBox="0 0 24 24" fill="none"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 12 6 6m6 6 6 6m-6-6 6-6m-6 6-6 6"/></svg>
                                 </button>
                             {
                               sortList.map((item: any, index: number) => (
-                                <button onClick={() => removeSortList(index)} style={{display:'flex', alignItems:'center !important', fontSize: '12px'}} className="flex gap-[1rem] item-center rounded-[10px] raffle-status-active py-1 px-2 text-[#666666]">
+                                <button key={index} onClick={() => removeSortList(index)} style={{display:'flex', alignItems:'center !important', fontSize: '12px'}} className="flex gap-[1rem] item-center rounded-[10px] raffle-status-active py-1 px-2 text-[#666666]">
                                   <span>{item}</span>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width={"20"} height={"20"} viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12 6 6m6 6 6 6m-6-6 6-6m-6 6-6 6"/></svg>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width={"20"} height={"20"} viewBox="0 0 24 24" fill="none"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 12 6 6m6 6 6 6m-6-6 6-6m-6 6-6 6"/></svg>
                                 </button>
                               ))
                             }
