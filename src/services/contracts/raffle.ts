@@ -232,35 +232,27 @@ export const fetchRaffleItems = async (
 
 		console.log("fetch", fetch_lists);
 		const filterWinner = fetch_lists.filter(
-			(item: any) => item.winner.toLowerCase() === myWalletAddress.address
+			(item: any) => item.winner.toString().toLowerCase() === myWalletAddress.address
 		);
 		
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
-<<<<<<< HEAD
-				item.nftId.toNumber() === tokenId &&
-=======
 				item.nftId === tokenId &&
->>>>>>> 16ff6fdd5f86489a617a18fce6ff12d1c3cb9f7f
-				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
+				item.nftAddress.toString().toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startTime === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
-<<<<<<< HEAD
-				item.nftId.toNumber() === tokenId &&
-=======
 				item.nftId === tokenId &&
->>>>>>> 16ff6fdd5f86489a617a18fce6ff12d1c3cb9f7f
-				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
+				item.nftAddress.toString().toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startTime === startDate
 		);
 			console.log("Zindagi barbad", itemId);
 		return {
 			itemId,
 			winner: getItem?.winner.toLowerCase(),
-			price: Number(getItem?.ticketPrice),
+			price: Number(getItem?.price),
 			winnerCount: filterWinner.length,
 		};
 	} catch (error) {
