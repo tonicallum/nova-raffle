@@ -225,30 +225,33 @@ export const fetchRaffleItems = async (
 			CONFIG.RAFFLE.ABI721,
 			signer
 		);
-		const fetch_lists = await raffleContract.getAllRaffles()
+		const fetch_lists = await raffleContract.getAllRaffles();
 		console.log("Change Contract", fetch_lists);
 
 		const myWalletAddress: any = await connectWallet();
 
 		console.log("fetch", fetch_lists);
 		const filterWinner = fetch_lists.filter(
-			(item: any) => item.winner.toString().toLowerCase() === myWalletAddress.address
+			(item: any) =>
+				item.winner.toString().toLowerCase() === myWalletAddress.address
 		);
-		
+
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
 				item.nftId === tokenId &&
-				item.nftAddress.toString().toLowerCase() === tokenAddress.toLowerCase() &&
+				item.nftAddress.toString().toLowerCase() ===
+					tokenAddress.toLowerCase() &&
 				item.startTime === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
 				item.nftId === tokenId &&
-				item.nftAddress.toString().toLowerCase() === tokenAddress.toLowerCase() &&
+				item.nftAddress.toString().toLowerCase() ===
+					tokenAddress.toLowerCase() &&
 				item.startTime === startDate
 		);
-			console.log("Zindagi barbad", itemId);
+		console.log("Zindagi barbad", itemId);
 		return {
 			itemId,
 			winner: getItem?.winner.toLowerCase(),
@@ -273,9 +276,7 @@ export const fetchMyTickets = async (itemId: number) => {
 			signer
 		);
 
-		const res = await raffleContract.getTicketsBought(
-			itemId
-		);
+		const res = await raffleContract.getTicketsBought(itemId);
 		return res;
 	} catch (error) {
 		console.log("error", error);
@@ -296,8 +297,8 @@ export const fetchTicketItemsByID = async (itemId: number) => {
 		);
 
 		const res = await raffleContract.getTicketsBought(itemId);
-		console.log("tickets by id",res);
-		
+		console.log("tickets by id", res);
+
 		return res;
 	} catch (error) {
 		console.log("error", error);
@@ -353,6 +354,25 @@ export const completeRaffle = async (itemId: any) => {
 			signer
 		);
 		const res = await raffleContract.completeRaffle(itemId);
+		return res;
+	} catch (error) {
+		console.log("error", error);
+	}
+};
+
+export const claimWinnings = async (itemId: any) => {
+	try {
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+		const signer = Provider.getSigner();
+
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
+		const res = await raffleContract.claimWinnings(itemId);
 		return res;
 	} catch (error) {
 		console.log("error", error);
