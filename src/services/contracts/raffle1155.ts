@@ -155,12 +155,15 @@ export const fetchRaffle1155Items = async (tokenId: any, tokenAddress: any, star
     const raffleContract = new Contract(CONFIG.RAFFLE.CONTRACTADDRESS1155, CONFIG.RAFFLE.ABI1155, signer);
 
     const fetch_lists = await raffleContract.fetchRaffleItems()
-    const itemId = fetch_lists.findIndex((item: any) => item.tokenId.toNumber() === tokenId && item.nftContract.toLowerCase() === tokenAddress.toLowerCase() && item.startDate.toNumber() === startDate)
+    console.log("fetch_lists",fetch_lists)
+    const itemId = fetch_lists.findIndex((item: any) => item.tokenId.toString() === tokenId.toString() && item.nftContract.toLowerCase() === tokenAddress.toLowerCase() && item.startDate.toString() === startDate.toString())
+    
     const myWalletAddress: any = await connectWallet()
 
     const filterWinner = fetch_lists.filter((item: any) => item.winner.toLowerCase() === myWalletAddress.address)
     if (itemId > -1) {
-      const getItem = fetch_lists.find((item: any) => item.tokenId.toNumber() === tokenId && item.nftContract.toLowerCase() === tokenAddress.toLowerCase() && item.startDate.toNumber() === startDate)
+      console.log("itemID",itemId)
+      const getItem = fetch_lists.find((item: any) => item.tokenId.toString() === tokenId.toString() && item.nftContract.toLowerCase() === tokenAddress.toLowerCase() && item.startDate.toString() === startDate.toString())
       return { itemId, winner: getItem?.winner.toLowerCase(), price: Number(getItem?.ticketPrice), winnerCount: filterWinner.length }
     }
 
