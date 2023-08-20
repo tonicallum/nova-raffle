@@ -79,8 +79,10 @@ const Raffle = () => {
     const res = selectRaffleData.filter((item: any) =>  item.start_date > current_time / 1000 - 10 * 60 * 60)
     setFilterByItem([...res]);
     let temp_sort = sortList;
-    temp_sort.push("Recently Added")
-    setSortList([...temp_sort]);
+    if(!temp_sort.includes("Recently Added")){
+      temp_sort.push("Recently Added")
+      setSortList([...temp_sort]);
+    }
   }
 
   const handleExpiringSoonSort = () => {
