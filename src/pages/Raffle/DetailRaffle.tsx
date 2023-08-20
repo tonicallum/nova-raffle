@@ -646,7 +646,7 @@ const DetailRaffle = () => {
                             className={`px-4 w-full flex justify-between pt-0 ${idx % 2 === 0 ? "bg-[#CCCBD2]" : ""} `}
                           >
                             <li className="basis-[50%] text-[#666] text-[14px]">
-                              {item?.buyer.substr(0, 6) + '...' + item?.buyer.substr(item?.buyer.length - 4, 4)}
+                              {item?.owner.substr(0, 6) + '...' + item?.owner.substr(item?.owner.length - 4, 4)}
                               {/* {item?.name} */}
                             </li>
                             <li className="basis-[50%] text-[#666] text-[14px] text-center">{item?.amount}</li>
