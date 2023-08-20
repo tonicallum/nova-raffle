@@ -320,7 +320,8 @@ const DetailRaffle = () => {
 
         if (storeData.wallet === 'connected') {
           const getMyTickets = await fetchMyTickets(getRaffleInfo?.itemId + 1)
-          const filter_myTickets = getMyTickets.find((item: any) => item.owner.toLowerCase() === storeData.address)
+          console.log("getMyTickets",getMyTickets)
+          const filter_myTickets = getMyTickets.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
           console.log("filter_myTickets",filter_myTickets)
           const getBuyTicketAmount = filter_myTickets?.entryNum
 

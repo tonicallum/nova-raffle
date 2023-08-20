@@ -179,6 +179,7 @@ const LeaderBoard = () => {
         return { ...fetchItem, winner: item.winner, ticketPrice: item.price }
       }
     }))
+    console.log("tempFetchBuyTicket",tempFetchBuyTicket);
     const resFoundBuyTicket = tempFetchBuyTicket.filter((item: any, index: number) => item !== undefined );
     console.log("resFoundBuyTicket",resFoundBuyTicket)
     let foundBuy: any = [];
