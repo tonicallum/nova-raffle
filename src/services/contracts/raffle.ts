@@ -202,7 +202,7 @@ export const fetchRaffleLists = async () => {
 			CONFIG.RAFFLE.ABI721,
 			signer
 		);
-		const fetch_lists = await raffleContract.fetchRaffleItems();
+		const fetch_lists = await raffleContract.getAllRaffles();
 		return fetch_lists;
 	} catch (error) {
 		console.log("error", error);

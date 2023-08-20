@@ -118,24 +118,25 @@ const LeaderBoard = () => {
   const fetchRafflers = async (tempAllRaffle: any) => {
     setRaffleLoading(true);
     let allRaffle: any = [], dayRaffleFilter: any = [], tempRafflerSort: any = [];
-    dayRaffleFilter = tempAllRaffle.filter((item:any) =>  item.startDate.toNumber() * 1000 >= raffleDayFilterValue );
+    dayRaffleFilter = tempAllRaffle.filter((item:any) =>  item.startTime * 1000 >= raffleDayFilterValue );
     allRaffle = dayRaffleFilter;
     
     let ans = allRaffle.reduce((agg: any,curr: any) => {
-      let found = agg.find((x: { seller: any }) => x.seller === curr.seller);
+      
+      let found = agg.find((x: { creator: any }) => x.creator === curr.creator);
       if(found){
-        found.sellerCount.push(curr.seller);
-        found.ticketPrices.push(curr.ticketPrice);
-        found.soldVolume+= Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.soldTicketAmount.toNumber();
-        found.soldTicketAmount+= curr.soldTicketAmount.toNumber();
+        found.sellerCount.push(curr.creator);
+        found.ticketPrices.push(curr.price);
+        found.soldVolume+= Number(ethers.utils.formatEther(curr.price)) * curr.currentSupply;
+        found.soldTicketAmount+= curr.currentSupply;
       }
       else{
         agg.push({
-          seller : curr.seller,
-          sellerCount : [curr.seller],
-          ticketPrices: [curr.ticketPrice],
-          soldVolume: Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.soldTicketAmount.toNumber(),
-          soldTicketAmount: curr.soldTicketAmount.toNumber()
+          seller : curr.creator,
+          sellerCount : [curr.creator],
+          ticketPrices: [curr.price],
+          soldVolume: Number(ethers.utils.formatEther(curr.price)) * curr.currentSupply,
+          soldTicketAmount: curr.currentSupply
         });
       }
       return agg;
@@ -168,30 +169,34 @@ const LeaderBoard = () => {
     setRaffleLoading(true);
     let buyAllRaffle: any = [], dayBuyRaffleFilter: any = [], tempBuyAllRaffle: any = [];
     tempBuyAllRaffle = tempAllRaffle;
-    dayBuyRaffleFilter = tempBuyAllRaffle.filter((item:any) =>  item.startDate.toNumber() * 1000 >= buyRaffleDayFilterValue );
+    dayBuyRaffleFilter = tempBuyAllRaffle.filter((item:any) =>  item.startTime * 1000 >= buyRaffleDayFilterValue );
     buyAllRaffle = dayBuyRaffleFilter;
     
     const tempFetchBuyTicket: any[] = await Promise.all(buyAllRaffle.map(async(item: any, index: number) => {
-      const fetchItem = await fetchTicketItemsByID(item.itemId.toNumber());
+      const fetchItem = await fetchTicketItemsByID(item.nftId);
+      console.log("fetchItem",fetchItem)
       if(fetchItem.length !==0){
-        return { ...fetchItem, winner: item.winner, ticketPrice: item.ticketPrice }
+        return { ...fetchItem, winner: item.winner, ticketPrice: item.price }
       }
     }))
     const resFoundBuyTicket = tempFetchBuyTicket.filter((item: any, index: number) => item !== undefined );
+    console.log("resFoundBuyTicket",resFoundBuyTicket)
     let foundBuy: any = [];
     for(let i = 0; i < resFoundBuyTicket?.length; i++){
       const objKeys  = Object.keys(resFoundBuyTicket[i]);
       for(let j = 0; j < objKeys.length - 2; j++){
-        foundBuy.push({item:resFoundBuyTicket[i][j], winner: resFoundBuyTicket[i].winner, ticketPrice: resFoundBuyTicket[i].ticketPrice});
+        foundBuy.push({item:resFoundBuyTicket[i][j], winner: resFoundBuyTicket[i].winner, ticketPrice: resFoundBuyTicket[i].price});
       }
     }
 
     let foundBuyGroupBy = foundBuy.reduce((agg: any,curr: any) => {
+      console.log("agg",agg);
+      console.log("curr", curr);
       let found = agg.find((x: { buyer: any }) => x.buyer === curr.item.buyer);
       if(found){
         found.buyerCount += 1;
-        found.ticketPrice.push(curr.ticketPrice);
-        found.buyVolume+= Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.item.ticketAmount.toNumber()
+        found.ticketPrice.push(curr.price);
+        found.buyVolume+= Number(ethers.utils.formatEther(curr.price)) * curr.item.ticketAmount.toNumber()
         found.ticketAmount+=curr.item.ticketAmount.toNumber();
         found.won.push(curr.winner);
       }
@@ -241,16 +246,17 @@ const LeaderBoard = () => {
       async () => {
         try {
           const fetchRaffle = await fetchRaffleLists();
-          const fetchRaffle1155 = await fetchRaffleLists1155();
+          // const fetchRaffle1155 = await fetchRaffleLists1155();
           const res_fetchRaffle = fetchRaffle.map((item: any) => {
             return { ...item }
           })
-          const res_fetchRaffle1155 = fetchRaffle1155.map((item: any) => {
-            return { ...item }
-          })
-          const tempAllRaffle: any = [...res_fetchRaffle, ...res_fetchRaffle1155];
-          fetchRafflers(tempAllRaffle);
-          fetchBuyRaffler(tempAllRaffle);
+          // const res_fetchRaffle1155 = fetchRaffle1155.map((item: any) => {
+          //   return { ...item }
+          // })
+          // const tempAllRaffle: any = [...res_fetchRaffle, ...res_fetchRaffle1155];
+          console.log("res_fetchRaffle", res_fetchRaffle)
+          fetchRafflers(res_fetchRaffle);
+          fetchBuyRaffler(res_fetchRaffle);
         } catch (error) {
           console.log('error', error)
         }
