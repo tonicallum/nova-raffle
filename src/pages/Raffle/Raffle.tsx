@@ -105,6 +105,7 @@ const Raffle = () => {
 
   const handlePriceAscendingSort = () => {
     const res = selectRaffleData.sort((a: any, b: any) => a.price - b.price)
+    console.log("res",res)
     setFilterByItem([...res])
     let temp_sort = sortList;
     if(!temp_sort.includes("Price (Ascending)")){
@@ -114,6 +115,7 @@ const Raffle = () => {
   }
   const handlePriceDescendingSort = () => {
     const res = selectRaffleData.sort((a: any, b: any) => b.price - a.price)
+    console.log("res",res)
     setFilterByItem([...res])
     let temp_sort = sortList;
     if(!temp_sort.includes("Price (descending)")){

@@ -164,12 +164,12 @@ const RaffleItem = (props: any) => {
             (person: any, index: any) =>
               index ===
               getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
+                (other: any) => person.owner === other.owner
               )
           );
           let totalAmount = 0;
           for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].ticketAmount;
+            totalAmount += filter_TicketByID[i].entryNum;
           }
           setSellAmount(totalAmount);
         }
