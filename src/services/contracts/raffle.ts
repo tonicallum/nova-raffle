@@ -237,22 +237,14 @@ export const fetchRaffleItems = async (
 		
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
-<<<<<<< HEAD
-				item.nftId.toNumber() === tokenId &&
-=======
 				item.nftId === tokenId &&
->>>>>>> 16ff6fdd5f86489a617a18fce6ff12d1c3cb9f7f
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startTime === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
-<<<<<<< HEAD
-				item.nftId.toNumber() === tokenId &&
-=======
 				item.nftId === tokenId &&
->>>>>>> 16ff6fdd5f86489a617a18fce6ff12d1c3cb9f7f
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startTime === startDate
 		);
@@ -304,6 +296,8 @@ export const fetchTicketItemsByID = async (itemId: number) => {
 		);
 
 		const res = await raffleContract.getTicketsBought(itemId);
+		console.log("tickets by id",res);
+		
 		return res;
 	} catch (error) {
 		console.log("error", error);
