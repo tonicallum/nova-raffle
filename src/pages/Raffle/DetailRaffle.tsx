@@ -312,7 +312,7 @@ const DetailRaffle = () => {
         if (nftInfoById.start_date * 1000 > Date.now() && nftInfoById.walletAddress === storeData.address) {
           setShowEdit(true)
         }
-
+//
         const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
         console.log('===========getRaffleInfo', getRaffleInfo)
 
@@ -337,6 +337,7 @@ const DetailRaffle = () => {
         }
 
         const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
+        console.log("GetTicketByID >>>>>",getTicketByID);
 
         let filter_TicketByID = getTicketByID.filter(
           (person: any, index: any) => index === getTicketByID.findIndex(
