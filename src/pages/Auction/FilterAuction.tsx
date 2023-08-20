@@ -126,7 +126,7 @@ const FilterAuction = ({ item }: any) => {
             <div className="flex justify-between">
               <div className="basis-[49%]">
                 <p className="text-sm">Time Remaining</p>
-                <p className="text-sm text-[#4A4A4A]">
+                <div className="text-sm text-[#4A4A4A]">
                   <Countdown
                     ref={setStartCountdownRef}
                     date={item.start_date * 1000}
@@ -134,7 +134,7 @@ const FilterAuction = ({ item }: any) => {
 
                     renderer={startCountdownRenderer}
                   />
-                </p>
+                </div>
               </div>
               <div className="basis-[49%]">
                 <p className="text-sm">Tickets Remaining</p>
