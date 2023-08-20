@@ -95,7 +95,7 @@ const RaffleRarticipant = (props: any) => {
             }
             setSellAmount(totalAmount)
 
-            const getTicketsOwned = filter_TicketByID.find((item: any) => item.buyer.toLowerCase() === storeData.address)
+            const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
             const resTicketsOwned = getTicketsOwned.ticketAmount ? getTicketsOwned?.ticketAmount.toNumber() : 0
             const getWinningChance = 100 * resTicketsOwned / totalAmount
             setWinningChance(getWinningChance)
@@ -110,16 +110,18 @@ const RaffleRarticipant = (props: any) => {
 
             let filter_TicketByID = getTicketByID.filter(
               (person: any, index: any) => index === getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
+                (other: any) => person.owner === other.owner
               ));
             let totalAmount = 0
             for (let i = 0; i < filter_TicketByID.length; i++) {
-              totalAmount += filter_TicketByID[i].ticketAmount.toNumber()
+              
+              totalAmount += filter_TicketByID[i]?.entryNum
             }
             setSellAmount(totalAmount)
 
-            const getTicketsOwned = filter_TicketByID.find((item: any) => item.buyer.toLowerCase() === storeData.address)
-            const resTicketsOwned = getTicketsOwned.ticketAmount ? getTicketsOwned?.ticketAmount.toNumber() : 0
+            const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
+            console.log("getTicketsOwned", getTicketsOwned)
+            const resTicketsOwned = getTicketsOwned?.entryNum ? getTicketsOwned?.entryNum: 0
             const getWinningChance: any = 100 * resTicketsOwned / totalAmount
             setWinningChance(getWinningChance.toFixed(2))
           }

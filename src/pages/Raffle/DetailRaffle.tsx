@@ -175,7 +175,7 @@ const DetailRaffle = () => {
         setBuyStatus(1)
         if (buyStatus === 0) {
           const findIdx = ticketBuyerLists.findIndex((item: any) =>
-            item?.buyer.toLowerCase() === storeData.address)
+            item?.owner.toString().toLowerCase() === storeData.address)
 
           if (findIdx === -1) {
             setTicketBuyerLists([...ticketBuyerLists, {
@@ -191,7 +191,7 @@ const DetailRaffle = () => {
 
         } else if (buyStatus === 1) {
           const findIdx = ticketBuyerLists.findIndex((item: any) =>
-            item?.buyer.toLowerCase() === storeData.address)
+            item?.owner.toString().toLowerCase() === storeData.address)
 
           const new_buyerLists = ticketBuyerLists.map((item: any, idx: any) => {
             return idx === findIdx ? { ...ticketBuyerLists[findIdx], amount: item.amount + Number(amount) } : item

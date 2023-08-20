@@ -232,12 +232,14 @@ const RaffleProfile = () => {
                   const res_ticketById = getTicketByID.map((item: any) => {
                     return { ...item }
                   })
+
+                  console.log("res_ticketById",res_ticketById)
                   if (res_ticketById.length > 0) {
                     for (let j = 0; j < res_ticketById.length; j++) {
-                      if (res_ticketById[j].buyer.toLowerCase() === storeData.address) {
+                      if (res_ticketById[j].owner.toString().toLowerCase() === storeData.address) {
                         purchasedList_721.push(getRaffles[i])
                         raffleBought_721.push(res_ticketById[j])
-                        ticketBought_721 += res_ticketById[j]?.ticketAmount.toNumber()
+                        ticketBought_721 += res_ticketById[j]?.entryNum
 
                       }
                     }
@@ -245,11 +247,11 @@ const RaffleProfile = () => {
 
                   let filter_TicketByID = getTicketByID.filter(
                     (person: any, index: any) => index === getTicketByID.findIndex(
-                      (other: any) => person.buyer === other.buyer
+                      (other: any) => person.owner === other.owner
                     ));
                   let totalAmount = 0
                   for (let i = 0; i < filter_TicketByID.length; i++) {
-                    totalAmount += filter_TicketByID[i].ticketAmount.toNumber()
+                    totalAmount += filter_TicketByID[i].entryNum
                   }
                   getPurchasedVolume_721 += getRaffleInfo?.price * totalAmount
 
