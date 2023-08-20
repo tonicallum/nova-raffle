@@ -296,6 +296,8 @@ export const fetchTicketItemsByID = async (itemId: number) => {
 		);
 
 		const res = await raffleContract.getTicketsBought(itemId);
+		console.log("tickets by id",res);
+		
 		return res;
 	} catch (error) {
 		console.log("error", error);
