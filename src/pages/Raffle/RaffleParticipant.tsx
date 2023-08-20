@@ -102,8 +102,11 @@ const RaffleRarticipant = (props: any) => {
 
           } else {
             const getRaffleInfo = await fetchRaffleItems(item.tokenId, item.tokenAddress, item.start_date)
+            console.log( "Bhayankar",getRaffleInfo); //
+
 
             const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
+            console.log("atma",getTicketByID);//
 
             let filter_TicketByID = getTicketByID.filter(
               (person: any, index: any) => index === getTicketByID.findIndex(

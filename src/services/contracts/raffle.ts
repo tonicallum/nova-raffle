@@ -226,6 +226,7 @@ export const fetchRaffleItems = async (
 			signer
 		);
 		const fetch_lists = await raffleContract.getAllRaffles()
+		console.log("Change Contract", fetch_lists);
 
 		const myWalletAddress: any = await connectWallet();
 
@@ -236,18 +237,18 @@ export const fetchRaffleItems = async (
 		
 		const itemId = fetch_lists.findIndex(
 			(item: any) =>
-				item.tokenId.toNumber() === tokenId &&
+				item.nftId.toNumber() === tokenId &&
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startTime.toNumber() === startDate
 		);
 
 		const getItem = fetch_lists.find(
 			(item: any) =>
-				item.tokenId.toNumber() === tokenId &&
+				item.nftId.toNumber() === tokenId &&
 				item.nftAddress.toLowerCase() === tokenAddress.toLowerCase() &&
 				item.startTime.toNumber() === startDate
 		);
-
+			console.log("Zindagi barbad", itemId);
 		return {
 			itemId,
 			winner: getItem?.winner.toLowerCase(),
