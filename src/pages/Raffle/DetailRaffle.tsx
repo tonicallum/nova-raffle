@@ -236,7 +236,12 @@ const DetailRaffle = () => {
       // const get_winner: any = fetch_lists.find((item: any, index: number)  => item.nftId.toNumber() === nftInfo?.tokenId && item.sold === true);
       // console.log('Winner fetch from Raffle',get_winner);
       // console.log('winner address',get_winner.winner);
-      const get_winner =  await calculateWinner(currentItemId+1 , fetch_lists.randomIndex);
+      // console.log("currentItemId",currentItemId)
+      const nftInfoById: any = await getRaffleById(id);  //data base se araha
+      const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
+        console.log("currentItemId",getRaffleInfo?.itemId+1)
+        // setCurrentItemId(getRaffleInfo?.itemId + 1)
+      const get_winner =  await calculateWinner(getRaffleInfo?.itemId+1+1 , fetch_lists.randomIndex);
       console.log('WInner WInner',get_winner);
       setWinnerBlock(get_winner);
       setWinnerAddress(get_winner);
@@ -338,7 +343,7 @@ const DetailRaffle = () => {
           setShowEdit(true)
         }
         const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
-
+        console.log("getRaffleInfo?.itemId",getRaffleInfo?.itemId+1)
         setCurrentItemId(getRaffleInfo?.itemId + 1)
 
         if (storeData.wallet === 'connected') {
@@ -406,7 +411,7 @@ const DetailRaffle = () => {
         setLoading(false)
       }
     })();
-  }, [storeData, raffleInfo]);
+  }, [storeData, raffleInfo, id]);
 
   return (
     <div>
