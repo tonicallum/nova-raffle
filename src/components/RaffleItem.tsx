@@ -172,12 +172,13 @@ const RaffleItem = (props: any) => {
             totalAmount += filter_TicketByID[i].entryNum;
           }
           setSellAmount(totalAmount);
+          setRaffle({...item})
         }
       } catch (error) {
         console.log("error", error);
       }
     })();
-  }, []);
+  }, [item]);
 
   useEffect(() => {
     fetchRaffleRank();
