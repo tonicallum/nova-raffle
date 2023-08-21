@@ -397,7 +397,7 @@ export const initiateRaffleDrawing = async (itemId: any) => {
 		if (
 			ethers.utils.getAddress(singerAddr) ===
 			ethers.utils.getAddress(
-				"0x6c3b960f4B32709F3E82EF73BA3804C844cA9ED8"
+				"0x9e5A4885A9E11B2Df94be59e7dDf71Eb1F670a52"
 			)
 		) {
 			const tx = await raffleContract.initiateRaffleDrawing(itemId);
