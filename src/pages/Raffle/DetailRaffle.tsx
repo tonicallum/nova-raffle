@@ -7,6 +7,7 @@ import Countdown, { CountdownApi } from 'react-countdown'
 
 import Navbar from "../../components/Navbar";
 import { getRaffleById } from "../../services/api";
+import {calculateWinner} from"../../services/contracts/raffle";
 import ReturnIcon from "../../assets/detailpage/return-icon.svg";
 import ShareIcon from "../../assets/Share-icon.png";
 import PricetagIcon from "../../assets/detailpage/per-ticket.svg";
@@ -33,6 +34,7 @@ import { API_URL } from "../../config/dev";
 import axios from 'axios';
 import { Contract, ethers } from "ethers";
 import CONFIG from "../../config";
+
 
 
 const DetailRaffle = () => {
@@ -223,11 +225,25 @@ const DetailRaffle = () => {
       const Provider: any = new ethers.providers.Web3Provider(window.ethereum);
       const signer = Provider.getSigner();
       const raffleContract = new Contract(CONFIG.RAFFLE.CONTRACTADDRESS721, CONFIG.RAFFLE.ABI721, signer);
-      const fetch_lists = await raffleContract.getAllRaffles();
-      const get_winner: any = fetch_lists.find((item: any, index: number)  => item.tokenId.toNumber() === nftInfo?.tokenId && item.sold === true);
+      // const getRaffleInfo = await fetchRaffleItems(
+      //   item.nftId,
+      //   item.nftAddress,
+      //   item.startTime
+      // );
+      //const fetch_lists = await idToRaffleItemBlock(currentItemId + 1);
+      // console.log('ID to RAFFLE',fetch_lists);
+      // const get_winner: any = fetch_lists.find((item: any, index: number)  => item.nftId.toNumber() === nftInfo?.tokenId && item.sold === true);
+      // console.log('Winner fetch from Raffle',get_winner);
+      // console.log('winner address',get_winner.winner);
+      const get_winner =  await calculateWinner(currentItemId+1 , 1);
+      console.log('WInner WInner',get_winner);
+      setWinnerAddress(get_winner);
+      console.log('mera address',storeData.address);
+      const ZEROADDRESS = ethers.constants.AddressZero;
+      console.log('zero Address',ZEROADDRESS);
 
-      setWinnerAddress(get_winner.winner)
-      if (get_winner.winner.toLowerCase() === storeData.address) {
+
+      if (get_winner.toString() != ZEROADDRESS) {
         setWinner(true)
       } else {
         setWinner(false)
@@ -273,6 +289,8 @@ const DetailRaffle = () => {
             <p className="text-[#8652FF] text-[1.25rem] text-center">{winnerAddress ?
               winnerAddress?.substr(0, 6) + '...' + winnerAddress?.substr(storeData?.address.length - 4, 4)
               : ``}</p>
+            
+            <button  className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover"> Intialize drawing</button>
           </div>
         }
 

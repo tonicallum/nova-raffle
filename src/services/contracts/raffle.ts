@@ -340,6 +340,44 @@ export const idToRaffleItem = async () => {
 		console.log("error", error);
 	}
 };
+	
+export const idToRaffleItemBlock = async (itemId: number) => {
+	try {
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+		const signer = Provider.getSigner();
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
+
+		// const itemId = await raffleContract.config();
+		// const num = itemId.raffleIndex;
+
+		// console.log(num);
+
+		// console.log("Raffle Index>>", Number(num.toString()));
+		// const RaffleIndex = Number(num.toString());
+
+		// let endRes = [];
+		// for (let i = 0; i <= RaffleIndex; i++) {
+			const res = await raffleContract.idToRaffleItem(itemId);
+		// 	if (res.nftId !== 0) {
+		// 		endRes.push(res);
+		// 	}
+		// }
+		console.log(res);
+
+		console.log("Result Raffle fron BLOCK : ", res);
+		return res;
+	} catch (error) {
+		console.log("error", error);
+	}
+};
+
+
 
 export const claimWinnings = async (itemId: any) => {
 	try {
