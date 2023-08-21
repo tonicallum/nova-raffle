@@ -341,25 +341,6 @@ export const idToRaffleItem = async () => {
 	}
 };
 
-export const completeRaffle = async (itemId: any) => {
-	try {
-		const Provider: any = new ethers.providers.Web3Provider(
-			window.ethereum
-		);
-		const signer = Provider.getSigner();
-
-		const raffleContract = new Contract(
-			CONFIG.RAFFLE.CONTRACTADDRESS721,
-			CONFIG.RAFFLE.ABI721,
-			signer
-		);
-		const res = await raffleContract.completeRaffle(itemId);
-		return res;
-	} catch (error) {
-		console.log("error", error);
-	}
-};
-
 export const claimWinnings = async (itemId: any) => {
 	try {
 		const Provider: any = new ethers.providers.Web3Provider(
@@ -372,8 +353,58 @@ export const claimWinnings = async (itemId: any) => {
 			CONFIG.RAFFLE.ABI721,
 			signer
 		);
-		const res = await raffleContract.claimWinnings(itemId);
+		const tx = await raffleContract.claimWinnings(itemId);
+		await tx.wait();
+	} catch (error) {
+		console.log("error", error);
+	}
+};
+
+export const calculateWinner = async (itemId: any, randomIndex: any) => {
+	try {
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+		const signer = Provider.getSigner();
+
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
+		const res = await raffleContract.calculateWinner(itemId, randomIndex);
 		return res;
+	} catch (error) {
+		console.log("error", error);
+	}
+};
+
+export const initiateRaffleDrawing = async (itemId: any) => {
+	try {
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+
+		const signer = Provider.getSigner();
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
+
+		const singerAddr = await signer.getAddress();
+
+		if (
+			ethers.utils.getAddress(singerAddr) ===
+			ethers.utils.getAddress(
+				"0x6c3b960f4B32709F3E82EF73BA3804C844cA9ED8"
+			)
+		) {
+			const tx = await raffleContract.initiateRaffleDrawing(itemId);
+			await tx.wait();
+		} else {
+			console.log("Not allowed");
+		}
 	} catch (error) {
 		console.log("error", error);
 	}
