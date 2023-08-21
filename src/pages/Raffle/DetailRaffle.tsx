@@ -337,18 +337,13 @@ const DetailRaffle = () => {
         if (nftInfoById.start_date * 1000 > Date.now() && nftInfoById.walletAddress === storeData.address) {
           setShowEdit(true)
         }
-        console.log("nftInfoById",nftInfoById)
-//
         const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
-        console.log('===========getRaffleInfo', getRaffleInfo)
 
         setCurrentItemId(getRaffleInfo?.itemId + 1)
 
         if (storeData.wallet === 'connected') {
           const getMyTickets = await fetchMyTickets(getRaffleInfo?.itemId + 1)
-          console.log("getMyTickets",getMyTickets)
           const filter_myTickets = getMyTickets.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
-          console.log("filter_myTickets",filter_myTickets)
           const getBuyTicketAmount = filter_myTickets?.entryNum
 
           if (getBuyTicketAmount > 0) {
@@ -382,7 +377,6 @@ const DetailRaffle = () => {
         }
 
         const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
-        console.log("GetTicketByID >>>>>",getTicketByID);
 
         let filter_TicketByID = getTicketByID.filter(
           (person: any, index: any) => index === getTicketByID.findIndex(
@@ -396,6 +390,7 @@ const DetailRaffle = () => {
         })
         setCurrnetBuyTicket(totalAmount ? totalAmount : 0)
         const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toLowerCase() === storeData.address)
+        console.log("getTicketsOwned",getTicketsOwned);
         const resTicketsOwned = getTicketsOwned?.entryNum ? getTicketsOwned?.entryNum : 0
         const percentTicketsOwned = 100 * resTicketsOwned / nftInfoById.total_tickets
         setTicketsOwned(percentTicketsOwned)
