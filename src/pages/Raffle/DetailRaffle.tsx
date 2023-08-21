@@ -241,7 +241,7 @@ const DetailRaffle = () => {
       const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
         console.log("currentItemId",getRaffleInfo?.itemId+1)
         // setCurrentItemId(getRaffleInfo?.itemId + 1)
-      const get_winner =  await calculateWinner(getRaffleInfo?.itemId+1+1 , fetch_lists.randomIndex);
+      const get_winner =  await calculateWinner(getRaffleInfo?.itemId+1 , fetch_lists.randomIndex);
       console.log('WInner WInner',get_winner);
       setWinnerBlock(get_winner);
       setWinnerAddress(get_winner);
