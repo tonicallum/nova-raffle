@@ -79,17 +79,17 @@ const NFTModal = (props: any) => {
                     nftAmount: nft?.amount,
                   });
                 } else {
-                  filtered_nfts2.push({
-                    metadata: JSON.parse(nft?.metadata),
-                    name: nft?.name,
-                    token_address: nft?.token_address,
-                    token_id: nft?.token_id,
-                    owner: nft?.owner_of,
-                    symbol: nft?.symbol,
-                    image: get_image,
-                    type: nft?.contract_type,
-                    nftAmount: nft?.amount,
-                  });
+                //   filtered_nfts2.push({
+                //     metadata: JSON.parse(nft?.metadata),
+                //     name: nft?.name,
+                //     token_address: nft?.token_address,
+                //     token_id: nft?.token_id,
+                //     owner: nft?.owner_of,
+                //     symbol: nft?.symbol,
+                //     image: get_image,
+                //     type: nft?.contract_type,
+                //     nftAmount: nft?.amount,
+                //   });
                 }
               }
             })
@@ -220,7 +220,7 @@ const NFTModal = (props: any) => {
                           </div>
                           <div className="bg-[#8652FF]  flex overflow-hidden">
                             <p className="bg-white text-base text-center basis-[70%] py-1 pl-2 pr-4 para-clip">
-                              Token ID
+                              {nft.name}
                             </p>
                             <p className="py-1 text-center px-2 text-base basis-[30%] bg-[#8652FF]  text-white">
                               #
