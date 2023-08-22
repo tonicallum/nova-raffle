@@ -370,7 +370,7 @@ export const idToRaffleItemBlock = async (itemId: number) => {
 		// }
 		console.log(res);
 
-		console.log("Result Raffle fron BLOCK : ", res);
+		//console.log("Result Raffle fron BLOCK : ", res);
 		return res;
 	} catch (error) {
 		console.log("error", error);
