@@ -231,14 +231,19 @@ const DetailRaffle = () => {
       //   item.nftAddress,
       //   item.startTime
       // );
-      const fetch_lists = await idToRaffleItemBlock(currentItemId +1);
-      console.log('fetch list under  handleTickedEndedTime  ',fetch_lists);
+      const nftInfoById: any = await getRaffleById(id);  //data base se araha
+      const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
+      console.log("Raffle Id",getRaffleInfo?.itemId+1)
+      const fetch_lists = await idToRaffleItemBlock(getRaffleInfo?.itemId+1);
       // console.log('ID to RAFFLE',fetch_lists);
       // const get_winner: any = fetch_lists.find((item: any, index: number)  => item.nftId.toNumber() === nftInfo?.tokenId && item.sold === true);
       // console.log('Winner fetch from Raffle',get_winner);
       // console.log('winner address',get_winner.winner);
-      if(fetch_lists.status === 3){
-      const get_winner =  await calculateWinner(currentItemId +1 , fetch_lists.randomIndex);
+      // console.log("currentItemId",currentItemId)
+      
+        // setCurrentItemId(getRaffleInfo?.itemId + 1)
+      console.log("fetch_lists", fetch_lists)
+      const get_winner =  await calculateWinner(getRaffleInfo?.itemId+1 , fetch_lists.randomIndex);
       console.log('WInner WInner',get_winner);
       //setWinnerBlock(get_winner);
       setWinnerAddress(get_winner);
@@ -349,7 +354,7 @@ const DetailRaffle = () => {
           setShowEdit(true)
         }
         const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
-
+        console.log("getRaffleInfo?.itemId",getRaffleInfo?.itemId+1)
         setCurrentItemId(getRaffleInfo?.itemId + 1)
 
         if (storeData.wallet === 'connected') {
@@ -400,7 +405,7 @@ const DetailRaffle = () => {
           return { ...item, amount: item?.entryNum }
         })
         setCurrnetBuyTicket(totalAmount ? totalAmount : 0)
-        const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toLowerCase() === storeData.address)
+        const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
         console.log("getTicketsOwned",getTicketsOwned);
         const resTicketsOwned = getTicketsOwned?.entryNum ? getTicketsOwned?.entryNum : 0
         const percentTicketsOwned = 100 * resTicketsOwned / nftInfoById.total_tickets
@@ -417,7 +422,7 @@ const DetailRaffle = () => {
         setLoading(false)
       }
     })();
-  }, [storeData, raffleInfo]);
+  }, [storeData, raffleInfo, id]);
 
   useEffect(() => {
     (async () => {
