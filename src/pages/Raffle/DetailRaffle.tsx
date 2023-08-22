@@ -233,7 +233,7 @@ const DetailRaffle = () => {
       // );
       const nftInfoById: any = await getRaffleById(id);  //data base se araha
       const getRaffleInfo: any = await fetchRaffleItems(nftInfoById.tokenId, nftInfoById.tokenAddress, nftInfoById.start_date)
-      console.log("currentItemId",getRaffleInfo?.itemId+1)
+      console.log("Raffle Id",getRaffleInfo?.itemId+1)
       const fetch_lists = await idToRaffleItemBlock(getRaffleInfo?.itemId+1);
       // console.log('ID to RAFFLE',fetch_lists);
       // const get_winner: any = fetch_lists.find((item: any, index: number)  => item.nftId.toNumber() === nftInfo?.tokenId && item.sold === true);
