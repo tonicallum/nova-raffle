@@ -245,27 +245,18 @@ const DetailRaffle = () => {
       console.log("fetch_lists", fetch_lists)
       const get_winner =  await calculateWinner(getRaffleInfo?.itemId+1 , fetch_lists.randomIndex);
       console.log('WInner WInner',get_winner);
-      //setWinnerBlock(get_winner);
+      setWinnerBlock(get_winner);
       setWinnerAddress(get_winner);
       console.log('mera address',typeof(storeData.address));
       const ZEROADDRESS = ethers.constants.AddressZero;
       console.log('zero Address',typeof(ZEROADDRESS));
       setWinner(true);
 
-       if (get_winner !== ZEROADDRESS) {
-        setWinner(true)
-       } else {
-       setWinner(false)
-       }
-      }
-      else{
-        setWinnerAddress(ethers.constants.AddressZero)
-        setWinner(false);
-      }
-
-     
-
-      
+      // if (get_winner !== ZEROADDRESS.toString()) {
+      //   setWinner(true)
+      // } else {
+      //   setWinner(false)
+      // }
       setRaffleStatus(2)
       setLoading(false)
     } catch (error) {
@@ -367,30 +358,30 @@ const DetailRaffle = () => {
           } else {
             setBuyStatus(0)
           }
-
-          // const fetch_lists = await idToRaffleItemBlock(currentItemId +1 );
-          // console.log('fetch list under use effect',fetch_lists);
-          // if(fetch_lists.status === 3){
+          // const fetch_lists = await idToRaffleItemBlock(currentItemId + 1);
+          // console.log("use effect raffle random index",fetch_lists.randomIndex);
           // const get_winner =  await calculateWinner(currentItemId+1 , fetch_lists.randomIndex);
-          // console.log('WInner WInner',get_winner);
-          // //setWinnerBlock(get_winner);
-          // setWinnerAddress(get_winner);
-          // console.log('mera address',typeof(storeData.address));
-          // const ZEROADDRESS = ethers.constants.AddressZero;
-          // console.log('zero Address',typeof(ZEROADDRESS));
-          // setWinner(true);
-
-          // if (get_winner !== ZEROADDRESS) {
+         // setWinnerAddress(WinnerBlock);
+          //console.log('useEffect winner',WinnerBlock);
+          //console.log('useEffect winner',getRaffleInfo?.winner)
+          // if(!WinnerBlock){
+          //     setWinnerAddress(ethers.constants.AddressZero);
+          // }
+          // if (getRaffleInfo?.winner === storeData.address) {
           //   setWinner(true)
           // } else {
-          // setWinner(false)
+          //   setWinner(false)
           // }
+          // if (winnerAddress === "") {
+          //   //console.log('raffleInfo UseEffect',getRaffleInfo?.itemId + 1);
+          //   const fetch_lists = await idToRaffleItemBlock(getRaffleInfo?.itemId + 1);
+          //   console.log('fetchList useEffect',fetch_lists);
+          //   console.log('randomIndex',fetch_lists.randomIndex);
+          //   const get_winner =  await calculateWinner ( getRaffleInfo?.itemId + 1 , fetch_lists.randomIndex);
+          //   setWinnerAddress(get_winner);
+          //   console.log('useEffect winner',WinnerBlock);
           // }
-          // else{
-          //   setWinnerAddress(ethers.constants.AddressZero)
-          //   setWinner(false);
-          // }
-            }
+        }
 
         const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
 
@@ -423,41 +414,6 @@ const DetailRaffle = () => {
       }
     })();
   }, [storeData, raffleInfo, id]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        // console.log('useEffect nftInfo',nftInfo);
-        // // const nftInfoById: any = await getRaffleById(id);
-        // const getRaffleInfo: any = await fetchRaffleItems(nftInfo.tokenId, nftInfo.tokenAddress, nftInfo.start_date)
-        // console.log('Get raffle info useeffect',getRaffleInfo);
-        // console.log('useEffect nftInfo',nftInfo);
-        const fetch_lists = await idToRaffleItemBlock(currentItemId + 1);
-        if (fetch_lists.status === 3) {
-          const get_winner = await calculateWinner(currentItemId + 1, fetch_lists.randomIndex);
-          console.log('Winner Winner', get_winner);
-          setWinnerAddress(get_winner);
-  
-          const ZEROADDRESS = ethers.constants.AddressZero;
-          console.log('Zero Address', typeof ZEROADDRESS);
-  
-          if (get_winner !== ZEROADDRESS) {
-            setWinner(true);
-          } else {
-            setWinner(false);
-          }
-        } else {
-          setWinnerAddress(ethers.constants.AddressZero);
-          setWinner(false);
-        }
-      } catch (error) {
-        console.log('error', error);
-      }
-    })();
-  }, [storeData,nftInfo]);
-  
-
-
 
   return (
     <div>
