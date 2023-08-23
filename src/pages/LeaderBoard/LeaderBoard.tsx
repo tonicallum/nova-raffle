@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import Select from 'react-select'
 import { ethers } from 'ethers';
 import Navbar from "../../components/Navbar"
-import { fetchMyTickets, fetchRaffleItems, fetchRaffleLists, fetchTicketItemsByID } from '../../services/contracts/raffle'
+import { fetchMyTickets, fetchRaffleItems, fetchRaffleLists, fetchTicketItemsByID, getDesiredRaffle } from '../../services/contracts/raffle'
 import { fetchMyTickets1155, fetchRaffle1155Items, fetchRaffleLists1155, fetchTicket1155ItemsByID } from '../../services/contracts/raffle1155'
 import { getAllRaffle } from '../../services/api'
 import { fetchMyBidItems } from '../../services/contracts/auction';
@@ -173,12 +173,11 @@ const LeaderBoard = () => {
     buyAllRaffle = dayBuyRaffleFilter;
     
     const tempFetchBuyTicket: any[] = await Promise.all(buyAllRaffle.map(async(item: any, index: number) => {
-      const getRaffleInfo = await fetchRaffleItems(
+      const getRaffleInfo = await getDesiredRaffle(
         item.nftId,
         item.nftAddress,
-        item.startTime
       );
-      const fetchItem = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1);
+      const fetchItem = await fetchTicketItemsByID(getRaffleInfo?.index);
       if(fetchItem.length !==0){
         return { ...fetchItem, winner: item.winner, ticketPrice: item.price }
       }

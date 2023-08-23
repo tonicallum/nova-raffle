@@ -41,7 +41,6 @@ import {
   buyTicket,
   fetchMyTickets,
   fetchRaffleItems,
-  fetchTicketItemsByID,
 } from "../../services/contracts/raffle";
 import { connectedChain, getBalance } from "../../utils";
 import { API_URL } from "../../config/dev";

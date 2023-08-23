@@ -286,7 +286,7 @@ export const getDesiredRaffle = async (tokenId: any, tokenAddress: any) => {
 
         for (let i = 0; i < allRaffles.length; i++) {
             const raffle = allRaffles[i];
-            if (raffle.nftId === tokenId && raffle.nftAddress === tokenAddress) {
+            if (raffle.nftId === tokenId && raffle.nftAddress.toLowerCase() === tokenAddress.toLowerCase()) {
                 matchingRaffle = raffle;
                 matchingIndex = i + 1;
                 break;

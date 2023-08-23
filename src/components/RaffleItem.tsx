@@ -9,13 +9,14 @@ import GreyFavouriteIcon from "../assets/grey-fav-icon.svg";
 
 import {
   fetchRaffleItems,
-  fetchTicketItemsByID,
+  getDesiredRaffle,
   idToRaffleItem,
 } from "../services/contracts/raffle";
 import {
   fetchRaffle1155Items,
   fetchTicket1155ItemsByID,
 } from "../services/contracts/raffle1155";
+import { getTicketsById } from "../services/api";
 
 const RaffleItem = (props: any) => {
   const { item } = props;
@@ -147,29 +148,32 @@ const RaffleItem = (props: any) => {
           }
           setSellAmount(totalAmount);
         } else {
-          const getRaffleInfo = await fetchRaffleItems(
-            raffle.tokenId,
-            raffle.tokenAddress,
-            raffle.start_date
-          );
+          // const getRaffleInfo = await fetchRaffleItems(
+          //   raffle.tokenId,
+          //   raffle.tokenAddress,
+          //   raffle.start_date
+          // );
+          // const getRaffleInfo: any = await getDesiredRaffle(
+          //   raffle.tokenId,
+          //   raffle.tokenAddress
+          // );
+          // const idToR = await idToRaffleItem();
+          // console.log("mahabhayankar", idToR);
 
-          const idToR = await idToRaffleItem();
-          console.log("mahabhayankar", idToR);
-
-          const getTicketByID = await fetchTicketItemsByID(
-            getRaffleInfo?.itemId + 1
-          );
-
+          // const getTicketByID = await fetchTicketItemsByID(
+          //   getRaffleInfo?.itemId + 1
+          // );
+          const getTicketByID = (await getTicketsById(raffle._id)) as any[];
           let filter_TicketByID = getTicketByID.filter(
             (person: any, index: any) =>
               index ===
               getTicketByID.findIndex(
-                (other: any) => person.owner === other.owner
+                (other: any) => person.buyer === other.buyer
               )
           );
           let totalAmount = 0;
           for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].entryNum;
+            totalAmount += filter_TicketByID[i].amount;
           }
           setSellAmount(totalAmount);
           setRaffle({...item})

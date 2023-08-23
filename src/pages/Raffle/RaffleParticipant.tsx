@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Countdown, { CountdownApi } from 'react-countdown'
+import Countdown, { CountdownApi } from "react-countdown";
 
 import VerificationIcon from "../../assets/Verification-icon-2.png";
 import VeiwIcon from "../../assets/view_icon.svg";
@@ -9,132 +9,182 @@ import TimingIcon from "../../assets/Subtract-timing-icon.png";
 import TicketIcon from "../../assets/Subtract-ticket-icon.png";
 import BoughtIcon from "../../assets/Subtract-bought-icon.png";
 import WinningIcon from "../../assets/Subtract-winning-icon.png";
-import { fetchRaffle1155Items, fetchTicket1155ItemsByID } from '../../services/contracts/raffle1155';
-import { fetchRaffleItems, fetchTicketItemsByID } from '../../services/contracts/raffle';
-
+import {
+  fetchRaffle1155Items,
+  fetchTicket1155ItemsByID,
+} from "../../services/contracts/raffle1155";
+import {
+  fetchRaffleItems,
+} from "../../services/contracts/raffle";
+import { getTicketsById } from "../../services/api";
 
 const RaffleRarticipant = (props: any) => {
-  const { item, idx } = props
-  const storeData: any = useSelector((status) => status)
-  const [sellAmount, setSellAmount] = useState(0)
-  const [winningChance, setWinningChance] = useState(0)
+  const { item, idx } = props;
+  const storeData: any = useSelector((status) => status);
+  const [sellAmount, setSellAmount] = useState(0);
+  const [winningChance, setWinningChance] = useState(0);
 
-  let startCountdownApi: CountdownApi | null = null
-  let endCountdownApi: CountdownApi | null = null
+  let startCountdownApi: CountdownApi | null = null;
+  let endCountdownApi: CountdownApi | null = null;
 
   const setStartCountdownRef = (countdown: Countdown | null) => {
     if (countdown) {
-      startCountdownApi = countdown.getApi()
+      startCountdownApi = countdown.getApi();
     }
-  }
+  };
 
   const setEndCountdownRef = (countdown: Countdown | null) => {
     if (countdown) {
-      endCountdownApi = countdown.getApi()
+      endCountdownApi = countdown.getApi();
     }
-  }
+  };
 
-  const startCountdownRenderer = ({ api, days, hours, minutes, seconds, completed }: any) => {
-    if (api.isPaused()) api.start()
-    return (
-      completed ?
-        <Countdown
-          ref={setEndCountdownRef}
-          date={item.end_date * 1000}
-          zeroPadTime={3}
+  const startCountdownRenderer = ({
+    api,
+    days,
+    hours,
+    minutes,
+    seconds,
+    completed,
+  }: any) => {
+    if (api.isPaused()) api.start();
+    return completed ? (
+      <Countdown
+        ref={setEndCountdownRef}
+        date={item.end_date * 1000}
+        zeroPadTime={3}
+        renderer={endCountdownRenderer}
+      />
+    ) : (
+      <div className="flex items-center gap-4 ">
+        <p>Starts In</p>
+        <p>
+          {days.toString().length === 1 ? `0${days}` : days}:
+          {hours.toString().length === 1 ? `0${hours}` : hours}:
+          {minutes.toString().length === 1 ? `0${minutes}` : minutes}:
+          {seconds.toString().length === 1 ? `0${seconds}` : seconds}
+        </p>
+      </div>
+    );
+  };
 
-          renderer={endCountdownRenderer}
-        />
-        :
-        <div className='flex items-center gap-4 ' >
-          <p>Starts In</p>
-          <p>
-            {days.toString().length === 1 ? `0${days}` : days}:
-            {hours.toString().length === 1 ? `0${hours}` : hours}:
-            {minutes.toString().length === 1 ? `0${minutes}` : minutes}:
-            {seconds.toString().length === 1 ? `0${seconds}` : seconds}
-          </p>
-        </div>
-    )
-  }
-
-  const endCountdownRenderer = ({ api, days, hours, minutes, seconds, completed }: any) => {
-    if (api.isPaused()) api.start()
-    return (
-      completed ?
-        <p>Ended</p>
-        :
-        <div>
-          <p>Live</p>
-          <p>
-            {days.toString().length === 1 ? `0${days}` : days}:
-            {hours.toString().length === 1 ? `0${hours}` : hours}:
-            {minutes.toString().length === 1 ? `0${minutes}` : minutes}:
-            {seconds.toString().length === 1 ? `0${seconds}` : seconds}
-          </p>
-        </div>
-
-    )
-  }
+  const endCountdownRenderer = ({
+    api,
+    days,
+    hours,
+    minutes,
+    seconds,
+    completed,
+  }: any) => {
+    if (api.isPaused()) api.start();
+    return completed ? (
+      <p>Ended</p>
+    ) : (
+      <div>
+        <p>Live</p>
+        <p>
+          {days.toString().length === 1 ? `0${days}` : days}:
+          {hours.toString().length === 1 ? `0${hours}` : hours}:
+          {minutes.toString().length === 1 ? `0${minutes}` : minutes}:
+          {seconds.toString().length === 1 ? `0${seconds}` : seconds}
+        </p>
+      </div>
+    );
+  };
 
   useEffect(() => {
-    (
-      async () => {
-        try {
-          if (storeData.wallet !== 'connected') return
-          if (item.type === `ERC1155`) {
-            const getRaffleInfo = await fetchRaffle1155Items(item.tokenId, item.tokenAddress, item.start_date)
-            const getTicketByID = await fetchTicket1155ItemsByID(getRaffleInfo?.itemId + 1)
-            let filter_TicketByID = getTicketByID.filter(
-              (person: any, index: any) => index === getTicketByID.findIndex(
+    (async () => {
+      try {
+        if (storeData.wallet !== "connected") return;
+        if (item.type === `ERC1155`) {
+          const getRaffleInfo = await fetchRaffle1155Items(
+            item.tokenId,
+            item.tokenAddress,
+            item.start_date
+          );
+          const getTicketByID = await fetchTicket1155ItemsByID(
+            getRaffleInfo?.itemId + 1
+          );
+          let filter_TicketByID = getTicketByID.filter(
+            (person: any, index: any) =>
+              index ===
+              getTicketByID.findIndex(
                 (other: any) => person.buyer === other.buyer
-              ));
-            let totalAmount = 0
-            for (let i = 0; i < filter_TicketByID.length; i++) {
-              totalAmount += filter_TicketByID[i].ticketAmount.toNumber()
-            }
-            setSellAmount(totalAmount)
-
-            const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
-            const resTicketsOwned = getTicketsOwned.ticketAmount ? getTicketsOwned?.ticketAmount.toNumber() : 0
-            const getWinningChance = 100 * resTicketsOwned / totalAmount
-            setWinningChance(getWinningChance)
-
-          } else {
-            const getRaffleInfo = await fetchRaffleItems(item.tokenId, item.tokenAddress, item.start_date)
-            console.log( "Bhayankar",getRaffleInfo); //
-
-
-            const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
-            console.log("atma",getTicketByID);//
-
-            let filter_TicketByID = getTicketByID.filter(
-              (person: any, index: any) => index === getTicketByID.findIndex(
-                (other: any) => person.owner === other.owner
-              ));
-            let totalAmount = 0
-            for (let i = 0; i < filter_TicketByID.length; i++) {
-              
-              totalAmount += filter_TicketByID[i]?.entryNum
-            }
-            setSellAmount(totalAmount)
-
-            const getTicketsOwned = filter_TicketByID.find((item: any) => item.owner.toString().toLowerCase() === storeData.address)
-            console.log("getTicketsOwned", getTicketsOwned)
-            const resTicketsOwned = getTicketsOwned?.entryNum ? getTicketsOwned?.entryNum: 0
-            const getWinningChance: any = 100 * resTicketsOwned / totalAmount
-            setWinningChance(getWinningChance.toFixed(2))
+              )
+          );
+          let totalAmount = 0;
+          for (let i = 0; i < filter_TicketByID.length; i++) {
+            totalAmount += filter_TicketByID[i].ticketAmount.toNumber();
           }
+          setSellAmount(totalAmount);
 
-        } catch (error) {
-          console.log('error', error)
+          const getTicketsOwned = filter_TicketByID.find(
+            (item: any) =>
+              item.owner.toString().toLowerCase() === storeData.address
+          );
+          const resTicketsOwned = getTicketsOwned.ticketAmount
+            ? getTicketsOwned?.ticketAmount.toNumber()
+            : 0;
+          const getWinningChance = (100 * resTicketsOwned) / totalAmount;
+          setWinningChance(getWinningChance);
+        } else {
+          // const getRaffleInfo = await fetchRaffleItems(
+          //   item.tokenId,
+          //   item.tokenAddress,
+          //   item.start_date
+          // );
+          // console.log("Bhayankar", getRaffleInfo); //
+
+          // const getTicketByID = await fetchTicketItemsByID(
+          //   getRaffleInfo?.itemId + 1
+          // );
+          // console.log("atma", getTicketByID); //
+
+          // let filter_TicketByID = getTicketByID.filter(
+          //   (person: any, index: any) =>
+          //     index ===
+          //     getTicketByID.findIndex(
+          //       (other: any) => person.owner === other.owner
+          //     )
+          // );
+          // let totalAmount = 0;
+          // for (let i = 0; i < filter_TicketByID.length; i++) {
+          //   totalAmount += filter_TicketByID[i]?.entryNum;
+          // }
+
+          const getTicketByID = (await getTicketsById(item._id)) as any[];
+          let filter_TicketByID = getTicketByID.filter(
+            (person: any, index: any) =>
+              index ===
+              getTicketByID.findIndex(
+                (other: any) => person.buyer === other.buyer
+              )
+          );
+          let totalAmount = 0;
+          for (let i = 0; i < filter_TicketByID.length; i++) {
+            totalAmount += filter_TicketByID[i].amount;
+          }
+          setSellAmount(totalAmount);
+          
+          const getTicketsOwned = filter_TicketByID.find(
+            (item: any) =>
+              item.owner.toString().toLowerCase() === storeData.address.toLowerCase()
+          );
+          console.log("getTicketsOwned", getTicketsOwned);
+          const resTicketsOwned = getTicketsOwned?.amount
+            ? getTicketsOwned?.amount
+            : 0;
+          const getWinningChance: any = totalAmount > 0 ? (100 * resTicketsOwned) / totalAmount : 0;
+          setWinningChance(getWinningChance.toFixed(2));
         }
+      } catch (error) {
+        console.log("error", error);
       }
-    )()
-  }, [storeData])
+    })();
+  }, [storeData]);
 
   return (
-    <div key={idx} >
+    <div key={idx}>
       <div className=" m-auto px-4">
         <div className="border-2 border-white bg-[#8652FF] rounded-md mb-4">
           <div className="flex p-4">
@@ -150,10 +200,7 @@ const RaffleRarticipant = (props: any) => {
                 <div className="flex flex-col gap-[30px] h-full">
                   <div>
                     <div className="flex items-center">
-                      <img
-                        src={VerificationIcon}
-                        alt="VerificationIcon"
-                      />
+                      <img src={VerificationIcon} alt="VerificationIcon" />
                       <span className="text-lg text-white inline-block ml-1">
                         {item?.project}
                       </span>
@@ -163,26 +210,25 @@ const RaffleRarticipant = (props: any) => {
                     </h1>
                   </div>
                   <div>
-                    {
-                      item.type === `ERC1155` ?
-                        <Link
-                          to={`/raffle1155/detail/${item?._id}`}
-                          type="button"
-                          className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
-                        >
-                          <img src={VeiwIcon} alt="VeiwIcon" />
-                          <span className="ml-1">View Raffle</span>
-                        </Link>
-                        :
-                        <Link
-                          to={`/raffle/detail/${item?._id}`}
-                          type="button"
-                          className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
-                        >
-                          <img src={VeiwIcon} alt="VeiwIcon" />
-                          <span className="ml-1">View Raffle</span>
-                        </Link>
-                    }
+                    {item.type === `ERC1155` ? (
+                      <Link
+                        to={`/raffle1155/detail/${item?._id}`}
+                        type="button"
+                        className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
+                      >
+                        <img src={VeiwIcon} alt="VeiwIcon" />
+                        <span className="ml-1">View Raffle</span>
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/raffle/detail/${item?._id}`}
+                        type="button"
+                        className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
+                      >
+                        <img src={VeiwIcon} alt="VeiwIcon" />
+                        <span className="ml-1">View Raffle</span>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
