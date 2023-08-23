@@ -130,6 +130,34 @@ export const createRaffle = async (payload: FormData) => {
   }
 }
 
+export const createTicketTransaction = async (payload: FormData) => {
+  try {
+    const result = await commonService({
+      method: "post",
+      route: `${API_URL}/ticket`,
+      data: payload
+    })
+
+    return result
+  } catch (error) {
+    console.log('error', error);
+    return null
+  }
+}
+
+export const getTicketsById = async (id: any) => {
+  try {
+    const result = await commonService({
+      method: 'get',
+      route: `${API_URL}/ticket/${id}`
+    })
+    return result
+  } catch (error) {
+    console.log('error', error)
+    return []
+  }
+}
+
 export const updateRaffle = async (id: any, payload: FormData) => {
   try {
     const result = await commonService({

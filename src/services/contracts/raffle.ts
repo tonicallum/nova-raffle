@@ -263,6 +263,43 @@ export const fetchRaffleItems = async (
 	}
 };
 
+export const getDesiredRaffle = async (tokenId: any, tokenAddress: any) => {
+    try {
+        console.log("token : ", tokenId);
+        const Provider: any = new ethers.providers.Web3Provider(
+            window.ethereum
+        );
+        const signer = Provider.getSigner();
+
+        const raffleContract = new Contract(
+            CONFIG.RAFFLE.CONTRACTADDRESS721,
+            CONFIG.RAFFLE.ABI721,
+            signer
+        );
+
+        const allRaffles = await raffleContract.getAllRaffles();
+
+        console.log("all raffle :", allRaffles);
+
+        let matchingRaffle = null;
+        let matchingIndex = -1;
+
+        for (let i = 0; i < allRaffles.length; i++) {
+            const raffle = allRaffles[i];
+            if (raffle.nftId === tokenId && raffle.nftAddress === tokenAddress) {
+                matchingRaffle = raffle;
+                matchingIndex = i + 1;
+                break;
+            }
+        }
+
+        return { raffle: matchingRaffle, index: matchingIndex + 1 };
+    } catch (error) {
+        console.log("error", error);
+        return { raffle: null, index: -1 };
+    }
+};
+
 export const fetchMyTickets = async (itemId: number) => {
 	try {
 		const Provider: any = new ethers.providers.Web3Provider(
