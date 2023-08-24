@@ -81,8 +81,8 @@ contract NFT721Raffle is
             revert("ExpirationTimeMustBeAfterStartTime");
 
         uint32 duration = _expirationTime - uint32(_startTime);
-        if (duration < 86400 || duration > config.maxDuration)
-            revert("DurationLimited");
+        // if (duration < 86400 || duration > config.maxDuration)
+        //     revert("DurationLimited");
         if (_totalSupply < 2 || _totalSupply > config.maxSupply)
             revert("SupplyLimited");
 
@@ -226,6 +226,11 @@ contract NFT721Raffle is
         idToRaffleItem[raffleId].randomIndex = uint16(randomIndex);
         idToRaffleItem[raffleId].status = STATUS.DRAWED;
 
+        idToRaffleItem[raffleId].winner = calculateWinner(
+            raffleId,
+            randomIndex
+        );
+
         emit RaffleStatus(raffleId, STATUS.DRAWED);
     }
 
@@ -234,10 +239,9 @@ contract NFT721Raffle is
         if (raffle.status != STATUS.DRAWED || raffle.currentSupply == 0)
             revert("Wrong status");
 
-        address winner = calculateWinner(_raffleId, raffle.randomIndex);
-        if (winner != msg.sender) revert("Not the winner");
+        address winner = raffle.winner;
 
-        raffle.winner = winner;
+        if (winner != msg.sender) revert("Not the winner");
 
         IERC721 asset = IERC721(raffle.nftAddress);
         asset.transferFrom(address(this), winner, raffle.nftId);
