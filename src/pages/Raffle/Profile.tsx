@@ -154,7 +154,7 @@ const RaffleProfile = () => {
 
           const getRaffles: any = await getAllRaffle();
           const filterMyRaffles = getRaffles.filter(
-            (item: any) => item.walletAddress === storeData.address
+            (item: any) => item.walletAddress.toLowerCase() === storeData.address.toLowerCase()
           );
 
           setParticipantLists(filterMyRaffles);

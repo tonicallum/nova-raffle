@@ -211,7 +211,8 @@ const DetailRaffle = () => {
           if (buyStatus === 0) {
             const findIdx = ticketBuyerLists.findIndex(
               (item: any) =>
-                item?.buyer.toString().toLowerCase() === storeData.address
+                item?.buyer.toString().toLowerCase() ===
+                storeData.address.toLowerCase()
             );
 
             if (findIdx === -1) {
@@ -238,7 +239,8 @@ const DetailRaffle = () => {
           } else if (buyStatus === 1) {
             const findIdx = ticketBuyerLists.findIndex(
               (item: any) =>
-                item?.buyer.toString().toLowerCase() === storeData.address
+                item?.buyer.toString().toLowerCase() ===
+                storeData.address.toLowerCase()
             );
 
             const new_buyerLists = ticketBuyerLists.map(
@@ -398,25 +400,23 @@ const DetailRaffle = () => {
 
         if (
           nftInfoById.start_date * 1000 > Date.now() &&
-          nftInfoById.walletAddress === storeData.address
+          nftInfoById.walletAddress.toString().toLowerCase() ===
+            storeData.address.toLowerCase()
         ) {
           setShowEdit(true);
         }
 
         const allRaffles: any = await getAllRaffle();
-        console.log("allRaffles", allRaffles);
         const tempRaffleIndex =
           allRaffles.findIndex((raffle: any) => raffle._id === id) + 1;
-
         setRaffleId(tempRaffleIndex);
-        console.log("raffleIndex", tempRaffleIndex);
+
         const getTicketByID = (await getTicketsById(nftInfoById._id)) as any[];
-        console.log("getTicketByID", getTicketByID);
         const filter_myTickets = getTicketByID.find(
           (item: any) =>
-            item.buyer.toString().toLowerCase() === storeData.address
+            item.buyer.toString().toLowerCase() ===
+            storeData.address.toLowerCase()
         );
-        console.log("filter_myTickets", filter_myTickets);
         const resTicketsOwned = filter_myTickets?.amount
           ? filter_myTickets?.amount
           : 0;
@@ -432,24 +432,12 @@ const DetailRaffle = () => {
         const percentTicketsOwned =
           (100 * resTicketsOwned) / nftInfoById.total_tickets;
         setTicketsOwned(percentTicketsOwned);
-
-        let filter_TicketByID = getTicketByID.filter(
-          (person: any, index: any) =>
-            index ===
-            getTicketByID.findIndex(
-              (other: any) => person?.buyer === other?.buyer
-            )
-        );
-        setTicketHolder(filter_TicketByID.length);
-        let totalAmount = 0;
-        const res_ticketById = filter_TicketByID.map((item: any) => {
-          totalAmount += item.amount;
-          return { ...item, amount: item?.amount };
-        });
-        setCurrnetBuyTicket(totalAmount ? totalAmount : 0);
-        const getWinningChance = (100 * resTicketsOwned) / totalAmount;
+        setTicketHolder(getTicketByID.length);
+        setCurrnetBuyTicket(nftInfoById.sold_tickets);
+        const getWinningChance =
+          (100 * resTicketsOwned) / nftInfoById.sold_tickets;
         setWinningChance(getWinningChance);
-        setTicketBuyerLists(res_ticketById);
+        setTicketBuyerLists(getTicketByID);
         getRaffleStatus(nftInfoById);
         setLoading(false);
       } catch (error) {
