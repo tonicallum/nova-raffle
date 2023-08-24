@@ -2,9 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import Select from 'react-select'
 import { ethers } from 'ethers';
 import Navbar from "../../components/Navbar"
-import { fetchMyTickets, fetchRaffleItems, fetchRaffleLists, fetchTicketItemsByID, getDesiredRaffle } from '../../services/contracts/raffle'
-import { fetchMyTickets1155, fetchRaffle1155Items, fetchRaffleLists1155, fetchTicket1155ItemsByID } from '../../services/contracts/raffle1155'
-import { getAllRaffle } from '../../services/api'
+import { getDesiredRaffle } from '../../services/contracts/raffle'
+import { getAllRaffle, getTicketsById } from '../../services/api'
 import { fetchMyBidItems } from '../../services/contracts/auction';
 import { fetchMyBidItems1155 } from '../../services/contracts/auction1155';
 import { time } from 'console';
@@ -118,25 +117,25 @@ const LeaderBoard = () => {
   const fetchRafflers = async (tempAllRaffle: any) => {
     setRaffleLoading(true);
     let allRaffle: any = [], dayRaffleFilter: any = [], tempRafflerSort: any = [];
-    dayRaffleFilter = tempAllRaffle.filter((item:any) =>  item.startTime * 1000 >= raffleDayFilterValue );
+    dayRaffleFilter = tempAllRaffle.filter((item:any) =>  item.start_date * 1000 >= raffleDayFilterValue );
     allRaffle = dayRaffleFilter;
     
     let ans = allRaffle.reduce((agg: any,curr: any) => {
       console.log("cur", curr)
-      let found = agg.find((x: { creator: any }) => x.creator === curr.creator);
+      let found = agg.find((x: { walletAddress: any }) => x.walletAddress === curr.walletAddress);
       if(found){
-        found.sellerCount.push(curr.creator);
+        found.sellerCount.push(curr.walletAddress);
         found.ticketPrices.push(curr.price);
-        found.soldVolume+= Number(ethers.utils.formatEther(curr.price)) * curr.currentSupply;
-        found.soldTicketAmount+= curr.currentSupply;
+        found.soldVolume+= Number(ethers.utils.formatEther(curr.price)) * curr.sold_tickets;
+        found.soldTicketAmount+= curr.sold_tickets;
       }
       else{
         agg.push({
-          seller : curr.creator.toString(),
-          sellerCount : [curr.creator],
+          seller : curr.walletAddress.toString(),
+          sellerCount : [curr.walletAddress],
           ticketPrices: [curr.price],
-          soldVolume: Number(ethers.utils.formatEther(curr.price)) * curr.currentSupply,
-          soldTicketAmount: curr.currentSupply
+          soldVolume: Number(ethers.utils.formatEther(curr.price)) * curr.sold_tickets,
+          soldTicketAmount: curr.sold_tickets
         });
       }
       return agg;
@@ -169,15 +168,15 @@ const LeaderBoard = () => {
     setRaffleLoading(true);
     let buyAllRaffle: any = [], dayBuyRaffleFilter: any = [], tempBuyAllRaffle: any = [];
     tempBuyAllRaffle = tempAllRaffle;
-    dayBuyRaffleFilter = tempBuyAllRaffle.filter((item:any) =>  item.startTime * 1000 >= buyRaffleDayFilterValue );
+    dayBuyRaffleFilter = tempBuyAllRaffle.filter((item:any) =>  item.start_date * 1000 >= buyRaffleDayFilterValue );
     buyAllRaffle = dayBuyRaffleFilter;
     
     const tempFetchBuyTicket: any[] = await Promise.all(buyAllRaffle.map(async(item: any, index: number) => {
-      const getRaffleInfo = await getDesiredRaffle(
-        item.nftId,
-        item.nftAddress,
-      );
-      const fetchItem = await fetchTicketItemsByID(getRaffleInfo?.index);
+      // const getRaffleInfo = await getDesiredRaffle(
+      //   item.nftId,
+      //   item.nftAddress,
+      // );
+      const fetchItem : any = await getTicketsById(item._id);
       if(fetchItem.length !==0){
         return { ...fetchItem, winner: item.winner, ticketPrice: item.price }
       }
@@ -245,18 +244,18 @@ const LeaderBoard = () => {
     (
       async () => {
         try {
-          const fetchRaffle = await fetchRaffleLists();
+          const allRaffles : any = await getAllRaffle();
           // const fetchRaffle1155 = await fetchRaffleLists1155();
-          const res_fetchRaffle = fetchRaffle.map((item: any) => {
-            return { ...item }
-          })
+          // const res_fetchRaffle = allRaffles.map((item: any) => {
+          //   return { ...item }
+          // })
           // const res_fetchRaffle1155 = fetchRaffle1155.map((item: any) => {
           //   return { ...item }
           // })
           // const tempAllRaffle: any = [...res_fetchRaffle, ...res_fetchRaffle1155];
-          console.log("res_fetchRaffle", res_fetchRaffle)
-          fetchRafflers(res_fetchRaffle);
-          fetchBuyRaffler(res_fetchRaffle);
+          console.log("res_fetchRaffle", allRaffles)
+          fetchRafflers(allRaffles);
+          fetchBuyRaffler(allRaffles);
         } catch (error) {
           console.log('error', error)
         }

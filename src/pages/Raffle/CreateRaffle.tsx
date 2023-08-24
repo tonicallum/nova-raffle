@@ -100,6 +100,7 @@ const CreateRaffle = () => {
           tokenId: raffleValue.tokenId,
           image: raffleValue.image,
           walletAddress: storeData.address,
+          sold_tickets:0,
           type: contractType
         }
 

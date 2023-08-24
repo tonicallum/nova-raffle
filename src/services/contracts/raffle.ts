@@ -293,7 +293,7 @@ export const getDesiredRaffle = async (tokenId: any, tokenAddress: any) => {
             }
         }
 
-        return { raffle: matchingRaffle, index: matchingIndex + 1 };
+        return { raffle: matchingRaffle, index: matchingIndex };
     } catch (error) {
         console.log("error", error);
         return { raffle: null, index: -1 };

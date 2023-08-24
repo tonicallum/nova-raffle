@@ -188,6 +188,7 @@ const DetailRaffle = () => {
         setLoading(false);
         return;
       }
+      console.log("raffleId", raffleId)
       const buyTicketTx = await buyTicket(
         raffleId,
         amount,
@@ -199,6 +200,8 @@ const DetailRaffle = () => {
           raffle_id: id,
           amount: amount,
           buyer: storeData.address,
+          token_address : nftInfo.tokenAddress,
+          token_id : nftInfo.tokenId
         };
         console.log("payload", payload);
         const res = await createTicketTransaction(payload);
