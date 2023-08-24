@@ -264,34 +264,37 @@ export const fetchRaffleItems = async (
 };
 
 export const getDesiredRaffle = async (tokenId: any, tokenAddress: any) => {
-    try {
-        console.log("token : ", tokenId);
-        const Provider: any = new ethers.providers.Web3Provider(
-            window.ethereum
-        );
-        const signer = Provider.getSigner();
+	try {
+		console.log("token : ", tokenId);
+		const Provider: any = new ethers.providers.Web3Provider(
+			window.ethereum
+		);
+		const signer = Provider.getSigner();
 
-        const raffleContract = new Contract(
-            CONFIG.RAFFLE.CONTRACTADDRESS721,
-            CONFIG.RAFFLE.ABI721,
-            signer
-        );
+		const raffleContract = new Contract(
+			CONFIG.RAFFLE.CONTRACTADDRESS721,
+			CONFIG.RAFFLE.ABI721,
+			signer
+		);
 
-        const allRaffles = await raffleContract.getAllRaffles();
+		const allRaffles = await raffleContract.getAllRaffles();
 
-        console.log("all raffle :", allRaffles);
+		console.log("all raffle :", allRaffles);
 
-        let matchingRaffle = null;
-        let matchingIndex = -1;
+		let matchingRaffle = null;
+		let matchingIndex = -1;
 
-        for (let i = 0; i < allRaffles.length; i++) {
-            const raffle = allRaffles[i];
-            if (raffle.nftId === tokenId && raffle.nftAddress.toLowerCase() === tokenAddress.toLowerCase()) {
-                matchingRaffle = raffle;
-                matchingIndex = i + 1;
-                break;
-            }
-        }
+		for (let i = 0; i < allRaffles.length; i++) {
+			const raffle = allRaffles[i];
+			if (
+				raffle.nftId === tokenId &&
+				raffle.nftAddress.toLowerCase() === tokenAddress.toLowerCase()
+			) {
+				matchingRaffle = raffle;
+				matchingIndex = i + 1;
+				break;
+			}
+		}
 
         return { raffle: matchingRaffle, index: matchingIndex };
     } catch (error) {
@@ -377,7 +380,7 @@ export const idToRaffleItem = async () => {
 		console.log("error", error);
 	}
 };
-	
+
 export const idToRaffleItemBlock = async (itemId: number) => {
 	try {
 		const Provider: any = new ethers.providers.Web3Provider(
@@ -400,7 +403,7 @@ export const idToRaffleItemBlock = async (itemId: number) => {
 
 		// let endRes = [];
 		// for (let i = 0; i <= RaffleIndex; i++) {
-			const res = await raffleContract.idToRaffleItem(itemId);
+		const res = await raffleContract.idToRaffleItem(itemId);
 		// 	if (res.nftId !== 0) {
 		// 		endRes.push(res);
 		// 	}
@@ -413,8 +416,6 @@ export const idToRaffleItemBlock = async (itemId: number) => {
 		console.log("error", error);
 	}
 };
-
-
 
 export const claimWinnings = async (itemId: any) => {
 	try {
