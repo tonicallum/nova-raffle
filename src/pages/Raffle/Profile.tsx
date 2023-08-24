@@ -16,15 +16,6 @@ import {
 import RaffleRarticipant from "./RaffleParticipant";
 import { toast } from "react-toastify";
 import CONFIG from "../../config";
-import {
-  fetchRaffle1155Items,
-  fetchTicket1155ItemsByID,
-} from "../../services/contracts/raffle1155";
-import {
-  fetchMyTickets,
-  fetchRaffleItems,
-  getDesiredRaffle,
-} from "../../services/contracts/raffle";
 import { connectWallet, delay } from "../../utils";
 import { sign } from "crypto";
 
@@ -162,13 +153,11 @@ const RaffleProfile = () => {
           setWalletAddress(getWalletAddress.address);
 
           const getRaffles: any = await getAllRaffle();
-          console.log("eeeeeeeee",getRaffles)
-          const filterRaffles = getRaffles.filter(
+          const filterMyRaffles = getRaffles.filter(
             (item: any) => item.walletAddress === storeData.address
           );
-          console.log("ttttttttttt",filterRaffles)
-          setParticipantLists(filterRaffles);
 
+          setParticipantLists(filterMyRaffles);
           const filterFavouriteRaffles = getRaffles.filter(
             (item: any) => item.favourite === true
           );
@@ -179,190 +168,64 @@ const RaffleProfile = () => {
           );
           setFollowRaffles([...filterFollowRaffles]);
 
-          let total_tickets_1155 = 0,
-            total_tickets_721 = 0,
-            getSalesVolume_1155 = 0,
+          let total_tickets_721 = 0,
             getSalesVolume_721 = 0,
-            winnerCount_1155 = 0,
             winnerCount_721 = 0;
-          for (let i = 0; i < filterRaffles.length; i++) {
-            if (filterRaffles[i].type === "ERC1155") {
-              const getRaffleInfo: any = await fetchRaffle1155Items(
-                filterRaffles[i].tokenId,
-                filterRaffles[i].tokenAddress,
-                filterRaffles[i].start_date
-              );
-              winnerCount_1155 = getRaffleInfo.winnerCount;
-              const getTicketByID = await fetchTicket1155ItemsByID(
-                getRaffleInfo?.itemId + 1
-              );
-              let filter_TicketByID = getTicketByID.filter(
-                (person: any, index: any) =>
-                  index ===
-                  getTicketByID.findIndex(
-                    (other: any) => person.buyer === other.buyer
-                  )
-              );
-              let totalAmount = 0;
-              for (let i = 0; i < filter_TicketByID.length; i++) {
-                totalAmount += filter_TicketByID[i].ticketAmount.toNumber();
-              }
-              total_tickets_1155 += totalAmount;
-              getSalesVolume_1155 += getRaffleInfo?.price * totalAmount;
-              filterRaffles[i].totalAmount = totalAmount;
-            } else {
-              // const getRaffleInfo: any = await fetchRaffleItems(filterRaffles[i].tokenId, filterRaffles[i].tokenAddress, filterRaffles[i].start_date)
-              const getRaffleInfo: any = await getDesiredRaffle(
-                filterRaffles[i].tokenId,
-                filterRaffles[i].tokenAddress
-              );
-              console.log("rrrrrrrrrr", getRaffleInfo)
-              winnerCount_721 = getRaffleInfo.raffle.winnerCount;
-              // const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
-
-              // let filter_TicketByID = getTicketByID.filter(
-              //   (person: any, index: any) => index === getTicketByID.findIndex(
-              //     (other: any) => person.buyer === other.buyer
-              //   ));
-              // let totalAmount = 0
-              // for (let i = 0; i < filter_TicketByID.length; i++) {
-              //   totalAmount += filter_TicketByID[i].ticketAmount.toNumber()
-              // }
-              const getTicketByID = (await getTicketsById(filterRaffles[i]._id)) as any[];
-              let filter_TicketByID = getTicketByID.filter(
-                (person: any, index: any) =>
-                  index ===
-                  getTicketByID.findIndex(
-                    (other: any) => person.buyer === other.buyer
-                  )
-              );
-              let totalAmount = 0;
-              for (let i = 0; i < filter_TicketByID.length; i++) {
-                totalAmount += filter_TicketByID[i].amount;
-              }
-              total_tickets_721 += totalAmount;
-              getSalesVolume_721 += getRaffleInfo?.price * totalAmount;
-              filterRaffles[i].totalAmount = totalAmount;
+          for (let i = 0; i < filterMyRaffles.length; i++) {
+            const getTicketByID: any = await getTicketsById(
+              filterMyRaffles[i]._id
+            );
+            let totalAmount = 0;
+            for (let i = 0; i < getTicketByID.length; i++) {
+              totalAmount += getTicketByID[i].amount;
             }
+            total_tickets_721 += totalAmount;
+            getSalesVolume_721 += filterMyRaffles[i]?.price * totalAmount;
+            filterMyRaffles[i].totalAmount = totalAmount;
           }
-          const res_ticketsSold = total_tickets_1155 + total_tickets_721;
-          const res_saleVolume =
-            (getSalesVolume_1155 + getSalesVolume_721) / CONFIG.DECIMAL;
+          const res_ticketsSold = total_tickets_721;
+          const res_saleVolume = getSalesVolume_721 / CONFIG.DECIMAL;
 
-          let getPurchasedVolume_1155 = 0,
-            getPurchasedVolume_721 = 0;
-          let raffleBought_1155 = [],
-            raffleBought_721 = [];
-          let purchasedList = [],
-            purchasedList_721 = [];
-          let ticketBought_1155 = 0,
-            ticketBought_721 = 0;
+          let getPurchasedVolume_721 = 0;
+          let raffleBought_721 = [];
+          let purchasedList_721 = [];
+          let ticketBought_721 = 0;
+
           for (let i = 0; i < getRaffles.length; i++) {
-            if (getRaffles[i].type === "ERC1155") {
-              const getRaffleInfo = await fetchRaffle1155Items(
-                getRaffles[i].tokenId,
-                getRaffles[i].tokenAddress,
-                getRaffles[i].start_date
-              );
+            const getTicketByID: any = await getTicketsById(getRaffles[i]._id);
 
-              if (getRaffleInfo) {
-                const getTicketByID = await fetchTicket1155ItemsByID(
-                  getRaffleInfo?.itemId + 1
-                );
-
-                const res_ticketById = getTicketByID.map((item: any) => {
-                  return { ...item };
-                });
-                if (res_ticketById.length > 0) {
-                  for (let j = 0; j < res_ticketById.length; j++) {
-                    if (
-                      res_ticketById[j].buyer.toLowerCase() ===
-                      storeData.address
-                    ) {
-                      purchasedList.push(getRaffles[i]);
-                      raffleBought_1155.push(res_ticketById[j]);
-                      ticketBought_1155 +=
-                        res_ticketById[j]?.ticketAmount.toNumber();
-                    }
-                  }
+            if (getTicketByID.length > 0) {
+              for (let j = 0; j < getTicketByID.length; j++) {
+                if (
+                  getTicketByID[j].buyer.toString().toLowerCase() ===
+                  storeData.address
+                ) {
+                  purchasedList_721.push(getRaffles[i]);
+                  raffleBought_721.push(getTicketByID[j]);
+                  ticketBought_721 += getTicketByID[j]?.amount;
                 }
-
-                let filter_TicketByID = getTicketByID.filter(
-                  (person: any, index: any) =>
-                    index ===
-                    getTicketByID.findIndex(
-                      (other: any) => person.buyer === other.buyer
-                    )
-                );
-                let totalAmount = 0;
-                for (let i = 0; i < filter_TicketByID.length; i++) {
-                  totalAmount += filter_TicketByID[i].ticketAmount.toNumber();
-                }
-                getPurchasedVolume_1155 += getRaffleInfo?.price * totalAmount;
-              }
-            } else {
-              // const getRaffleInfo = await fetchRaffleItems(
-              //   getRaffles[i].tokenId,
-              //   getRaffles[i].tokenAddress,
-              //   getRaffles[i].start_date
-              // );
-              const getRaffleInfo: any = await getDesiredRaffle(
-                getRaffles[i].tokenId,
-                getRaffles[i].tokenAddress
-              );
-
-              if (getRaffleInfo) {
-                const getTicketByID = (await getTicketsById(getRaffles[i]._id)) as any[];
-                // const getTicketByID = await fetchTicketItemsByID(
-                //   getRaffleInfo?.itemId + 1
-                // );
-                // const res_ticketById = getTicketByID.map((item: any) => {
-                //   return { ...item };
-                // });
-
-                // console.log("res_ticketById", res_ticketById);
-                if (getTicketByID.length > 0) {
-                  for (let j = 0; j < getTicketByID.length; j++) {
-                    if (
-                      getTicketByID[j].buyer.toString().toLowerCase() ===
-                      storeData.address
-                    ) {
-                      purchasedList_721.push(getRaffles[i]);
-                      raffleBought_721.push(getTicketByID[j]);
-                      ticketBought_721 += getTicketByID[j]?.amount;
-                    }
-                  }
-                }
-
-                let filter_TicketByID = getTicketByID.filter(
-                  (person: any, index: any) =>
-                    index ===
-                    getTicketByID.findIndex(
-                      (other: any) => person.owner === other.owner
-                    )
-                );
-                let totalAmount = 0;
-                for (let i = 0; i < filter_TicketByID.length; i++) {
-                  totalAmount += filter_TicketByID[i].entryNum;
-                }
-                getPurchasedVolume_721 += getRaffleInfo?.raffle.price * totalAmount;
               }
             }
+            
+            let totalAmount = 0;
+            for (let i = 0; i < getTicketByID.length; i++) {
+              totalAmount += getTicketByID[i].amount;
+            }
+            getPurchasedVolume_721 += getRaffles[i].price * totalAmount;
           }
 
-          const res_winnerCount: any = winnerCount_1155 + winnerCount_721;
-          const res_raffleBought = [...raffleBought_1155, ...raffleBought_721];
-          const res_purchasedLists = [...purchasedList, ...purchasedList_721];
-          const res_ticketsBought = ticketBought_1155 + ticketBought_721;
-          const res_purchased =
-            (getPurchasedVolume_1155 + getPurchasedVolume_721) / CONFIG.DECIMAL;
+          const res_winnerCount: any = winnerCount_721;
+          const res_raffleBought = [...raffleBought_721];
+          const res_purchasedLists = [...purchasedList_721];
+          const res_ticketsBought = ticketBought_721;
+          const res_purchased = getPurchasedVolume_721 / CONFIG.DECIMAL;
           let uniqueSet: any = new Set(res_purchasedLists);
           const uniqueArr: any = [...uniqueSet];
 
           setPurchasedRaffles([...uniqueArr]);
           setRaffleStats({
             ...raffleStats,
-            raffleCreated: filterRaffles.length,
+            raffleCreated: filterMyRaffles.length,
             ticketsSold: res_ticketsSold,
             salesVolume: res_saleVolume,
             raffleBought: res_raffleBought.length,

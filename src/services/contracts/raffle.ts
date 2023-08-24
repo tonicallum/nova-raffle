@@ -279,7 +279,7 @@ export const getDesiredRaffle = async (tokenId: any, tokenAddress: any) => {
 
 		const allRaffles = await raffleContract.getAllRaffles();
 
-		console.log("all raffle :", allRaffles);
+		console.log("[getDesiredRaffle] -> all raffle :", allRaffles);
 
 		let matchingRaffle = null;
 		let matchingIndex = -1;

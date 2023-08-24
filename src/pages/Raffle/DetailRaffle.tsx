@@ -14,7 +14,6 @@ import {
 } from "../../services/api";
 import {
   calculateWinner,
-  getDesiredRaffle,
   idToRaffleItemBlock,
 } from "../../services/contracts/raffle";
 import ReturnIcon from "../../assets/detailpage/return-icon.svg";
@@ -188,7 +187,7 @@ const DetailRaffle = () => {
         setLoading(false);
         return;
       }
-      console.log("raffleId", raffleId)
+      console.log("raffleId", raffleId);
       const buyTicketTx = await buyTicket(
         raffleId,
         amount,
@@ -200,8 +199,8 @@ const DetailRaffle = () => {
           raffle_id: id,
           amount: amount,
           buyer: storeData.address,
-          token_address : nftInfo.tokenAddress,
-          token_id : nftInfo.tokenId
+          token_address: nftInfo.tokenAddress,
+          token_id: nftInfo.tokenId,
         };
         console.log("payload", payload);
         const res = await createTicketTransaction(payload);
@@ -404,18 +403,13 @@ const DetailRaffle = () => {
           setShowEdit(true);
         }
 
-        // const allRaffles: any = await getAllRaffle();
-        // console.log("allRaffles", allRaffles);
-        // const tempRaffleIndex = allRaffles.findIndex(
-        //   (raffle: any) => raffle._id === id
-        // );
-        const getRaffleInfo: any = await getDesiredRaffle(
-          nftInfoById.tokenId,
-          nftInfoById.tokenAddress
-        );
-        const tempRaffleId = getRaffleInfo?.index;
-        setRaffleId(tempRaffleId);
-        console.log("raffleIndex", tempRaffleId);
+        const allRaffles: any = await getAllRaffle();
+        console.log("allRaffles", allRaffles);
+        const tempRaffleIndex =
+          allRaffles.findIndex((raffle: any) => raffle._id === id) + 1;
+
+        setRaffleId(tempRaffleIndex);
+        console.log("raffleIndex", tempRaffleIndex);
         const getTicketByID = (await getTicketsById(nftInfoById._id)) as any[];
         console.log("getTicketByID", getTicketByID);
         const filter_myTickets = getTicketByID.find(
@@ -428,7 +422,6 @@ const DetailRaffle = () => {
           : 0;
 
         if (storeData.wallet === "connected") {
-          // const getMyTickets = await fetchMyTickets(tempRaffleId);
           if (resTicketsOwned > 0) {
             setBuyStatus(1);
           } else {
@@ -800,9 +793,9 @@ const DetailRaffle = () => {
                           } `}
                         >
                           <li className="basis-[50%] text-[#666] text-[14px]">
-                            {item?.owner.substr(0, 6) +
+                            {item?.buyer.substr(0, 6) +
                               "..." +
-                              item?.owner.substr(item?.owner.length - 4, 4)}
+                              item?.buyer.substr(item?.buyer.length - 4, 4)}
                             {/* {item?.name} */}
                           </li>
                           <li className="basis-[50%] text-[#666] text-[14px] text-center">
