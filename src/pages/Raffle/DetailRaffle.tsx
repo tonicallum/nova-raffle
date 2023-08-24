@@ -211,7 +211,7 @@ const DetailRaffle = () => {
           if (buyStatus === 0) {
             const findIdx = ticketBuyerLists.findIndex(
               (item: any) =>
-                item?.owner.toString().toLowerCase() === storeData.address
+                item?.buyer.toString().toLowerCase() === storeData.address
             );
 
             if (findIdx === -1) {
@@ -238,7 +238,7 @@ const DetailRaffle = () => {
           } else if (buyStatus === 1) {
             const findIdx = ticketBuyerLists.findIndex(
               (item: any) =>
-                item?.owner.toString().toLowerCase() === storeData.address
+                item?.buyer.toString().toLowerCase() === storeData.address
             );
 
             const new_buyerLists = ticketBuyerLists.map(
