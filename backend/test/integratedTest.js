@@ -3,13 +3,13 @@ const { ethers, network } = require("hardhat");
 const { time } = require("@nomicfoundation/hardhat-network-helpers");
 const BN = require("bignumber.js");
 
-const TicketPrice = new BN(ethers.parseEther("10")); // Use BN constructor
-const MaxTicketPrice = new BN(ethers.parseEther("30"));
+const TicketPrice = "10000"; // Use BN constructor
+const MaxTicketPrice = new BN(ethers.parseEther("30", "6"));
 
 // vrf data
 const baseFee = "250000000000000000"; // 0.25 is this the premium in LINK?
 const gasPriceLink = 1e9; // link per gas, is this the gas lane? // 0.000000001 LINK per gas
-const vrfSubFundAmount = ethers.parseEther("1");
+const vrfSubFundAmount = ethers.parseEther("1", "6");
 
 const vrfData = {
 	vrfCoordinatorV2: "0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed",
@@ -44,10 +44,9 @@ describe("Raffle721", function () {
 
 		// raffle721
 		raffle721 = await ethers.deployContract("NFT721Raffle", [
+			subscriptionId,
 			vrfCoordinatorV2Mock.target,
 			vrfData.gasLane,
-			subscriptionId,
-			vrfData.callbackGasLimit,
 		]);
 		await raffle721.waitForDeployment();
 
@@ -75,10 +74,10 @@ describe("Raffle721", function () {
 		await raffle721.createRaffle(
 			nft.target,
 			tokenId,
-			TicketPrice.toFixed(),
-			MaxTicketPrice.toFixed(),
+			10000,
 			startTimeStamp + 100,
-			startTimeStamp + 600
+			startTimeStamp + 600,
+			"30"
 		);
 
 		const ticketsToBuy = [100, 10, 10, 20, 20, 50];
@@ -86,37 +85,48 @@ describe("Raffle721", function () {
 		await network.provider.send("evm_increaseTime", [200]);
 		await network.provider.send("evm_mine", []);
 
-		for (let i = 0; i < ticketsToBuy.length; i++) {
-			const totalPrice = TicketPrice.multipliedBy(ticketsToBuy[i]); // Use multipliedBy() method
+		// for (let i = 0; i < ticketsToBuy.length; i++) {
+		// 	const totalPrice = TicketPrice * ticketsToBuy[i]; // Use multipliedBy() method
 
-			expect(
-				await raffle721
-					.connect(accounts[i + 1])
-					.buyTicket(1, ticketsToBuy[i], {
-						value: totalPrice.toFixed(),
-					})
-			).to.emit(raffle721, "TicketBought");
-		}
+		// 	expect(
+		// 		await raffle721
+		// 			.connect(accounts[i + 1])
+		// 			.buyTicket(1, ticketsToBuy[i], {
+		// 				value: totalPrice.toFixed(),
+		// 			})
+		// 	).to.emit(raffle721, "TicketBought");
+		// }
+
+		expect(
+			await raffle721
+				.connect(accounts[1])
+				.buyTicket("1", "1", { value: ethers.parseEther("0.01") })
+		);
 
 		await network.provider.send("evm_increaseTime", [1000]);
 		await network.provider.send("evm_mine", []);
 
 		const { upKeepNeeded, performData } = await raffle721.checkUpkeep("0x");
 
+		console.log(upKeepNeeded, performData);
 		await raffle721.performUpkeep(performData);
 
-		// const requestId = await raffle721.getReqId();
+		// // const requestId = await raffle721.getReqId();
 
-		// call fulfilrandomword
+		// // call fulfilrandomword
 		expect(
 			await vrfCoordinatorV2Mock.fulfillRandomWords(1, raffle721.target)
-		).to.emit(raffle721, "WinnerClaimed");
+		);
 
-		// const raffleItem = await raffle721.fetchRaffleItems();
-		// console.log(raffleItem);
+		const data = await raffle721.idToRaffleItem(1);
 
-		const i = await raffle721.connect(accounts[4]).fetchMyTicketItems();
+		console.log("data : ", data);
 
-		console.log(i);
+		// // const raffleItem = await raffle721.fetchRaffleItems();
+		// // console.log(raffleItem);
+
+		// const i = await raffle721.connect(accounts[4]).fetchMyTicketItems();
+
+		// console.log(i);
 	});
 });

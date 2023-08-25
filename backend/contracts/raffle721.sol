@@ -158,6 +158,7 @@ contract NFT721Raffle is
         if (msg.sender == raffle.creator) revert("Disallow creator");
         if (block.timestamp < raffle.startTime) revert("Raffle not started");
         if (block.timestamp >= raffle.expirationTime) revert("Raffle expired");
+
         if (msg.value != uint256(raffle.price) * _qty * 1e12)
             revert("Incorrect amount");
         if (_qty == 0 || _qty > raffle.totalSupply - raffle.currentSupply)
@@ -175,27 +176,6 @@ contract NFT721Raffle is
 
         emit RaffleTicketSold(_raffleId, ticketId, msg.sender);
     }
-
-    // function initiateRaf fleDrawing(uint64 _raffleId) public nonReentrant {
-    //     RaffleStruct memory raffle = idToRaffleItem[_raffleId];
-
-    //     // Unsold entries cannot draw
-    //     if (raffle.status != STATUS.NORMAL || raffle.currentSupply == 0)
-    //         revert("Wrong status");
-
-    //     if (
-    //         raffle.currentSupply == raffle.totalSupply ||
-    //         block.timestamp > uint256(raffle.expirationTime)
-    //     ) {
-    //         requestRandomNumber(_raffleId);
-    //         idToRaffleItem[_raffleId].status = STATUS.DRAWNIG;
-    //     } else {
-    //         // Not sold out and under the deadline
-    //         revert("Not sold out & deadline");
-    //     }
-
-    //     emit RaffleStatus(_raffleId, STATUS.DRAWNIG);
-    // }
 
     function cancelRaffle(uint64 _raffleId) external nonReentrant {
         RaffleStruct memory raffle = idToRaffleItem[_raffleId];
@@ -256,7 +236,7 @@ contract NFT721Raffle is
         bool isUpkeepNeeded;
         uint64 raffleId = 0;
 
-        for (uint64 i = 0; i < ongoingRaffles.length; i++) {
+        for (uint i = 0; i < ongoingRaffles.length; i++) {
             RaffleStruct memory _raffle = idToRaffleItem[ongoingRaffles[i]];
 
             if (
@@ -269,7 +249,7 @@ contract NFT721Raffle is
             }
         }
 
-        performData = abi.encodePacked(raffleId);
+        performData = abi.encodePacked(uint(raffleId));
 
         upKeepNeeded = stopKeeper == false && isUpkeepNeeded;
 
@@ -281,7 +261,8 @@ contract NFT721Raffle is
     ) external override nonReentrant {
         stopKeeper = true;
 
-        uint64 _raffleId = abi.decode(performData, (uint64));
+        uint64 _raffleId = uint64(abi.decode(performData, (uint256)));
+
         if (_raffleId == 0) revert("Invalid RaffleId");
         RaffleStruct memory raffle = idToRaffleItem[_raffleId];
 
