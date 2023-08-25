@@ -1,21 +1,12 @@
-import { useState, useEffect, useMemo } from 'react'
-import Select from 'react-select'
-import { ethers } from 'ethers';
-import Navbar from "../../components/Navbar"
-import { getDesiredRaffle } from '../../services/contracts/raffle'
-import { getAllRaffle, getTicketsById } from '../../services/api'
-import { fetchMyBidItems } from '../../services/contracts/auction';
-import { fetchMyBidItems1155 } from '../../services/contracts/auction1155';
-import { time } from 'console';
-import { isTemplateExpression } from 'typescript';
-import axios from 'axios';
-import { API_URL } from '../../config/dev';
-import { userInfo } from 'os';
-
+import { useState, useEffect } from "react";
+import Navbar from "../../components/Navbar";
+import { getAllRaffle, getTicketsById } from "../../services/api";
+import axios from "axios";
+import { API_URL } from "../../config/dev";
 
 const LeaderBoard = () => {
   const [rafflerLists, setRafflerLists] = useState([]);
-  const [soldTicketAmounts, setSoldTicketAmounts] = useState<any[]>([])
+  const [soldTicketAmounts, setSoldTicketAmounts] = useState<any[]>([]);
   const [ticketPrices, setTicketPrices] = useState<any[]>([]);
   const [volume, setVolume] = useState<number[]>();
   const [ticketSold, setTicketSold] = useState<number[]>();
@@ -30,409 +21,534 @@ const LeaderBoard = () => {
   const [raffleDayFilter, setRaffleDayFilter] = useState<string>("all");
   const [buyRaffleDayFilter, setBuyRaffleDayFilter] = useState<string>("all");
   const [raffleDayFilterValue, setRaffleDayFilterValue] = useState<number>(0);
-  const [buyRaffleDayFilterValue, setBuyRaffleDayFilterValue] = useState<number>(0);
+  const [buyRaffleDayFilterValue, setBuyRaffleDayFilterValue] =
+    useState<number>(0);
   const [raffleSort, setRaffleSort] = useState("volume");
   const [buyRaffleSort, setBuyRaffleSort] = useState("volume");
 
   const handleRafflerDayChange = (value: any, type: boolean) => {
-    let current_time: any = new Date()
+    let current_time: any = new Date();
     switch (value) {
-      case 'all':
-        if(type){
+      case "all":
+        if (type) {
           setRaffleDayFilter("all");
           setRaffleDayFilterValue(0);
-        }else{
-          setBuyRaffleDayFilter("all")
+        } else {
+          setBuyRaffleDayFilter("all");
           setBuyRaffleDayFilterValue(0);
         }
         break;
-      case 'twoWeek':
-        if(type){
+      case "twoWeek":
+        if (type) {
           setRaffleDayFilter("twoWeek");
           setRaffleDayFilterValue(current_time - 24 * 7 * 60 * 60 * 1000);
-        }else{
-          setBuyRaffleDayFilter("twoWeek")
+        } else {
+          setBuyRaffleDayFilter("twoWeek");
           setBuyRaffleDayFilterValue(current_time - 24 * 7 * 60 * 60 * 1000);
         }
         break;
-      case 'day':
-        if(type){
+      case "day":
+        if (type) {
           setRaffleDayFilter("day");
           setRaffleDayFilterValue(current_time - 24 * 60 * 60 * 1000);
-        }else{
+        } else {
           setBuyRaffleDayFilter("day");
           setBuyRaffleDayFilterValue(current_time - 24 * 60 * 60 * 1000);
         }
         break;
-      default: break;
+      default:
+        break;
     }
-  }
-  
+  };
+
   const handleBuyRafflerSortChange = (value: any) => {
-    switch(value) {
-      case 'raffle_bought':
-        setBuyRaffleSort("raffle_bought")
+    switch (value) {
+      case "raffle_bought":
+        setBuyRaffleSort("raffle_bought");
         break;
-      case 'ticket_bought':
-        setBuyRaffleSort("ticket_bought")
+      case "ticket_bought":
+        setBuyRaffleSort("ticket_bought");
         break;
-      case 'raffle_won':
-        setBuyRaffleSort("raffle_won")
+      case "raffle_won":
+        setBuyRaffleSort("raffle_won");
         break;
-      case 'volume':
-        setBuyRaffleSort("volume")
+      case "volume":
+        setBuyRaffleSort("volume");
         break;
-      default: break;
+      default:
+        break;
     }
-  }
+  };
 
   const handleRafflerSortChange = (value: any) => {
-    switch(value) {
-      case 'raffle_create':
-       setRaffleSort("raffle_create")
+    switch (value) {
+      case "raffle_create":
+        setRaffleSort("raffle_create");
         break;
-      case 'ticket_sold':
-        setRaffleSort("ticket_sold")
+      case "ticket_sold":
+        setRaffleSort("ticket_sold");
         break;
-      case 'volume':
-         setRaffleSort("volume")
+      case "volume":
+        setRaffleSort("volume");
         break;
-      default: break;
+      default:
+        break;
     }
-  }
+  };
 
   const getUserInfo = async (address: string) => {
-    try{
+    try {
       const res = await axios.get(`${API_URL}/raffle`, {
-          params: {
-            walletAddress: address
-          }
+        params: {
+          walletAddress: address,
+        },
       });
-      return res.data
-    }catch(error){
+      return res.data;
+    } catch (error) {
       console.log("error", error);
     }
-  } 
+  };
 
   const fetchRafflers = async (tempAllRaffle: any) => {
     setRaffleLoading(true);
-    let allRaffle: any = [], dayRaffleFilter: any = [], tempRafflerSort: any = [];
-    dayRaffleFilter = tempAllRaffle.filter((item:any) =>  item.start_date * 1000 >= raffleDayFilterValue );
+    let allRaffle: any = [],
+      dayRaffleFilter: any = [],
+      tempRafflerSort: any = [];
+    dayRaffleFilter = tempAllRaffle.filter(
+      (item: any) => item.start_date * 1000 >= raffleDayFilterValue
+    );
     allRaffle = dayRaffleFilter;
-    
-    let ans = allRaffle.reduce((agg: any,curr: any) => {
-      console.log("cur", curr)
-      let found = agg.find((x: { walletAddress: any }) => x.walletAddress === curr.walletAddress);
-      if(found){
+
+    let ans = allRaffle.reduce((agg: any, curr: any) => {
+      console.log("cur", curr);
+      let found = agg.find(
+        (x: { walletAddress: any }) => x.walletAddress === curr.walletAddress
+      );
+      if (found) {
         found.sellerCount.push(curr.walletAddress);
         found.ticketPrices.push(curr.price);
-        found.soldVolume+= Number(ethers.utils.formatEther(curr.price)) * curr.sold_tickets;
-        found.soldTicketAmount+= curr.sold_tickets;
-      }
-      else{
+        found.soldVolume += curr.price * curr.sold_tickets;
+        found.soldTicketAmount += curr.sold_tickets;
+      } else {
         agg.push({
-          seller : curr.walletAddress.toString(),
-          sellerCount : [curr.walletAddress],
+          seller: curr.walletAddress.toString(),
+          sellerCount: [curr.walletAddress],
           ticketPrices: [curr.price],
-          soldVolume: Number(ethers.utils.formatEther(curr.price)) * curr.sold_tickets,
-          soldTicketAmount: curr.sold_tickets
+          soldVolume: curr.price * curr.sold_tickets,
+          soldTicketAmount: curr.sold_tickets,
         });
       }
       return agg;
-    },[]);
+    }, []);
 
-    switch(raffleSort){
-      case 'raffle_create':
-          tempRafflerSort = ans.sort((a: any, b: any) => b.sellerCount.length - a.sellerCount.length);
-      break;
-      case 'ticket_sold':
-        tempRafflerSort = ans.sort((a: any, b: any) => b.soldTicketAmount - a.soldTicketAmount);
+    switch (raffleSort) {
+      case "raffle_create":
+        tempRafflerSort = ans.sort(
+          (a: any, b: any) => b.sellerCount.length - a.sellerCount.length
+        );
         break;
-      case 'volume':
-        tempRafflerSort = ans.sort((a: any, b: any) => b.soldVolume - a.soldVolume);
+      case "ticket_sold":
+        tempRafflerSort = ans.sort(
+          (a: any, b: any) => b.soldTicketAmount - a.soldTicketAmount
+        );
         break;
-      default: break;
+      case "volume":
+        tempRafflerSort = ans.sort(
+          (a: any, b: any) => b.soldVolume - a.soldVolume
+        );
+        break;
+      default:
+        break;
     }
-  
 
-    const userInfos: any[] = await Promise.all(tempRafflerSort.map((item: any) => getUserInfo(item?.seller)));
-    tempRafflerSort = tempRafflerSort.map(
-      (item: any, index: number) => 
-       ({...item, discord: userInfos[index]?.discord, twitter: userInfos[index]?.twitter})
+    const userInfos: any[] = await Promise.all(
+      tempRafflerSort.map((item: any) => getUserInfo(item?.seller))
     );
+    tempRafflerSort = tempRafflerSort.map((item: any, index: number) => ({
+      ...item,
+      discord: userInfos[index]?.discord,
+      twitter: userInfos[index]?.twitter,
+    }));
     setRaffleGroupByList([...tempRafflerSort]);
     setRaffleLoading(false);
-  }
+  };
 
   const fetchBuyRaffler = async (tempAllRaffle: any) => {
     setRaffleLoading(true);
-    let buyAllRaffle: any = [], dayBuyRaffleFilter: any = [], tempBuyAllRaffle: any = [];
+    let buyAllRaffle: any = [],
+      dayBuyRaffleFilter: any = [],
+      tempBuyAllRaffle: any = [];
     tempBuyAllRaffle = tempAllRaffle;
-    dayBuyRaffleFilter = tempBuyAllRaffle.filter((item:any) =>  item.start_date * 1000 >= buyRaffleDayFilterValue );
+    dayBuyRaffleFilter = tempBuyAllRaffle.filter(
+      (item: any) => item.start_date * 1000 >= buyRaffleDayFilterValue
+    );
     buyAllRaffle = dayBuyRaffleFilter;
-    
-    const tempFetchBuyTicket: any[] = await Promise.all(buyAllRaffle.map(async(item: any, index: number) => {
-      // const getRaffleInfo = await getDesiredRaffle(
-      //   item.nftId,
-      //   item.nftAddress,
-      // );
-      const fetchItem : any = await getTicketsById(item._id);
-      if(fetchItem.length !==0){
-        return { ...fetchItem, winner: item.winner, ticketPrice: item.price }
-      }
-    }))
-    const resFoundBuyTicket = tempFetchBuyTicket.filter((item: any, index: number) => item !== undefined );
+
+    const tempFetchBuyTicket: any[] = await Promise.all(
+      buyAllRaffle.map(async (item: any, index: number) => {
+        const fetchItem: any = await getTicketsById(item._id);
+        if (fetchItem.length !== 0) {
+          return { ...fetchItem, winner: item.winner, ticketPrice: item.price };
+        }
+      })
+    );
+    const resFoundBuyTicket = tempFetchBuyTicket.filter(
+      (item: any, index: number) => item !== undefined
+    );
     let foundBuy: any = [];
-    for(let i = 0; i < resFoundBuyTicket?.length; i++){
-      const objKeys  = Object.keys(resFoundBuyTicket[i]);
-      for(let j = 0; j < objKeys.length - 2; j++){
-        foundBuy.push({item:resFoundBuyTicket[i][j], winner: resFoundBuyTicket[i].winner, ticketPrice: resFoundBuyTicket[i].ticketPrice});
+    for (let i = 0; i < resFoundBuyTicket?.length; i++) {
+      const objKeys = Object.keys(resFoundBuyTicket[i]);
+      for (let j = 0; j < objKeys.length - 2; j++) {
+        foundBuy.push({
+          item: resFoundBuyTicket[i][j],
+          winner: resFoundBuyTicket[i].winner,
+          ticketPrice: resFoundBuyTicket[i].ticketPrice,
+        });
       }
     }
 
-    let foundBuyGroupBy = foundBuy.reduce((agg: any,curr: any) => {
-      let found = agg.find((x: { buyer: any }) => x.buyer === curr.item.owner);
-      if(found){
+    let foundBuyGroupBy = foundBuy.reduce((agg: any, curr: any) => {
+      let found = agg.find((x: { buyer: any }) => x.buyer === curr.item.buyer);
+      if (found) {
         found.buyerCount += 1;
         found.ticketPrice.push(curr.ticketPrice);
-        found.buyVolume+= Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.item.entryNum
-        found.ticketAmount+=curr.item.entryNum;
+        found.buyVolume += curr.ticketPrice * curr.item.amount;
+        found.ticketAmount += curr.item.amount;
         found.won.push(curr.winner);
-      }
-      else{
+      } else {
         agg.push({
-          buyer : curr.item.owner,
-          buyerCount : 1,
+          buyer: curr.item.buyer,
+          buyerCount: 1,
           ticketPrice: [curr.ticketPrice],
-          buyVolume: Number(ethers.utils.formatEther(curr.ticketPrice)) * curr.item.entryNum,
-          ticketAmount: curr.item.entryNum,
+          buyVolume: curr.ticketPrice * curr.item.amount,
+          ticketAmount: curr.item.amount,
           won: [curr.winner],
         });
       }
       return agg;
-    },[]);
-    let tempfoundBuyGroupBy: any = [], tempFoundBuyGroupBySort: any = [];
+    }, []);
+    let tempfoundBuyGroupBy: any = [],
+      tempFoundBuyGroupBySort: any = [];
     foundBuyGroupBy.forEach((item: any, index: number) => {
-      let wonCount = item.won.filter((_item: any) => _item === item.buyer).length;
-      tempfoundBuyGroupBy.push({...item, wonCount: wonCount});
-    })
-    switch(buyRaffleSort){
-      case 'raffle_bought':
-        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort((a: any, b: any) => b.buyerCount - a.buyerCount);
+      let wonCount = item.won.filter(
+        (_item: any) => _item === item.buyer
+      ).length;
+      tempfoundBuyGroupBy.push({ ...item, wonCount: wonCount });
+    });
+    switch (buyRaffleSort) {
+      case "raffle_bought":
+        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort(
+          (a: any, b: any) => b.buyerCount - a.buyerCount
+        );
         break;
-      case 'ticket_bought':
-        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort((a: any, b: any) => b.ticketAmount - a.ticketAmount);
+      case "ticket_bought":
+        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort(
+          (a: any, b: any) => b.ticketAmount - a.ticketAmount
+        );
         break;
-      case 'raffle_won':
-        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort((a: any, b: any) => b.wonCount - a.wonCount);
+      case "raffle_won":
+        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort(
+          (a: any, b: any) => b.wonCount - a.wonCount
+        );
         break;
-      case 'volume':
-        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort((a: any, b: any) => b.buyVolume - a.buyVolume);
+      case "volume":
+        tempFoundBuyGroupBySort = tempfoundBuyGroupBy.sort(
+          (a: any, b: any) => b.buyVolume - a.buyVolume
+        );
         break;
-      default: break;
+      default:
+        break;
     }
-    const userInfos: any[] = await Promise.all(tempFoundBuyGroupBySort.map((item: any) => getUserInfo(item?.buyer)));
+    const userInfos: any[] = await Promise.all(
+      tempFoundBuyGroupBySort.map((item: any) => getUserInfo(item?.buyer))
+    );
     tempFoundBuyGroupBySort = tempFoundBuyGroupBySort.map(
-      (item: any, index: number) => 
-      ({...item, discord: userInfos[index]?.discord, twitter: userInfos[index]?.twitter})
+      (item: any, index: number) => ({
+        ...item,
+        discord: userInfos[index]?.discord,
+        twitter: userInfos[index]?.twitter,
+      })
     );
     setBuyTicketLists([...tempFoundBuyGroupBySort]);
     setRaffleLoading(false);
-  }
+  };
 
   useEffect(() => {
-    (
-      async () => {
-        try {
-          const allRaffles : any = await getAllRaffle();
-          // const fetchRaffle1155 = await fetchRaffleLists1155();
-          // const res_fetchRaffle = allRaffles.map((item: any) => {
-          //   return { ...item }
-          // })
-          // const res_fetchRaffle1155 = fetchRaffle1155.map((item: any) => {
-          //   return { ...item }
-          // })
-          // const tempAllRaffle: any = [...res_fetchRaffle, ...res_fetchRaffle1155];
-          console.log("res_fetchRaffle", allRaffles)
-          fetchRafflers(allRaffles);
-          fetchBuyRaffler(allRaffles);
-        } catch (error) {
-          console.log('error', error)
-        }
+    (async () => {
+      try {
+        const allRaffles: any = await getAllRaffle();
+        // const fetchRaffle1155 = await fetchRaffleLists1155();
+        // const res_fetchRaffle = allRaffles.map((item: any) => {
+        //   return { ...item }
+        // })
+        // const res_fetchRaffle1155 = fetchRaffle1155.map((item: any) => {
+        //   return { ...item }
+        // })
+        // const tempAllRaffle: any = [...res_fetchRaffle, ...res_fetchRaffle1155];
+        console.log("res_fetchRaffle", allRaffles);
+        fetchRafflers(allRaffles);
+        fetchBuyRaffler(allRaffles);
+      } catch (error) {
+        console.log("error", error);
       }
-    )()
-  }, [raffleDayFilterValue, raffleSort, buyRaffleDayFilterValue, buyRaffleSort])
+    })();
+  }, [
+    raffleDayFilterValue,
+    raffleSort,
+    buyRaffleDayFilterValue,
+    buyRaffleSort,
+  ]);
 
   return (
     <>
-    {
-      raffleLoading && <div id="preloader"></div>
-    }
-   
-    <div>
-      <Navbar />
-      <div className="max-w-[1280px] mx-[auto] my-0 ">
-        <h1 className="hidden md:block text-5xl font-bold px-8 md:px-0 mt-3 sm:mb-5 text-purple-500/30 mr-5 " >LeaderBoard</h1>
-        <div className="flex gap-4 " >
-          <div className="basis-[48%]" >
-            <div className="w-full flex justify-between items-center  " >
-              <p className="text-black font-bold text-xl" >Top Rafflers</p>
-              <div className='flex items-center gap-2' >
-                <select
-                  defaultValue={"all"}
-                  onChange={(e: any) => handleRafflerDayChange(e.target.value, true)}
-                  className='border-[1px] border-solid border-[grey] p-[4px] min-w-[80px] cursor-pointer rounded-[6px]'
-                >
-                  <option value="all">All</option>
-                  <option value="twoWeek">2W</option>
-                  <option value="day">1D</option>
-                </select>
-                <select
-                  defaultValue={"volume"}
-                  id="countries"
-                  className='border-[1px] border-solid border-[grey] p-[4px] min-w-[120px] cursor-pointer rounded-[6px] '
-                  onChange={(e: any) => handleRafflerSortChange(e.target.value)}
-                >
-                  <option value="raffle_create">Raffles Created</option>
-                  <option value="ticket_sold">Tickets Sold</option>
-                  <option value="volume">Volume</option>
-                </select>
-              </div>
-            </div>
-            <div className='border-[#5a2fbe] border-solid border-[1px] text-black rounded-2xl p-3 nftItem-shadow mt-4 ' >
-              <div className='flex items-center' >
-                <div className='w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black' >Rank</div>
-                <div className='w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black' >User</div>
-                <div className='w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black' >Raffles</div>
-                <div className='w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black' >Tickets Sold</div>
-                <div className='w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black' >Volume</div>
-              </div>
-              {
-                !raffleLoading && 
-                 raffleGroupByList?.map((item: any, index: number) => (
-                  <div className='flex items-cetner pt-3' style={{alignItems: "center"}} key={index} >
-                        {
-                          index === 0 && <div className={
-                            "bg-gradient-to-b from-yellow-400 to-yellow-500  border-4 border-yellow-500 1w-[20%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                            } >{index+1}</div>
-                        }
-                        {
-                            index === 1 && <div className={
-                              "bg-gradient-to-b from-gray-400 to-gray-500  border-4 border-gray-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                              } >{index+1}</div>
-                        }
-                        {
-                            index === 2 && <div className={
-                              "bg-gradient-to-b from-orange-400 to-orange-500  border-4 border-orange-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                              } >{index+1}</div>
-                        }
-                        {
-                          (index !=0 && index !=1 && index !=2 )&& <div className={
-                            "1w-[15%] text-center badge text-black rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                            } >{index+1}</div>
-                        }
-                    <div className='w-[35%] text-center font-bold text-purple-500 block  truncate'>
-                      {
-                      item.discord !== undefined && item.discord }
-                      {
-                        (item.discord === undefined && item.twitter !== undefined) && item.twitter 
-                      }
-                      {
-                        (item.discord === undefined && item.twitter === undefined) && item.seller.slice(0, 3) + "..." + item.seller.slice(-4)
-                      }
-                    </div>
-                    <div className='w-[20%] text-center' >{item.sellerCount?.length}</div>
-                    <div className='w-[25%] text-center' >{item.soldTicketAmount}</div>
-                    <div className='w-[25%] text-center' >{item.soldVolume.toFixed(4)}</div>
-                  </div>
-                ))
-                }
-            </div>
-          </div>
-          <div className="basis-[48%]" >
-            <div className="w-full flex justify-between items-center  " >
-              <p className="text-black font-bold text-xl" >Top Raffle Buyers</p>
-              <div className='flex items-center gap-2' >
-                <select
-                  defaultValue={"all"}
-                  onChange={(e: any) => handleRafflerDayChange(e.target.value, false)}
-                  className='border-[1px] border-solid border-[grey] p-[4px] min-w-[80px] cursor-pointer rounded-[6px] '
-                >
-                  <option value="all">All</option>
-                  <option value="twoWeek">2W</option>
-                  <option value="day">1D</option>
-                </select>
-                <select
-                  defaultValue={"volume"}
-                  id="countries"
-                  className='border-[1px] border-solid border-[grey] p-[4px] min-w-[120px] cursor-pointer rounded-[6px] '
-                  onChange={(e: any) => handleBuyRafflerSortChange(e.target.value)}
-                >
-                  <option value="raffle_bought">Raffles Bought</option>
-                  <option value="ticket_bought">Tickets Bought</option>
-                  <option value="raffle_won">Raffles Won</option>
-                  <option value="volume">Volume</option>
-                </select>
-              </div>
-            </div>
-            <div className='bg-white border-[#5a2fbe] border-solid border-[1px] text-black rounded-2xl p-3 nftItem-shadow mt-4 ' >
-                <div className='flex items-cetner' >
-                  <div className='w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black' >Rank</div>
-                  <div className='w-[35%] text-center border-b-2 border-purple-500 pb-2 font-black' >User</div>
-                  <div className='w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black' >Raffles</div>
-                  <div className='w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black' >Tickets</div>
-                  <div className='w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black' >Won</div>
-                  <div className='w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black' >Volume</div>
+      {raffleLoading && <div id="preloader"></div>}
+
+      <div>
+        <Navbar />
+        <div className="max-w-[1280px] mx-[auto] my-0 ">
+          <h1 className="hidden md:block text-5xl font-bold px-8 md:px-0 mt-3 sm:mb-5 text-purple-500/30 mr-5 ">
+            LeaderBoard
+          </h1>
+          <div className="flex gap-4 ">
+            <div className="basis-[48%]">
+              <div className="w-full flex justify-between items-center  ">
+                <p className="text-black font-bold text-xl">Top Rafflers</p>
+                <div className="flex items-center gap-2">
+                  <select
+                    defaultValue={"all"}
+                    onChange={(e: any) =>
+                      handleRafflerDayChange(e.target.value, true)
+                    }
+                    className="border-[1px] border-solid border-[grey] p-[4px] min-w-[80px] cursor-pointer rounded-[6px]"
+                  >
+                    <option value="all">All</option>
+                    <option value="twoWeek">2W</option>
+                    <option value="day">1D</option>
+                  </select>
+                  <select
+                    defaultValue={"volume"}
+                    id="countries"
+                    className="border-[1px] border-solid border-[grey] p-[4px] min-w-[120px] cursor-pointer rounded-[6px] "
+                    onChange={(e: any) =>
+                      handleRafflerSortChange(e.target.value)
+                    }
+                  >
+                    <option value="raffle_create">Raffles Created</option>
+                    <option value="ticket_sold">Tickets Sold</option>
+                    <option value="volume">Volume</option>
+                  </select>
                 </div>
-                  { 
-                      !raffleLoading && 
-                      buyTicketLists?.map((item: any, index: number) => (
-                      <div className="flex items-cetner pt-3 " style={{alignItems: 'center'}} key={index}>
-                        {
-                          index === 0 && <div className={
-                            "bg-gradient-to-b from-yellow-400 to-yellow-500  border-4 border-yellow-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                            } >{index+1}</div>
-                        }
-                        {
-                            index === 1 && <div className={
-                              "bg-gradient-to-b from-gray-400 to-gray-500  border-4 border-gray-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                              } >{index+1}</div>
-                        }
-                        {
-                            index === 2 && <div className={
-                              "bg-gradient-to-b from-orange-400 to-orange-500  border-4 border-orange-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                              } >{index+1}</div>
-                        }
-                        {
-                          (index !=0 && index !=1 && index !=2 )&& <div className={
-                            "1w-[15%] text-center badge text-black rounded-full flex items-center justify-center h-10 w-10 ml-3"
-                            } >{index+1}</div>
-                        }
-                        
-                        <div className='w-[35%] text-center font-bold text-purple-500 block  truncate' >
-                          {
-                            item.discord !== undefined && item.discord }
-                          {
-                            (item.discord === undefined && item.twitter !== undefined) && item.twitter 
-                          }
-                          {
-                            (item.discord === undefined && item.twitter === undefined) && item.buyer.slice(0, 3) + "..." + item.buyer.slice(-4)
-                          }
-                        </div>
-                        <div className='w-[15%] text-center' >{item.buyerCount}</div>
-                        <div className='w-[15%] text-center' >{item.ticketAmount}</div>
-                        <div className='w-[15%] text-center' >{item.wonCount}</div>
-                        <div className='w-[15%] text-center' >{item.buyVolume.toFixed(4)}</div>
-                      </div>
-                      ))
-                  }
               </div>
+              <div className="border-[#5a2fbe] border-solid border-[1px] text-black rounded-2xl p-3 nftItem-shadow mt-4 ">
+                <div className="flex items-center">
+                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Rank
+                  </div>
+                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    User
+                  </div>
+                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Raffles
+                  </div>
+                  <div className="w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Tickets Sold
+                  </div>
+                  <div className="w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Volume
+                  </div>
+                </div>
+                {!raffleLoading &&
+                  raffleGroupByList?.map((item: any, index: number) => (
+                    <div
+                      className="flex items-cetner pt-3"
+                      style={{ alignItems: "center" }}
+                      key={index}
+                    >
+                      {index === 0 && (
+                        <div
+                          className={
+                            "bg-gradient-to-b from-yellow-400 to-yellow-500  border-4 border-yellow-500 1w-[20%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      {index === 1 && (
+                        <div
+                          className={
+                            "bg-gradient-to-b from-gray-400 to-gray-500  border-4 border-gray-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      {index === 2 && (
+                        <div
+                          className={
+                            "bg-gradient-to-b from-orange-400 to-orange-500  border-4 border-orange-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      {index != 0 && index != 1 && index != 2 && (
+                        <div
+                          className={
+                            "1w-[15%] text-center badge text-black rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      <div className="w-[35%] text-center font-bold text-purple-500 block  truncate">
+                        {item.discord !== undefined && item.discord}
+                        {item.discord === undefined &&
+                          item.twitter !== undefined &&
+                          item.twitter}
+                        {item.discord === undefined &&
+                          item.twitter === undefined &&
+                          item.seller.slice(0, 3) +
+                            "..." +
+                            item.seller.slice(-4)}
+                      </div>
+                      <div className="w-[20%] text-center">
+                        {item.sellerCount?.length}
+                      </div>
+                      <div className="w-[25%] text-center">
+                        {item.soldTicketAmount}
+                      </div>
+                      <div className="w-[25%] text-center">
+                        {item.soldVolume.toFixed(4)}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+            <div className="basis-[48%]">
+              <div className="w-full flex justify-between items-center  ">
+                <p className="text-black font-bold text-xl">
+                  Top Raffle Buyers
+                </p>
+                <div className="flex items-center gap-2">
+                  <select
+                    defaultValue={"all"}
+                    onChange={(e: any) =>
+                      handleRafflerDayChange(e.target.value, false)
+                    }
+                    className="border-[1px] border-solid border-[grey] p-[4px] min-w-[80px] cursor-pointer rounded-[6px] "
+                  >
+                    <option value="all">All</option>
+                    <option value="twoWeek">2W</option>
+                    <option value="day">1D</option>
+                  </select>
+                  <select
+                    defaultValue={"volume"}
+                    id="countries"
+                    className="border-[1px] border-solid border-[grey] p-[4px] min-w-[120px] cursor-pointer rounded-[6px] "
+                    onChange={(e: any) =>
+                      handleBuyRafflerSortChange(e.target.value)
+                    }
+                  >
+                    <option value="raffle_bought">Raffles Bought</option>
+                    <option value="ticket_bought">Tickets Bought</option>
+                    <option value="raffle_won">Raffles Won</option>
+                    <option value="volume">Volume</option>
+                  </select>
+                </div>
+              </div>
+              <div className="bg-white border-[#5a2fbe] border-solid border-[1px] text-black rounded-2xl p-3 nftItem-shadow mt-4 ">
+                <div className="flex items-cetner">
+                  <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Rank
+                  </div>
+                  <div className="w-[35%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    User
+                  </div>
+                  <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Raffles
+                  </div>
+                  <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Tickets
+                  </div>
+                  <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Won
+                  </div>
+                  <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
+                    Volume
+                  </div>
+                </div>
+                {!raffleLoading &&
+                  buyTicketLists?.map((item: any, index: number) => (
+                    <div
+                      className="flex items-cetner pt-3 "
+                      style={{ alignItems: "center" }}
+                      key={index}
+                    >
+                      {index === 0 && (
+                        <div
+                          className={
+                            "bg-gradient-to-b from-yellow-400 to-yellow-500  border-4 border-yellow-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      {index === 1 && (
+                        <div
+                          className={
+                            "bg-gradient-to-b from-gray-400 to-gray-500  border-4 border-gray-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      {index === 2 && (
+                        <div
+                          className={
+                            "bg-gradient-to-b from-orange-400 to-orange-500  border-4 border-orange-500 1w-[15%] text-center badge text-white rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+                      {index != 0 && index != 1 && index != 2 && (
+                        <div
+                          className={
+                            "1w-[15%] text-center badge text-black rounded-full flex items-center justify-center h-10 w-10 ml-3"
+                          }
+                        >
+                          {index + 1}
+                        </div>
+                      )}
+
+                      <div className="w-[35%] text-center font-bold text-purple-500 block  truncate">
+                        {item.discord !== undefined && item.discord}
+                        {item.discord === undefined &&
+                          item.twitter !== undefined &&
+                          item.twitter}
+                        {item.discord === undefined &&
+                          item.twitter === undefined &&
+                          item.buyer.slice(0, 3) + "..." + item.buyer.slice(-4)}
+                      </div>
+                      <div className="w-[15%] text-center">
+                        {item.buyerCount}
+                      </div>
+                      <div className="w-[15%] text-center">
+                        {item.ticketAmount}
+                      </div>
+                      <div className="w-[15%] text-center">{item.wonCount}</div>
+                      <div className="w-[15%] text-center">
+                        {item.buyVolume.toFixed(4)}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
-  )
-}
+  );
+};
 
-export default LeaderBoard
+export default LeaderBoard;

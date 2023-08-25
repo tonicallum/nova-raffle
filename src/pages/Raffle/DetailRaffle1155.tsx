@@ -170,7 +170,7 @@ const DetailRaffle1155 = () => {
         setCurrnetBuyTicket(currentBuyTicket + amount)
         if (buyStatus === 0) {
           const findIdx = ticketBuyerLists.findIndex((item: any) =>
-            item?.buyer.toLowerCase() === storeData.address)
+            item?.buyer.toLowerCase() === storeData.address.toLowerCase())
 
           if (findIdx === -1) {
             setTicketBuyerLists([...ticketBuyerLists, {
@@ -186,7 +186,7 @@ const DetailRaffle1155 = () => {
 
         } else if (buyStatus === 1) {
           const findIdx = ticketBuyerLists.findIndex((item: any) =>
-            item?.buyer.toLowerCase() === storeData.address)
+            item?.buyer.toLowerCase() === storeData.address.toLowerCase())
 
           const new_buyerLists = ticketBuyerLists.map((item: any, idx: any) => {
             return idx === findIdx ? { ...ticketBuyerLists[findIdx], amount: item.amount + Number(amount) } : item
@@ -222,7 +222,7 @@ const DetailRaffle1155 = () => {
       const fetch_lists = await raffleContract.fetchRaffleItems();
       const get_winner = fetch_lists.find((item: any, index: number)  => item.tokenId.toNumber() === nftInfo?.tokenId && item.solid === true);
       setWinnerAddress(get_winner.winner)
-      if (get_winner.winner.toLowerCase() === storeData.address) {
+      if (get_winner.winner.toLowerCase() === storeData.address.toLowerCase()) {
         setWinner(true)
       } else {
         setWinner(false)
@@ -303,7 +303,7 @@ const DetailRaffle1155 = () => {
         const getWalletBalance: any = await getBalance();
         setWalletBalance(getWalletBalance)
 
-        if (nftInfoById.start_date * 1000 > Date.now() && nftInfoById.walletAddress === storeData.address) {
+        if (nftInfoById.start_date * 1000 > Date.now() && nftInfoById.walletAddress.toString().toLowerCase() === storeData.address.toLowerCase()) {
           setShowEdit(true)
         }
 
@@ -312,7 +312,7 @@ const DetailRaffle1155 = () => {
 
         if (storeData.wallet === 'connected') {
           const getMyTickets = await fetchMyTickets1155()
-          const filter_myTickets = getMyTickets.find((item: any) => item.buyer.toLowerCase() === storeData.address && item.raffleId.toNumber() === getRaffleInfo?.itemId + 1)
+          const filter_myTickets = getMyTickets.find((item: any) => item.buyer.toLowerCase() === storeData.address.toLowerCase() && item.raffleId.toNumber() === getRaffleInfo?.itemId + 1)
           const getBuyTicketAmount = filter_myTickets?.ticketAmount.toNumber()
 
           if (getBuyTicketAmount > 0) {

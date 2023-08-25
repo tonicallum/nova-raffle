@@ -120,7 +120,7 @@ const RaffleRarticipant = (props: any) => {
 
           const getTicketsOwned = filter_TicketByID.find(
             (item: any) =>
-              item.owner.toString().toLowerCase() === storeData.address
+              item.owner.toString().toLowerCase() === storeData.address.toLowerCase()
           );
           const resTicketsOwned = getTicketsOwned.ticketAmount
             ? getTicketsOwned?.ticketAmount.toNumber()
