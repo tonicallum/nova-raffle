@@ -120,7 +120,6 @@ const LeaderBoard = () => {
     allRaffle = dayRaffleFilter;
 
     let ans = allRaffle.reduce((agg: any, curr: any) => {
-      console.log("cur", curr);
       let found = agg.find(
         (x: { walletAddress: any }) => x.walletAddress === curr.walletAddress
       );
@@ -188,7 +187,7 @@ const LeaderBoard = () => {
       buyAllRaffle.map(async (item: any, index: number) => {
         const fetchItem: any = await getTicketsById(item._id);
         if (fetchItem.length !== 0) {
-          return { ...fetchItem, winner: item.winner, ticketPrice: item.price };
+          return { ...fetchItem, winner: item.winnerAddress, ticketPrice: item.price };
         }
       })
     );
@@ -201,7 +200,7 @@ const LeaderBoard = () => {
       for (let j = 0; j < objKeys.length - 2; j++) {
         foundBuy.push({
           item: resFoundBuyTicket[i][j],
-          winner: resFoundBuyTicket[i].winner,
+          winner: resFoundBuyTicket[i].winnerAddress,
           ticketPrice: resFoundBuyTicket[i].ticketPrice,
         });
       }
@@ -277,15 +276,6 @@ const LeaderBoard = () => {
     (async () => {
       try {
         const allRaffles: any = await getAllRaffle();
-        // const fetchRaffle1155 = await fetchRaffleLists1155();
-        // const res_fetchRaffle = allRaffles.map((item: any) => {
-        //   return { ...item }
-        // })
-        // const res_fetchRaffle1155 = fetchRaffle1155.map((item: any) => {
-        //   return { ...item }
-        // })
-        // const tempAllRaffle: any = [...res_fetchRaffle, ...res_fetchRaffle1155];
-        console.log("res_fetchRaffle", allRaffles);
         fetchRafflers(allRaffles);
         fetchBuyRaffler(allRaffles);
       } catch (error) {

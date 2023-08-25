@@ -269,33 +269,38 @@ const DetailRaffle = () => {
   const getRaffleStatus = (nftInfo: any) => {
     const currentTime = Math.floor(Date.now() / 1000);
     let status = 0;
-    if (currentTime > nftInfo.end_date) status = 2;
-    else if (currentTime >= nftInfo.start_date) status = 1;
+    if (currentTime > nftInfo.end_date) {
+      setWinnerAddress(nftInfo?.winnerAddress);
+      status = 2;
+    } else if (currentTime >= nftInfo.start_date) {
+      status = 1;
+    }
     setRaffleStatus(status);
   };
 
   const handleTickedEndedTime = async () => {
     try {
+      console.log("handleTickedEndedTime");
       // if (nftInfo.state !== 0) return
       setLoading(true);
-      const nftInfoById: any = await getRaffleById(id); //data base se araha
-      const getRaffleInfo: any = await fetchRaffleItems(
-        nftInfoById.tokenId,
-        nftInfoById.tokenAddress,
-        nftInfoById.start_date
-      );
-      console.log("Raffle Id", getRaffleInfo?.itemId + 1);
-      const fetch_lists = await idToRaffleItemBlock(getRaffleInfo?.itemId + 1);
-      console.log("fetch_lists", fetch_lists);
-      const get_winner = await calculateWinner(
-        getRaffleInfo?.itemId + 1,
-        fetch_lists.randomIndex
-      );
-      console.log("WInner WInner", get_winner);
-      setWinnerAddress(get_winner);
-      console.log("mera address", typeof storeData.address);
-      const ZEROADDRESS = ethers.constants.AddressZero;
-      console.log("zero Address", typeof ZEROADDRESS);
+      // const nftInfoById: any = await getRaffleById(id); //data base se araha
+      // const getRaffleInfo: any = await fetchRaffleItems(
+      //   nftInfoById.tokenId,
+      //   nftInfoById.tokenAddress,
+      //   nftInfoById.start_date
+      // );
+      // console.log("Raffle Id", getRaffleInfo?.itemId + 1);
+      // const fetch_lists = await idToRaffleItemBlock(getRaffleInfo?.itemId + 1);
+      // console.log("fetch_lists", fetch_lists);
+      // const get_winner = await calculateWinner(
+      //   getRaffleInfo?.itemId + 1,
+      //   fetch_lists.randomIndex
+      // );
+      // console.log("WInner WInner", get_winner);
+      // setWinnerAddress(nftInfoById.winnerAddress);
+      // console.log("mera address", typeof storeData.address);
+      // const ZEROADDRESS = ethers.constants.AddressZero;
+      // console.log("zero Address", typeof ZEROADDRESS);
       setWinner(true);
       setRaffleStatus(2);
       setLoading(false);
