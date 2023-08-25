@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+
 import "./RaffleTypes.sol";
 
 pragma solidity >=0.8.0 <0.9.0;
@@ -15,7 +17,8 @@ contract NFT721Raffle is
     AccessControl,
     ReentrancyGuard,
     VRFConsumerBaseV2,
-    ConfirmedOwner
+    ConfirmedOwner,
+    KeeperCompatibleInterface
 {
     Config public config;
     VRFCoordinatorV2Interface private coordinator;
@@ -25,6 +28,10 @@ contract NFT721Raffle is
     mapping(uint64 => RaffleStruct) public idToRaffleItem;
     mapping(uint64 => EntriesBought[]) public raffleIdToBuyerEntries;
     mapping(uint256 => uint64) public requestIdToRaffleId;
+
+    // for keeper
+    uint64[] private ongoingRaffles;
+    bool private stopKeeper;
 
     event RaffleCreate(
         uint64 indexed _raffleId,
@@ -80,7 +87,7 @@ contract NFT721Raffle is
         if (_expirationTime < _startTime)
             revert("ExpirationTimeMustBeAfterStartTime");
 
-        uint32 duration = _expirationTime - uint32(_startTime);
+        // uint32 duration = _expirationTime - uint32(_startTime);
         // if (duration < 86400 || duration > config.maxDuration)
         //     revert("DurationLimited");
         if (_totalSupply < 2 || _totalSupply > config.maxSupply)
@@ -118,7 +125,9 @@ contract NFT721Raffle is
             status: STATUS.NORMAL,
             winner: address(0)
         });
+
         idToRaffleItem[++config.raffleIndex] = raffle;
+        ongoingRaffles.push(config.raffleIndex);
 
         emit RaffleCreate(config.raffleIndex, _nftAddress, _nftId);
         return config.raffleIndex;
@@ -167,28 +176,26 @@ contract NFT721Raffle is
         emit RaffleTicketSold(_raffleId, ticketId, msg.sender);
     }
 
-    function initiateRaffleDrawing(
-        uint64 _raffleId
-    ) external nonReentrant onlyRole(OPERATOR_ROLE) {
-        RaffleStruct memory raffle = idToRaffleItem[_raffleId];
+    // function initiateRaf fleDrawing(uint64 _raffleId) public nonReentrant {
+    //     RaffleStruct memory raffle = idToRaffleItem[_raffleId];
 
-        // Unsold entries cannot draw
-        if (raffle.status != STATUS.NORMAL || raffle.currentSupply == 0)
-            revert("Wrong status");
+    //     // Unsold entries cannot draw
+    //     if (raffle.status != STATUS.NORMAL || raffle.currentSupply == 0)
+    //         revert("Wrong status");
 
-        if (
-            raffle.currentSupply == raffle.totalSupply ||
-            block.timestamp > uint256(raffle.expirationTime)
-        ) {
-            requestRandomNumber(_raffleId);
-            idToRaffleItem[_raffleId].status = STATUS.DRAWNIG;
-        } else {
-            // Not sold out and under the deadline
-            revert("Not sold out & deadline");
-        }
+    //     if (
+    //         raffle.currentSupply == raffle.totalSupply ||
+    //         block.timestamp > uint256(raffle.expirationTime)
+    //     ) {
+    //         requestRandomNumber(_raffleId);
+    //         idToRaffleItem[_raffleId].status = STATUS.DRAWNIG;
+    //     } else {
+    //         // Not sold out and under the deadline
+    //         revert("Not sold out & deadline");
+    //     }
 
-        emit RaffleStatus(_raffleId, STATUS.DRAWNIG);
-    }
+    //     emit RaffleStatus(_raffleId, STATUS.DRAWNIG);
+    // }
 
     function cancelRaffle(uint64 _raffleId) external nonReentrant {
         RaffleStruct memory raffle = idToRaffleItem[_raffleId];
@@ -198,6 +205,8 @@ contract NFT721Raffle is
 
         IERC721 asset = IERC721(raffle.nftAddress);
         asset.transferFrom(address(this), msg.sender, raffle.nftId);
+
+        removeFromOngoingRaffles(_raffleId);
 
         idToRaffleItem[_raffleId].status = STATUS.CANCELLED;
         emit RaffleStatus(_raffleId, STATUS.CANCELLED);
@@ -231,7 +240,88 @@ contract NFT721Raffle is
             randomIndex
         );
 
+        removeFromOngoingRaffles(raffleId);
+
         emit RaffleStatus(raffleId, STATUS.DRAWED);
+    }
+
+    function checkUpkeep(
+        bytes memory /* checkData */
+    )
+        public
+        view
+        override
+        returns (bool upKeepNeeded, bytes memory performData)
+    {
+        bool isUpkeepNeeded;
+        uint64 raffleId = 0;
+
+        for (uint64 i = 0; i < ongoingRaffles.length; i++) {
+            RaffleStruct memory _raffle = idToRaffleItem[ongoingRaffles[i]];
+
+            if (
+                _raffle.expirationTime <= block.timestamp &&
+                _raffle.randomIndex == 0
+            ) {
+                isUpkeepNeeded = true;
+                raffleId = ongoingRaffles[i];
+                break;
+            }
+        }
+
+        performData = abi.encodePacked(raffleId);
+
+        upKeepNeeded = stopKeeper == false && isUpkeepNeeded;
+
+        return (upKeepNeeded, performData);
+    }
+
+    function performUpkeep(
+        bytes calldata performData
+    ) external override nonReentrant {
+        stopKeeper = true;
+
+        uint64 _raffleId = abi.decode(performData, (uint64));
+        if (_raffleId == 0) revert("Invalid RaffleId");
+        RaffleStruct memory raffle = idToRaffleItem[_raffleId];
+
+        // Unsold entries cannot draw
+        if (raffle.status != STATUS.NORMAL || raffle.currentSupply == 0)
+            revert("Wrong status");
+
+        if (
+            raffle.currentSupply == raffle.totalSupply ||
+            block.timestamp > uint256(raffle.expirationTime)
+        ) {
+            requestRandomNumber(_raffleId);
+            idToRaffleItem[_raffleId].status = STATUS.DRAWNIG;
+        } else {
+            // Not sold out and under the deadline
+            revert("Not sold out & deadline");
+        }
+
+        emit RaffleStatus(_raffleId, STATUS.DRAWNIG);
+
+        stopKeeper = false;
+    }
+
+    function removeFromOngoingRaffles(uint256 _raffleId) private {
+        uint256 indexToDelete = ongoingRaffles.length;
+
+        for (uint256 i = 0; i < ongoingRaffles.length; i++) {
+            if (ongoingRaffles[i] == _raffleId) {
+                indexToDelete = i;
+                break;
+            }
+        }
+
+        if (indexToDelete < ongoingRaffles.length) {
+            ongoingRaffles[indexToDelete] = ongoingRaffles[
+                ongoingRaffles.length - 1
+            ];
+
+            ongoingRaffles.pop();
+        }
     }
 
     function claimWinnings(uint64 _raffleId) external nonReentrant {
