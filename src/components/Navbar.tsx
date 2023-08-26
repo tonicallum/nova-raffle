@@ -4,10 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { CONNECT } from "../actions";
 import { connectWallet } from "../utils";
-import ProfileImg from "../assets/profile.svg";
 import CONFIG from "../config";
-import LeaderBoardImg from "../assets/leaderboard.svg";
-import CreateImg from "../assets/create.svg";
 import Logo from "../assets/Logo.png";
 
 const Navbar = () => {
@@ -17,6 +14,7 @@ const Navbar = () => {
     status: ``,
     address: ``,
   });
+
   const handleConnect = async () => {
     try {
       const wallet: any = await connectWallet();
@@ -61,6 +59,7 @@ const Navbar = () => {
 
   useEffect(() => {
     try {
+      handleConnect();
       window.ethereum.on("accountsChanged", async () => {
         const wallet: any = await connectWallet();
         localStorage.setItem(CONFIG.WALLET_STATUS_LOCALSTORAGE, "connected");

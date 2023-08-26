@@ -172,16 +172,9 @@ const RaffleProfile = () => {
             getSalesVolume_721 = 0,
             winnerCount_721 = 0;
           for (let i = 0; i < filterMyRaffles.length; i++) {
-            const getTicketByID: any = await getTicketsById(
-              filterMyRaffles[i]._id
-            );
-            let totalAmount = 0;
-            for (let i = 0; i < getTicketByID.length; i++) {
-              totalAmount += getTicketByID[i].amount;
-            }
-            total_tickets_721 += totalAmount;
-            getSalesVolume_721 += filterMyRaffles[i]?.price * totalAmount;
-            filterMyRaffles[i].totalAmount = totalAmount;
+            total_tickets_721 += filterMyRaffles[i].sold_tickets;
+            getSalesVolume_721 += filterMyRaffles[i]?.price * filterMyRaffles[i].sold_tickets;
+            filterMyRaffles[i].totalAmount = filterMyRaffles[i].sold_tickets;
           }
           const res_ticketsSold = total_tickets_721;
           const res_saleVolume = getSalesVolume_721 / CONFIG.DECIMAL;
