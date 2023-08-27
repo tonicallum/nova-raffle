@@ -167,6 +167,12 @@ const DetailRaffle = () => {
         return;
       }
 
+      if (ticketsOwned / nftInfo.total_tickets > 0.2) {
+        toast.error(`Amount must smaller than Max Amount`);
+        setLoading(false);
+        return;
+      }
+
       if (amount > nftInfo.total_tickets - currentBuyTicket) {
         toast.error(`Amount must smaller than Max Amount`);
         setLoading(false);
