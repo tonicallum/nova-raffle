@@ -18,6 +18,7 @@ import {
 	UpdateRaffleContract,
 	FinishRaffleContract,
 	fetchRaffleItems,
+	getDesiredRaffle,
 } from "../../services/contracts/raffle";
 import {
 	CancelRaffle1155Contract,
@@ -89,14 +90,13 @@ const EditRaffle = () => {
 					Math.floor(raffleValue.end_date?.getTime() / 1000)
 				);
 			} else {
-				const getRaffleInfo = await fetchRaffleItems(
+				const getRaffleInfo = await getDesiredRaffle(
 					raffleValue.tokenId,
 					raffleValue.tokenAddress,
-					Math.floor(raffleValue.start_date?.getTime() / 1000)
 				);
 
 				updateRaffleTx = await UpdateRaffleContract(
-					getRaffleInfo?.itemId + 1,
+					getRaffleInfo.index + 1,
 					raffleValue.price,
 					raffleValue.total_tickets,
 					Math.floor(raffleValue.start_date?.getTime() / 1000),
@@ -121,6 +121,7 @@ const EditRaffle = () => {
 					).toString(),
 					tokenAddress: raffleValue.tokenAddress,
 					tokenId: raffleValue.tokenId,
+					sold_tickets : raffleValue.sold_tickets,
 					image: raffleValue.image,
 					walletAddress: storeData.address,
 				};
@@ -175,14 +176,13 @@ const EditRaffle = () => {
 					getRaffleInfo?.itemId + 1
 				);
 			} else {
-				const getRaffleInfo = await fetchRaffleItems(
+				const getRaffleInfo = await getDesiredRaffle(
 					raffleValue.tokenId,
 					raffleValue.tokenAddress,
-					Math.floor(raffleValue.start_date?.getTime() / 1000)
 				);
 
 				finishRaffleTx = await FinishRaffleContract(
-					getRaffleInfo?.itemId + 1
+					getRaffleInfo.index
 				);
 			}
 
@@ -230,13 +230,12 @@ const EditRaffle = () => {
 					getRaffleInfo.itemId + 1
 				);
 			} else {
-				const getRaffleInfo: any = await fetchRaffleItems(
+				const getRaffleInfo: any = await getDesiredRaffle(
 					raffleValue.tokenId,
 					raffleValue.tokenAddress,
-					Math.floor(raffleValue.start_date?.getTime() / 1000)
 				);
 				raffleDeleteTx = await CancelRaffleContract(
-					getRaffleInfo.itemId + 1
+					getRaffleInfo.index
 				);
 			}
 
