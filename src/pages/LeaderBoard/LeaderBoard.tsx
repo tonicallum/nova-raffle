@@ -218,7 +218,7 @@ const LeaderBoard = () => {
       for (let j = 0; j < objKeys.length - 2; j++) {
         foundBuy.push({
           item: resFoundBuyTicket[i][j],
-          winner: resFoundBuyTicket[i].winnerAddress,
+          winner: resFoundBuyTicket[i].winner,
           ticketPrice: resFoundBuyTicket[i].ticketPrice,
         });
       }
