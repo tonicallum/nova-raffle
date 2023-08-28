@@ -532,22 +532,22 @@ const EditRaffle = () => {
 							</div>
 						</div>
 						<div className="flex justify-center gap-[16px] mt-8 ">
-							<div className="flex justify-center -mt-6">
+							{/* <div className="flex justify-center -mt-6">
 								<p
 									onClick={handleRaffleUpdateBtn}
 									className={`cursor-pointer text-white bg-[#8652FF] rounded-[0.5rem] flex items-center py-3 px-5 mt-8 `}
 								>
 									Update Raffle
 								</p>
-							</div>
-							<div className="flex justify-center -mt-6">
+							</div> */}
+							{/* <div className="flex justify-center -mt-6">
 								<p
 									onClick={handleRaffleFinishBtn}
 									className={`cursor-pointer text-white bg-[#8652FF] rounded-[0.5rem] flex items-center py-3 px-5 mt-8 `}
 								>
 									Finish Raffle
 								</p>
-							</div>
+							</div> */}
 							<div className="flex justify-center -mt-6">
 								<p
 									onClick={handleRaffleDeleteBtn}
