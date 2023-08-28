@@ -33,7 +33,11 @@ import DiscordIcon from "../../assets/discord.svg";
 import TwitterIcon from "../../assets/twitter.svg";
 import EditIcon from "../../assets/edit.png";
 
-import { buyTicket, fetchRaffleItems, getDesiredRaffle } from "../../services/contracts/raffle";
+import {
+  buyTicket,
+  fetchRaffleItems,
+  getDesiredRaffle,
+} from "../../services/contracts/raffle";
 import { connectedChain, getBalance } from "../../utils";
 import { API_URL } from "../../config/dev";
 import axios from "axios";
@@ -263,6 +267,7 @@ const DetailRaffle = () => {
       setLoading(false);
     }
   };
+
   const getRaffleStatus = (nftInfo: any) => {
     const currentTime = Math.floor(Date.now() / 1000);
     let status = 0;
@@ -397,6 +402,8 @@ const DetailRaffle = () => {
           nftName: nftInfoById.name,
         });
 
+        setCurrnetBuyTicket(nftInfoById.sold_tickets);
+
         const getWalletBalance: any = await getBalance();
         setWalletBalance(getWalletBalance);
 
@@ -408,7 +415,7 @@ const DetailRaffle = () => {
           setShowEdit(true);
         }
 
-        const getTicketByID = (await getTicketsById(nftInfoById._id)) as any[];
+        const getTicketByID : any = await getTicketsById(nftInfoById._id);
         const filter_myTickets = getTicketByID.find(
           (item: any) =>
             item.buyer.toString().toLowerCase() ===
@@ -423,27 +430,28 @@ const DetailRaffle = () => {
         } else {
           setBuyStatus(0);
         }
-
+        const getWinningChance =
+          (100 * resTicketsOwned) / nftInfoById.sold_tickets;
+        setWinningChance(getWinningChance);
         const percentTicketsOwned =
           (100 * resTicketsOwned) / nftInfoById.total_tickets;
         setTicketsOwned(percentTicketsOwned);
         setTicketHolder(getTicketByID.length);
-        setCurrnetBuyTicket(nftInfoById.sold_tickets);
-        const getWinningChance =
-          (100 * resTicketsOwned) / nftInfoById.sold_tickets;
-        setWinningChance(getWinningChance);
+
         setTicketBuyerLists(getTicketByID);
-        
 
         // const allRaffles: any = await getAllRaffle();
         // const tempRaffleIndex =
         //   allRaffles.findIndex((raffle: any) => raffle._id === id) + 1;
         // setRaffleId(tempRaffleIndex);
 
-        const raffleInfo = await getDesiredRaffle(nftInfoById.tokenId, nftInfoById.tokenAddress);
+        const raffleInfo = await getDesiredRaffle(
+          nftInfoById.tokenId,
+          nftInfoById.tokenAddress
+        );
         setRaffleId(raffleInfo.index);
-        console.log("raffleInfo", raffleInfo.raffle)
-        
+        console.log("raffleInfo", raffleInfo.raffle);
+
         getRaffleStatus(raffleInfo.raffle);
         setLoading(false);
       } catch (error) {

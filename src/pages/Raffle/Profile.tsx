@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import CONFIG from "../../config";
 import { connectWallet, delay } from "../../utils";
 import { sign } from "crypto";
+import { fetchRaffleItems, fetchRaffleLists } from "../../services/contracts/raffle";
 
 const RaffleProfile = () => {
   const [isLoading, setLoading] = useState(false);
@@ -169,8 +170,7 @@ const RaffleProfile = () => {
           setFollowRaffles([...filterFollowRaffles]);
 
           let total_tickets_721 = 0,
-            getSalesVolume_721 = 0,
-            winnerCount_721 = 0;
+            getSalesVolume_721 = 0;
           for (let i = 0; i < filterMyRaffles.length; i++) {
             total_tickets_721 += filterMyRaffles[i].sold_tickets;
             getSalesVolume_721 += filterMyRaffles[i]?.price * filterMyRaffles[i].sold_tickets;
@@ -207,7 +207,10 @@ const RaffleProfile = () => {
             getPurchasedVolume_721 += getRaffles[i].price * totalAmount;
           }
 
-          const res_winnerCount: any = winnerCount_721;
+          const raffles : any = await fetchRaffleLists();
+          const wonraffles = raffles.filter((item: any) => item.winner.toLowerCase() === storeData.address.toLowerCase())
+
+          const res_winnerCount: any = wonraffles.length;
           const res_raffleBought = [...raffleBought_721];
           const res_purchasedLists = [...purchasedList_721];
           const res_ticketsBought = ticketBought_721;

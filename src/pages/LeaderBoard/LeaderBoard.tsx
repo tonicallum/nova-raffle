@@ -3,6 +3,7 @@ import Navbar from "../../components/Navbar";
 import { getAllRaffle, getTicketsById } from "../../services/api";
 import axios from "axios";
 import { API_URL } from "../../config/dev";
+import { fetchRaffleLists } from "../../services/contracts/raffle";
 
 const LeaderBoard = () => {
   const [rafflerLists, setRafflerLists] = useState([]);
@@ -174,6 +175,7 @@ const LeaderBoard = () => {
 
   const fetchBuyRaffler = async (tempAllRaffle: any) => {
     setRaffleLoading(true);
+    const allRaffles = await fetchRaffleLists();
     let buyAllRaffle: any = [],
       dayBuyRaffleFilter: any = [],
       tempBuyAllRaffle: any = [];
@@ -186,8 +188,24 @@ const LeaderBoard = () => {
     const tempFetchBuyTicket: any[] = await Promise.all(
       buyAllRaffle.map(async (item: any, index: number) => {
         const fetchItem: any = await getTicketsById(item._id);
+        let matchingRaffle = null;
+        for (let i = 0; i < allRaffles.length; i++) {
+          const raffle = allRaffles[i];
+          if (
+            raffle.nftId === item.tokenId &&
+            raffle.nftAddress.toLowerCase() === item.tokenAddress.toLowerCase()
+          ) {
+            matchingRaffle = raffle;
+            break;
+          }
+        }
+
         if (fetchItem.length !== 0) {
-          return { ...fetchItem, winner: item.winnerAddress, ticketPrice: item.price };
+          return {
+            ...fetchItem,
+            winner: matchingRaffle.winner,
+            ticketPrice: item.price,
+          };
         }
       })
     );
