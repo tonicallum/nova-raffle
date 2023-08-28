@@ -376,13 +376,17 @@ const DetailRaffle = () => {
 
   const handleclaimWinnings = async()=> {
       console.log('id of raffle to claim >>>',raffleId);
+      console.log('type of winner Address',winnerAddress);
+      console.log('type of storage wallet',storeData.address)
+
       const tx = await claimWinnings(raffleId);
       if(tx) {
-        toast.success('reward claiming successfull');
         setClaimWinning(true);
+        toast.success('reward claiming successfull');
       }
       else {
         toast.error('error in reward claiming');
+        setClaimWinning(false)
       }
   }
 
@@ -584,7 +588,7 @@ const DetailRaffle = () => {
                               )
                             : ``}
                         </p>
-                        { !isclaimWinnings &&
+                        { !isclaimWinnings && storeData.address === winnerAddress &&
                         
                         <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover" onClick={handleclaimWinnings}>
                                Claim Winnings
