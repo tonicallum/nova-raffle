@@ -37,6 +37,7 @@ import {
   buyTicket,
   fetchRaffleItems,
   getDesiredRaffle,
+  claimWinnings
 } from "../../services/contracts/raffle";
 import { connectedChain, getBalance } from "../../utils";
 import { API_URL } from "../../config/dev";
@@ -55,6 +56,7 @@ const DetailRaffle = () => {
   const [currentBuyTicket, setCurrnetBuyTicket] = useState(0);
   const [isWinner, setWinner] = useState(false);
   const [winnerAddress, setWinnerAddress] = useState("");
+  const [isclaimWinnings,setClaimWinning] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [ticketsOwned, setTicketsOwned] = useState(0);
@@ -359,7 +361,7 @@ const DetailRaffle = () => {
                     winnerAddress?.substr(storeData?.address.length - 4, 4)
                   : ``}
               </p>
-
+             
               {isWinner && (
                 <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
                   Claim Winnings
@@ -371,6 +373,19 @@ const DetailRaffle = () => {
       </>
     );
   };
+
+  const handleclaimWinnings = async()=> {
+      console.log('id of raffle to claim >>>',raffleId);
+      const tx = await claimWinnings(raffleId);
+      if(tx) {
+        toast.success('reward claiming successfull');
+        setClaimWinning(true);
+      }
+      else {
+        toast.error('error in reward claiming');
+      }
+  }
+
 
   useEffect(() => {
     (async () => {
@@ -425,11 +440,11 @@ const DetailRaffle = () => {
           ? filter_myTickets?.amount
           : 0;
 
-        if (resTicketsOwned > 0) {
-          setBuyStatus(1);
-        } else {
-          setBuyStatus(0);
-        }
+          if (resTicketsOwned > 0) {
+            setBuyStatus(1);
+          } else {
+            setBuyStatus(0);
+          }
         const getWinningChance =
           (100 * resTicketsOwned) / nftInfoById.sold_tickets;
         setWinningChance(getWinningChance);
@@ -569,6 +584,13 @@ const DetailRaffle = () => {
                               )
                             : ``}
                         </p>
+                        { !isclaimWinnings &&
+                        
+                        <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover" onClick={handleclaimWinnings}>
+                               Claim Winnings
+                        </button>}
+                       
+
                       </div>
                     ) : raffleStatus === 0 ? (
                       <p className="text-black text-[1.25rem] text-center">

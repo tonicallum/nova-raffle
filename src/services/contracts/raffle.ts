@@ -431,6 +431,7 @@ export const claimWinnings = async (itemId: any) => {
 		);
 		const tx = await raffleContract.claimWinnings(itemId);
 		await tx.wait();
+		return tx;
 	} catch (error) {
 		console.log("error", error);
 	}
