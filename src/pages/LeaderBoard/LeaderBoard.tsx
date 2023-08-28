@@ -188,6 +188,7 @@ const LeaderBoard = () => {
     const tempFetchBuyTicket: any[] = await Promise.all(
       buyAllRaffle.map(async (item: any, index: number) => {
         const fetchItem: any = await getTicketsById(item._id);
+        console.log("fetchItem", fetchItem)
         let matchingRaffle = null;
         for (let i = 0; i < allRaffles.length; i++) {
           const raffle = allRaffles[i];
@@ -202,53 +203,56 @@ const LeaderBoard = () => {
 
         if (fetchItem.length !== 0) {
           return {
-            ...fetchItem,
+            ...fetchItem[0],
             winner: matchingRaffle.winner,
             ticketPrice: item.price,
           };
         }
       })
     );
+    
     const resFoundBuyTicket = tempFetchBuyTicket.filter(
       (item: any, index: number) => item !== undefined
     );
-    let foundBuy: any = [];
-    for (let i = 0; i < resFoundBuyTicket?.length; i++) {
-      const objKeys = Object.keys(resFoundBuyTicket[i]);
-      for (let j = 0; j < objKeys.length - 2; j++) {
-        foundBuy.push({
-          item: resFoundBuyTicket[i][j],
-          winner: resFoundBuyTicket[i].winner,
-          ticketPrice: resFoundBuyTicket[i].ticketPrice,
-        });
-      }
-    }
+    
+    // let foundBuy: any = [];
+    // for (let i = 0; i < resFoundBuyTicket?.length; i++) {
+    //   const objKeys = Object.keys(resFoundBuyTicket[i]);
+    //   for (let j = 0; j < objKeys.length - 2; j++) {
+    //     foundBuy.push({
+    //       item: resFoundBuyTicket[i][j],
+    //       winner: resFoundBuyTicket[i].winner,
+    //       ticketPrice: resFoundBuyTicket[i].ticketPrice,
+    //     });
+    //   }
+    // }
 
-    let foundBuyGroupBy = foundBuy.reduce((agg: any, curr: any) => {
-      let found = agg.find((x: { buyer: any }) => x.buyer === curr.item.buyer);
+    let foundBuyGroupBy = resFoundBuyTicket.reduce((agg: any, curr: any) => {
+      let found = agg.find((x: { buyer: any }) => x.buyer === curr.buyer);
       if (found) {
         found.buyerCount += 1;
         found.ticketPrice.push(curr.ticketPrice);
-        found.buyVolume += curr.ticketPrice * curr.item.amount;
-        found.ticketAmount += curr.item.amount;
+        found.buyVolume += curr.ticketPrice * curr.amount;
+        found.ticketAmount += curr.amount;
         found.won.push(curr.winner);
       } else {
         agg.push({
-          buyer: curr.item.buyer,
+          buyer: curr.buyer,
           buyerCount: 1,
           ticketPrice: [curr.ticketPrice],
-          buyVolume: curr.ticketPrice * curr.item.amount,
-          ticketAmount: curr.item.amount,
+          buyVolume: curr.ticketPrice * curr.amount,
+          ticketAmount: curr.amount,
           won: [curr.winner],
         });
       }
       return agg;
     }, []);
+    console.log("resFoundBuyTicket", foundBuyGroupBy)
     let tempfoundBuyGroupBy: any = [],
       tempFoundBuyGroupBySort: any = [];
     foundBuyGroupBy.forEach((item: any, index: number) => {
       let wonCount = item.won.filter(
-        (_item: any) => _item === item.buyer
+        (_item: any) => _item.toString().toLowerCase() === item.buyer.toString().toLowerCase()
       ).length;
       tempfoundBuyGroupBy.push({ ...item, wonCount: wonCount });
     });
