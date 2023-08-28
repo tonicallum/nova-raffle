@@ -337,7 +337,7 @@ const Raffle = () => {
                                 Price (Descending)
                               </p>
                             </li>
-                            <li className="my-2">
+                            {/* <li className="my-2">
                               <p
                                 className="cursor-pointer text-[#5E5E5E] text-base hover:text-black transition-all"
                               >
@@ -350,7 +350,7 @@ const Raffle = () => {
                               >
                                 Rank (Descending)
                               </p>
-                            </li>
+                            </li> */}
                           </ul>
                           <div className="mt-4">
                             <h1 className="text-3xl">Filter</h1>
