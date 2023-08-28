@@ -330,7 +330,7 @@ const EditRaffle = () => {
 								</span>
 							</label>
 							<div className="basis-[48%]">
-								<div className="mb-5">
+								{/* <div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
 										htmlFor="project"
@@ -352,7 +352,7 @@ const EditRaffle = () => {
 											className="bg-white w-full text-[#1A1A1A] placeholder:text-[#606060] p-3 outline-none"
 										/>
 									</div>
-								</div>
+								</div> */}
 								<div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
