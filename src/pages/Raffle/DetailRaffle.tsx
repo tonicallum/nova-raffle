@@ -273,10 +273,10 @@ const DetailRaffle = () => {
   const getRaffleStatus = (nftInfo: any) => {
     const currentTime = Math.floor(Date.now() / 1000);
     let status = 0;
-    if (currentTime > nftInfo.expirationTime) {
-      setWinnerAddress(nftInfo?.winner);
+    if (currentTime > nftInfo.end_date) {
+      
       status = 2;
-    } else if (currentTime >= nftInfo.startTime) {
+    } else if (currentTime >= nftInfo.start_date) {
       status = 1;
     }
     setRaffleStatus(status);
@@ -420,7 +420,7 @@ const DetailRaffle = () => {
           state: nftInfoById.state,
           nftName: nftInfoById.name,
         });
-
+        getRaffleStatus(nftInfoById);
         setCurrnetBuyTicket(nftInfoById.sold_tickets);
 
         const getWalletBalance: any = await getBalance();
@@ -471,7 +471,8 @@ const DetailRaffle = () => {
         setRaffleId(raffleInfo.index);
         console.log("raffleInfo", raffleInfo.raffle);
 
-        getRaffleStatus(raffleInfo.raffle);
+        
+        setWinnerAddress(raffleInfo.raffle?.winner);
         setLoading(false);
       } catch (error) {
         console.log("error", error);
