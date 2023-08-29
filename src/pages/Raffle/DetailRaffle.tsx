@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Countdown, { CountdownApi } from "react-countdown";
@@ -8,6 +8,7 @@ import Countdown, { CountdownApi } from "react-countdown";
 import Navbar from "../../components/Navbar";
 import {
   createTicketTransaction,
+  deleteRaffle,
   getAllRaffle,
   getRaffleById,
   getTicketsById,
@@ -37,14 +38,17 @@ import {
   buyTicket,
   fetchRaffleItems,
   getDesiredRaffle,
-  claimWinnings
+  claimWinnings,
+  CancelRaffleContract,
 } from "../../services/contracts/raffle";
 import { connectedChain, getBalance } from "../../utils";
-import { API_URL } from "../../config/dev";
+import { API_URL, TOAST_TIME_OUT } from "../../config/dev";
 import axios from "axios";
+import { CancelRaffle1155Contract, fetchRaffle1155Items } from "../../services/contracts/raffle1155";
 
 const DetailRaffle = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const storeData: any = useSelector((status) => status);
   const [isLoading, setLoading] = useState(false);
   const [nftInfo, setNftInfo] = useState<any>([]);
@@ -56,7 +60,7 @@ const DetailRaffle = () => {
   const [currentBuyTicket, setCurrnetBuyTicket] = useState(0);
   const [isWinner, setWinner] = useState(false);
   const [winnerAddress, setWinnerAddress] = useState("");
-  const [isclaimWinnings,setClaimWinning] = useState(false);
+  const [isclaimWinnings, setClaimWinning] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [ticketsOwned, setTicketsOwned] = useState(0);
@@ -274,7 +278,6 @@ const DetailRaffle = () => {
     const currentTime = Math.floor(Date.now() / 1000);
     let status = 0;
     if (currentTime > nftInfo.end_date) {
-      
       status = 2;
     } else if (currentTime >= nftInfo.start_date) {
       status = 1;
@@ -361,7 +364,7 @@ const DetailRaffle = () => {
                     winnerAddress?.substr(storeData?.address.length - 4, 4)
                   : ``}
               </p>
-             
+
               {isWinner && (
                 <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
                   Claim Winnings
@@ -374,23 +377,71 @@ const DetailRaffle = () => {
     );
   };
 
-  const handleclaimWinnings = async()=> {
-      console.log('id of raffle to claim >>>',raffleId);
-      console.log('type of winner Address',winnerAddress);
-      console.log('type of storage wallet',storeData.address)
+  const handleclaimWinnings = async () => {
+    console.log("id of raffle to claim >>>", raffleId);
+    console.log("type of winner Address", winnerAddress);
+    console.log("type of storage wallet", storeData.address);
 
-      const tx = await claimWinnings(raffleId);
-      if(tx) {
-        setClaimWinning(true);
-        toast.success('reward claiming successfull');
-      }
-      else {
-        toast.error('error in reward claiming');
-        setClaimWinning(false)
-      }
-  }
+    const tx = await claimWinnings(raffleId);
+    if (tx) {
+      setClaimWinning(true);
+      toast.success("reward claiming successfull");
+    } else {
+      toast.error("error in reward claiming");
+      setClaimWinning(false);
+    }
+  };
 
+  const handleRaffleDeleteBtn = async () => {
+		try {
+			const chainStatus = await connectedChain();
+			if (!chainStatus) return;
 
+			setLoading(true);
+
+			let raffleDeleteTx;
+			if (nftInfo.type === `ERC1155`) {
+				const getRaffleInfo: any = await fetchRaffle1155Items(
+					nftInfo.tokenId,
+					nftInfo.tokenAddress,
+					Math.floor(nftInfo.start_date?.getTime() / 1000)
+				);
+				raffleDeleteTx = await CancelRaffle1155Contract(
+					getRaffleInfo.itemId + 1
+				);
+			} else {
+				const getRaffleInfo: any = await getDesiredRaffle(
+					nftInfo.tokenId,
+					nftInfo.tokenAddress,
+				);
+				raffleDeleteTx = await CancelRaffleContract(
+					getRaffleInfo.index
+				);
+			}
+
+			if (raffleDeleteTx) {
+				const res = await deleteRaffle(id);
+				if (res) {
+					toast("Success in delete raffle", {
+						onClose: () => {
+							setTimeout(() => {
+								navigate("/");
+							}, TOAST_TIME_OUT);
+						},
+					});
+				} else {
+					toast("Error in delete raffle");
+				}
+			}
+
+			setLoading(false);
+		} catch (error) {
+			console.log("error", error);
+			setLoading(false);
+			toast("Error in delete raffle");
+		}
+	};
+  
   useEffect(() => {
     (async () => {
       try {
@@ -434,7 +485,7 @@ const DetailRaffle = () => {
           setShowEdit(true);
         }
 
-        const getTicketByID : any = await getTicketsById(nftInfoById._id);
+        const getTicketByID: any = await getTicketsById(nftInfoById._id);
         const filter_myTickets = getTicketByID.find(
           (item: any) =>
             item.buyer.toString().toLowerCase() ===
@@ -444,11 +495,11 @@ const DetailRaffle = () => {
           ? filter_myTickets?.amount
           : 0;
 
-          if (resTicketsOwned > 0) {
-            setBuyStatus(1);
-          } else {
-            setBuyStatus(0);
-          }
+        if (resTicketsOwned > 0) {
+          setBuyStatus(1);
+        } else {
+          setBuyStatus(0);
+        }
         const getWinningChance =
           (100 * resTicketsOwned) / nftInfoById.sold_tickets;
         setWinningChance(getWinningChance);
@@ -471,7 +522,6 @@ const DetailRaffle = () => {
         setRaffleId(raffleInfo.index);
         console.log("raffleInfo", raffleInfo.raffle);
 
-        
         setWinnerAddress(raffleInfo.raffle?.winner);
         setLoading(false);
       } catch (error) {
@@ -589,13 +639,15 @@ const DetailRaffle = () => {
                               )
                             : ``}
                         </p>
-                        { !isclaimWinnings && storeData.address === winnerAddress &&
-                        
-                        <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover" onClick={handleclaimWinnings}>
-                               Claim Winnings
-                        </button>}
-                       
-
+                        {!isclaimWinnings &&
+                          storeData.address === winnerAddress && (
+                            <button
+                              className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover"
+                              onClick={handleclaimWinnings}
+                            >
+                              Claim Winnings
+                            </button>
+                          )}
                       </div>
                     ) : raffleStatus === 0 ? (
                       <p className="text-black text-[1.25rem] text-center">
@@ -886,13 +938,20 @@ const DetailRaffle = () => {
               </div>
 
               {showEdit && (
-                <Link
-                  to={`/raffle/${nftInfo._id}`}
-                  className=" mt-5 flex gap-[16px] items-center bg-[#ECECEC] rounded-[9px] py-[8px] px-[10px] max-w-fit cursor-pointer ml-[auto] "
+                // <Link
+                //   to={`/raffle/${nftInfo._id}`}
+                //   className=" mt-5 flex gap-[16px] items-center bg-[#ECECEC] rounded-[9px] py-[8px] px-[10px] max-w-fit cursor-pointer ml-[auto] "
+                // >
+                <button
+                  type="button"
+                  onClick={handleRaffleDeleteBtn}
+                  className="bg-white-500 shadow-lg shadow-white-500/50 text-black bg-white rounded-[0.7rem] flex items-center py-3 px-5 mt-5 ml-[auto]"
                 >
-                  <img src={EditIcon} className="w-[18px] h-[18px] " />
-                  <p>Edit Raffle</p>
-                </Link>
+                  {/* <img src={EditIcon} className="w-[18px] h-[18px] " /> */}
+                  <p>Delete Raffle</p>
+                </button>
+
+                // </Link>
               )}
             </div>
           </div>
