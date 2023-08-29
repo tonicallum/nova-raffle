@@ -108,7 +108,7 @@ const CreateRaffle = () => {
         
         const res = await createRaffle(payload);
         if (res) {
-          toast("Success in creating raffle", {
+          toast.success("Success in creating raffle", {
             onClose: () => {
               setTimeout(() => {
                 navigate("/");
@@ -116,12 +116,12 @@ const CreateRaffle = () => {
             },
           });
         } else {
-          toast("Error in creating raffle");
+          toast.error("Error in creating raffle");
         }
       }
     } catch (error) {
       console.log("error", error);
-      toast("Error in creating raffle");
+      toast.error("Error in creating raffle");
     }
     setLoading(false);
   };
