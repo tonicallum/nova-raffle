@@ -174,6 +174,7 @@ const RaffleItem =  (props: any) => {
           <img
             src={raffle.image}
             alt="CoodeImage"
+            loading="lazy"
             className="min-h-[360px] object-cover"
           />
 
