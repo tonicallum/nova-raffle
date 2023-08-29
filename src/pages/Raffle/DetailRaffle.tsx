@@ -12,6 +12,7 @@ import {
   getAllRaffle,
   getRaffleById,
   getTicketsById,
+  getUser
 } from "../../services/api";
 
 import ReturnIcon from "../../assets/detailpage/return-icon.svg";
@@ -67,6 +68,9 @@ const DetailRaffle = () => {
   const [ticketBuyerLists, setTicketBuyerLists] = useState<any>([]);
   const [ticketHolder, setTicketHolder] = useState(0);
   const [winningChance, setWinningChance] = useState(0);
+  const [ShowCreator , setShowCreator] = useState('');
+  const [isDiscord,setDiscord] = useState(false);
+  const [isTwitter,setTwitter] = useState(false);
 
   let startCountdownApi: CountdownApi | null = null;
   let countdownEndApi: CountdownApi | null = null;
@@ -441,6 +445,12 @@ const DetailRaffle = () => {
 			toast("Error in delete raffle");
 		}
 	};
+
+  function formatAddress(address: string): string {
+    const firstChars = address.slice(0, 3);
+    const lastChars = address.slice(-4);
+    return `${firstChars}...${lastChars}`;
+  }
   
   useEffect(() => {
     (async () => {
@@ -523,6 +533,31 @@ const DetailRaffle = () => {
         console.log("raffleInfo", raffleInfo.raffle);
 
         setWinnerAddress(raffleInfo.raffle?.winner);
+        //setShowCreator(raffleInfo.raffle?.creator);
+        console.log('show creator ???',raffleInfo.raffle?.creator)
+        console.log('storedata dadress',storeData.address)
+        const user:any = await getUser(raffleInfo.raffle?.creator)
+        console.log('usera aa raha hai',user)
+        if(user){
+            if(user.twitter){
+              setTwitter(true);
+              setShowCreator(user.twitter);
+            }
+            else if(user.discordName){
+              setDiscord(true);
+              setShowCreator(user.discordName);
+            }
+            else {
+              console.log('last part to display',raffleInfo.raffle?.creator)
+                setShowCreator(formatAddress(raffleInfo.raffle?.creator))
+            }
+        }
+        else {
+          setShowCreator(formatAddress(raffleInfo.raffle?.creator))
+        }
+
+
+
         setLoading(false);
       } catch (error) {
         console.log("error", error);
@@ -890,10 +925,17 @@ const DetailRaffle = () => {
                 <div className=" flex flex-col gap-2 p-4">
                   <p className="text-[#8652FF] text-[24px] ">Raffler</p>
                   <div className="flex items-center gap-2 ">
-                    <p>@Yogesh</p>
+                    <p>{ShowCreator}</p>
+
                     <img src={IdCardIcon} />
-                    <img src={TwitterIcon} />
-                    <img src={DiscordIcon} />
+                    {isTwitter &&
+                        <img src={TwitterIcon} />
+                    }
+                    {isDiscord && 
+                         <img src={DiscordIcon} />
+                    }
+                    
+                   
                   </div>
                   {!nftInfo?.follow ? (
                     <button

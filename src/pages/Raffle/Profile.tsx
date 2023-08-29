@@ -413,7 +413,7 @@ const RaffleProfile = () => {
                 <div className="bg-white rounded-md py-8 px-8 flex items-center">
                   <img src={infoIconBlack} alt="infoIconBlack" />
                   <h1 className="xl:text-[3.2rem] lg:text-[2.5rem] md:text-[1.8rem] ml-10">
-                    You haven’t participated in any Raffles!
+                    You haven’t created  any Raffles!
                   </h1>
                 </div>
               </div>
@@ -449,7 +449,7 @@ const RaffleProfile = () => {
                 <div className="bg-white rounded-md py-8 px-8 flex items-center">
                   <img src={infoIconBlack} alt="infoIconBlack" />
                   <h1 className="xl:text-[3.2rem] lg:text-[2.5rem] md:text-[1.8rem] ml-10">
-                    You haven’t participated in any Raffles!
+                    You don't have any favourite Raffles!
                   </h1>
                 </div>
               </div>
@@ -467,7 +467,7 @@ const RaffleProfile = () => {
                 <div className="bg-white rounded-md py-8 px-8 flex items-center">
                   <img src={infoIconBlack} alt="infoIconBlack" />
                   <h1 className="xl:text-[3.2rem] lg:text-[2.5rem] md:text-[1.8rem] ml-10">
-                    You haven’t participated in any Raffles!
+                    You haven’t followed  any Raffles!
                   </h1>
                 </div>
               </div>

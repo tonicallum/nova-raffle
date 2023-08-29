@@ -6,15 +6,31 @@ import VerificationIcon from "../assets/verification-icon.svg";
 import { API_URL } from "../config/dev";
 import RedFavouriteIcon from "../assets/fav-icon.svg";
 import GreyFavouriteIcon from "../assets/grey-fav-icon.svg";
+import { getUser } from "../services/api";
 
-const RaffleItem = (props: any) => {
+
+
+
+
+const RaffleItem =  (props: any) => {
+
+
   const { item } = props;
+  
   const [raffle, setRaffle] = useState({ ...item });
   const [sellAmount, setSellAmount] = useState(0);
+  const [ShowCreator,setShowCreator] = useState('');
 
   let startCountdownApi: CountdownApi | null = null;
   let endCountdownApi: CountdownApi | null = null;
 
+  function formatAddress(address: string): string {
+    const firstChars = address.slice(0, 3);
+    const lastChars = address.slice(-4);
+    return `${firstChars}...${lastChars}`;
+  }
+  
+ 
   const setStartCountdownRef = (countdown: Countdown | null) => {
     if (countdown) {
       startCountdownApi = countdown.getApi();
@@ -117,6 +133,26 @@ const RaffleItem = (props: any) => {
       try {
         setSellAmount(raffle.sold_tickets);
         setRaffle({ ...item });
+        const user:any = await getUser(item.walletAddress)
+        if(user){
+            if(user.twitter){
+              setShowCreator(user.twitter);
+            }
+            else if(user.discordName){
+              setShowCreator(user.discordName);
+            }
+            else {
+            
+                setShowCreator(formatAddress(item.walletAddress))
+            }
+        }
+        else {
+          setShowCreator(formatAddress(item.walletAddress))
+        }
+        // const floorPrice = await getFloorPrice(item.name);
+        // console.log('floor price aa raha hai??',floorPrice)
+
+
       } catch (error) {
         console.log("error", error);
       }
@@ -182,7 +218,7 @@ const RaffleItem = (props: any) => {
               />
             </div>
             <h1 className="text-[16px]">{raffle.name}</h1>
-            <p className="text-[#1A1A1A] text-[16px] ">@Yogesh</p>
+            <p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p>
           </div>
 
           <div className="border-[1px] border-dashed border-[grey] rounded-[8px] p-[10px] flex flex-col gap-[10px] ">
