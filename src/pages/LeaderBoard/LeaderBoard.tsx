@@ -319,7 +319,7 @@ const LeaderBoard = () => {
         <Navbar />
         <div className="max-w-[1280px] mx-[auto] my-0 ">
           <h1 className="hidden md:block text-5xl font-bold px-8 md:px-0 mt-3 sm:mb-5 text-purple-500/30 mr-5 ">
-            LeaderBoard
+            Leaderboard
           </h1>
           <div className="flex gap-4 ">
             <div className="basis-[48%]">

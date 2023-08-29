@@ -124,7 +124,7 @@ const Navbar = () => {
                   className="svgImg"
                 />
               </svg>
-              <p className="text-white">LeaderBoard</p>
+              <p className="text-white">Leaderboard</p>
             </Link>
           </li>
           <li>
