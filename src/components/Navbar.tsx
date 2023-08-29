@@ -59,7 +59,6 @@ const Navbar = () => {
 
   useEffect(() => {
     try {
-      handleConnect();
       window.ethereum.on("accountsChanged", async () => {
         const wallet: any = await connectWallet();
         localStorage.setItem(CONFIG.WALLET_STATUS_LOCALSTORAGE, "connected");

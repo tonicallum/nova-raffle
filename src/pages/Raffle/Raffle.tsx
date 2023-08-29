@@ -10,6 +10,7 @@ import { getAllRaffle } from "../../services/api";
 import RaffleSwiper from "./RaffleSwiper";
 import { isReadable } from "stream";
 import { idToRaffleItem } from "../../services/contracts/raffle";
+import { ToastContainer } from "react-toastify";
 
 
 const Raffle = () => {
@@ -482,6 +483,7 @@ const Raffle = () => {
 
           </>
       </div>
+      <ToastContainer />
     </div>
   );
 };
