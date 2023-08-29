@@ -182,19 +182,19 @@ const DetailRaffle = () => {
       }
 
       if (ticketsOwned / nftInfo.total_tickets > 0.2) {
-        toast.error(`Amount must smaller than Max Amount`);
+        toast.error(`You can only buy 20% of total tickets`);
         setLoading(false);
         return;
       }
 
       if (amount > nftInfo.total_tickets - currentBuyTicket) {
-        toast.error(`Amount must smaller than Max Amount`);
+        toast.error(`Amount must be smaller than Max Amount`);
         setLoading(false);
         return;
       }
 
       if (amount <= 0) {
-        toast.error(`Amount must bigger than 0`);
+        toast.error(`Amount must be bigger than 0`);
         setLoading(false);
         return;
       }
