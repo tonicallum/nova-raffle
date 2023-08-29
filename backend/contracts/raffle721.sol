@@ -220,8 +220,6 @@ contract NFT721Raffle is
             randomIndex
         );
 
-        removeFromOngoingRaffles(raffleId);
-
         emit RaffleStatus(raffleId, STATUS.DRAWED);
     }
 
@@ -245,6 +243,7 @@ contract NFT721Raffle is
             ) {
                 isUpkeepNeeded = true;
                 raffleId = ongoingRaffles[i];
+
                 break;
             }
         }
@@ -256,14 +255,9 @@ contract NFT721Raffle is
         return (upKeepNeeded, performData);
     }
 
-    function performUpkeep(
-        bytes calldata performData
-    ) external override nonReentrant {
-        stopKeeper = true;
-
-        uint64 _raffleId = uint64(abi.decode(performData, (uint256)));
-
-        if (_raffleId == 0) revert("Invalid RaffleId");
+    function initiateRaffleDrawing(
+        uint64 _raffleId
+    ) external nonReentrant onlyRole(OPERATOR_ROLE) {
         RaffleStruct memory raffle = idToRaffleItem[_raffleId];
 
         // Unsold entries cannot draw
@@ -279,6 +273,42 @@ contract NFT721Raffle is
         } else {
             // Not sold out and under the deadline
             revert("Not sold out & deadline");
+        }
+
+        emit RaffleStatus(_raffleId, STATUS.DRAWNIG);
+    }
+
+    function performUpkeep(
+        bytes calldata performData
+    ) external override nonReentrant {
+        stopKeeper = true;
+
+        uint64 _raffleId = uint64(abi.decode(performData, (uint256)));
+
+        removeFromOngoingRaffles(_raffleId);
+
+        if (_raffleId == 0) {
+            stopKeeper = false;
+            return;
+        }
+        RaffleStruct memory raffle = idToRaffleItem[_raffleId];
+
+        // Unsold entries cannot draw
+        if (raffle.status != STATUS.NORMAL || raffle.currentSupply == 0) {
+            stopKeeper = false;
+            return;
+        }
+
+        if (
+            raffle.currentSupply == raffle.totalSupply ||
+            block.timestamp > uint256(raffle.expirationTime)
+        ) {
+            requestRandomNumber(_raffleId);
+            idToRaffleItem[_raffleId].status = STATUS.DRAWNIG;
+        } else {
+            // Not sold out and under the deadline
+            stopKeeper = false;
+            return;
         }
 
         emit RaffleStatus(_raffleId, STATUS.DRAWNIG);
@@ -477,5 +507,9 @@ contract NFT721Raffle is
         assembly {
             id := chainid()
         }
+    }
+
+    function getOngoingRaffles() public view returns (uint64[] memory) {
+        return ongoingRaffles;
     }
 }

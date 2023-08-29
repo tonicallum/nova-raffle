@@ -1,6 +1,5 @@
 import { ethers } from "hardhat";
-// 0x1bc79d67012282885Dd00b9735cf2020555D063a
-// mumbai :0x5C9b1BE6ce57d85e885934A517736413847b8A19
+
 const vrfDataMain = {
 	vrfCoordinatorV2: "0xae975071be8f8ee67addbc1a82488f1c24858067",
 	keyhash:
