@@ -304,7 +304,32 @@ const EditRaffle = () => {
 						Edit NFT Raffle
 					</h1>
 					<div className="mt-6 md:px-8 px-4 pt-8 pb-8  rounded-[0.7rem] nftItem-shadow bg-white border-[none]">
-						<div className="md:flex block justify-between items-start">
+						<div className="md:flex block justify-center items-center">
+							{/* <label
+								htmlFor="profilePic"
+								className="text-[#fff] border-2 md:mb-0 mb-4 min-h-[295px] basis-[46%] flex items-center justify-center flex-col p-8  bg-[#8652FF] rounded-[0.7rem] cursor-pointer"
+								onClick={handleClickModal}
+							>
+								<img
+									src={
+										raffleValue?.image
+											? raffleValue?.image
+											: SelectNFTIcon
+									}
+									alt="SelectNFTIcon"
+								/>
+
+								<span className="text-[fff] text-xl mt-3">
+									{" "}
+									{nftName}
+								</span>
+
+								<span className="text-[fff] text-md mt-2">
+									{" "}
+									{contractType}
+								</span>
+							</label> */}
+							<div className="basis-[48%]">
 							<label
 								htmlFor="profilePic"
 								className="text-[#fff] border-2 md:mb-0 mb-4 min-h-[295px] basis-[46%] flex items-center justify-center flex-col p-8  bg-[#8652FF] rounded-[0.7rem] cursor-pointer"
@@ -329,7 +354,6 @@ const EditRaffle = () => {
 									{contractType}
 								</span>
 							</label>
-							<div className="basis-[48%]">
 								{/* <div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
@@ -353,7 +377,7 @@ const EditRaffle = () => {
 										/>
 									</div>
 								</div> */}
-								<div className="mb-5">
+								{ /*<div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
 										htmlFor="ticketprice"
@@ -378,8 +402,8 @@ const EditRaffle = () => {
 											className="bg-white w-full text-[#1A1A1A] placeholder:text-[#606060] p-3 outline-none"
 										/>
 									</div>
-								</div>
-								<div className="mb-5">
+								</div> */}
+								{ /*<div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
 										htmlFor="startdate"
@@ -405,8 +429,8 @@ const EditRaffle = () => {
 											className="bg-white w-full text-[#1A1A1A] placeholder:text-[#606060] p-3 outline-none"
 										/>
 									</div>
-								</div>
-								<div className="mb-5">
+								</div> */}
+								{/*<div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
 										htmlFor="enddate"
@@ -432,8 +456,8 @@ const EditRaffle = () => {
 											className="bg-white w-full text-[#1A1A1A] placeholder:text-[#606060] p-3 outline-none"
 										/>
 									</div>
-								</div>
-								<div className="mb-5">
+								</div> */}
+								{/*<div className="mb-5">
 									<label
 										className="text-[#1A1A1A] text-lg inline-block mb-1"
 										htmlFor="ticketsupply"
@@ -458,7 +482,7 @@ const EditRaffle = () => {
 											}
 										/>
 									</div>
-								</div>
+								</div> */}
 								{/* <div className="mb-5">
                   <label
                     className="text-[#1A1A1A] text-lg inline-block mb-1"
@@ -529,7 +553,7 @@ const EditRaffle = () => {
                     />
                   </div>
                 </div> */}
-							</div>
+							</div> 
 						</div>
 						<div className="flex justify-center gap-[16px] mt-8 ">
 							{/* <div className="flex justify-center -mt-6">
@@ -553,7 +577,7 @@ const EditRaffle = () => {
 									onClick={handleRaffleDeleteBtn}
 									className={`cursor-pointer text-white bg-[#8652FF] rounded-[0.5rem] flex items-center py-3 px-5 mt-8 `}
 								>
-									Deleted Raffle
+									Delete Raffle
 								</p>
 							</div>
 						</div>
