@@ -153,7 +153,8 @@ const Raffle = () => {
 
   const getData = async () => {  
     try {
-      const getRaffle: any = await getAllRaffle();  // call idToRaffle function here 
+      const getRaffle: any = await getAllRaffle();  
+     
       const temp_featuredEndSoonData = getRaffle.filter(
         (item: any) => item.end_date >= Date.now() / 1000 && item.end_date - Date.now() / 1000 <= 60 * 60
         ).sort((a: any, b: any) => a.end_date - b.end_date);

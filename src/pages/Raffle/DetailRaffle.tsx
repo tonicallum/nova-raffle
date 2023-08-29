@@ -163,6 +163,7 @@ const DetailRaffle = () => {
 
   const handleBuyTicket = async () => {
     try {
+     
       const chainStatus = await connectedChain();
       if (!chainStatus) return;
 
@@ -173,6 +174,12 @@ const DetailRaffle = () => {
       }
 
       setLoading(true);
+
+      if(nftInfo.walletAddress === storeData.address){
+        toast.error("You cannot Buy The Raffle Which You Created");
+        setLoading(false);
+        return;
+      }
 
       const walletBalance: any = await getBalance();
       if (walletBalance < nftInfo.price * amount) {
@@ -216,7 +223,7 @@ const DetailRaffle = () => {
         console.log("payload", payload);
         const res = await createTicketTransaction(payload);
         if (res) {
-          toast.success(`Successfully Ticket Buy`);
+          toast.success(`Success In Buying Ticket `);
           setCurrnetBuyTicket(currentBuyTicket + amount);
           setBuyStatus(1);
           if (buyStatus === 0) {
@@ -267,13 +274,13 @@ const DetailRaffle = () => {
             setTicketBuyerLists(new_buyerLists);
           }
         } else {
-          toast(`Error in buying ticket`);
+          toast.error(`Error In Buying Ticket`);
         }
       }
       setLoading(false);
     } catch (error) {
       console.log("error", error);
-      toast.error(`Error Buy Ticket`);
+      toast.error(`Error In Buying Ticket`);
       setLoading(false);
     }
   };
@@ -389,9 +396,9 @@ const DetailRaffle = () => {
     const tx = await claimWinnings(raffleId);
     if (tx) {
       setClaimWinning(true);
-      toast.success("reward claiming successfull");
+      toast.success("Reward Claiming Successfull");
     } else {
-      toast.error("error in reward claiming");
+      toast.error("Error In Reward Claiming");
       setClaimWinning(false);
     }
   };
@@ -426,7 +433,7 @@ const DetailRaffle = () => {
 			if (raffleDeleteTx) {
 				const res = await deleteRaffle(id);
 				if (res) {
-					toast("Success in delete raffle", {
+					toast.success("Raffle Deleted Successfully", {
 						onClose: () => {
 							setTimeout(() => {
 								navigate("/");
@@ -434,7 +441,7 @@ const DetailRaffle = () => {
 						},
 					});
 				} else {
-					toast("Error in delete raffle");
+					toast.error("Error in Delete Raffle");
 				}
 			}
 
@@ -442,7 +449,7 @@ const DetailRaffle = () => {
 		} catch (error) {
 			console.log("error", error);
 			setLoading(false);
-			toast("Error in delete raffle");
+			toast.error("Error in delete raffle");
 		}
 	};
 
