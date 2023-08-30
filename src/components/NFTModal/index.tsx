@@ -6,6 +6,7 @@ import axios from "axios";
 import VerificationIcon from "../../assets/Verification-icon.png";
 import { getNfts } from "../../services/api";
 import "./index.css";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 var Promise = require("bluebird");
 
@@ -39,9 +40,9 @@ const NFTModal = (props: any) => {
           setModalLoading(true);
 
           const lists: any = await getNfts(storeData.address);
-        //   const lists: any = await getNfts(
-        //     "0x398818ca588209Fec5348e6CA901629C553c902E"
-        //   );
+          // const lists: any = await getNfts(
+          //   "0x398818ca588209Fec5348e6CA901629C553c902E"
+          // );
 
           console.log("lists : ", lists);
           let filtered_nfts1: any = [];
@@ -199,11 +200,13 @@ const NFTModal = (props: any) => {
                         className={`  rounded-[8px] overflow-hidden transition duration-1000 nftItem-shadow `}
                       >
                         <div className="relative">
-                          <img
+                          {/* <img
                             src={nft?.image}
                             alt="NFTImage"
                             className={`object-cover min-h-[250px] w-full border-solid `}
-                          />
+                          /> */}
+                          <LazyLoadImage src={nft?.image} 
+                           width={300} height={300}/>
                         </div>
                         <div className="bg-[#fff] pt-2 -mt-1">
                           <div className="flex items-center mb-1">
