@@ -84,7 +84,7 @@ const DetailRaffle = () => {
       const res = await axios.post(`${API_URL}/raffle/updateUserFollow`, {
         id: id,
         follow: follow,
-        walletAddress:storeData.address
+        walletAddress: storeData.address,
       });
       setNftInfo({ ...nftInfo, followed: follow });
     } catch (error) {
@@ -169,7 +169,7 @@ const DetailRaffle = () => {
         toast.error(`You can not buy ticket now`);
         return;
       }
-      
+
       if (storeData.wallet !== "connected") {
         toast.error(`Please connect your wallet`);
         return;
@@ -197,7 +197,7 @@ const DetailRaffle = () => {
       }
 
       setLoading(true);
-      
+
       const buyTicketTx = await buyTicket(
         nftInfo.raffleId,
         amount,
@@ -218,11 +218,11 @@ const DetailRaffle = () => {
           toast.success(`Success In Buying Ticket `);
           setCurrnetBuyTicket(currentBuyTicket + amount);
           setTicketsOwned(ticketsOwned + amount);
-          if(!ticketBuyerLists.includes(storeData.address.toLowerCase())){
+          if (!ticketBuyerLists.includes(storeData.address.toLowerCase())) {
             setTicketHolder(ticketHolder + 1);
           }
           const getWinningChance =
-          (100 * (ticketsOwned + amount)) / (nftInfo.sold_tickets + amount);
+            (100 * (ticketsOwned + amount)) / (nftInfo.sold_tickets + amount);
           setWinningChance(getWinningChance);
           setBuyStatus(1);
           if (buyStatus === 0) {
@@ -450,6 +450,7 @@ const DetailRaffle = () => {
       try {
         setLoading(true);
         const nftInfoById: any = await getRaffleById(id); //data base se araha
+        console.log("from db : ", nftInfoById);
         const dateFormat = new Date(nftInfoById.start_date * 1000);
         const result_date =
           dateFormat.getMonth() +
@@ -465,7 +466,9 @@ const DetailRaffle = () => {
 
         setNftInfo({
           ...nftInfoById,
-          followed :nftInfoById.follow.includes(storeData.address.toLowerCase()),
+          followed: nftInfoById.follow.includes(
+            storeData.address.toLowerCase()
+          ),
           _id: nftInfoById._id,
           project: nftInfoById.project,
           price: nftInfoById.price,
@@ -510,6 +513,7 @@ const DetailRaffle = () => {
         setTicketsOwned(resTicketsOwned);
         setTicketHolder(getTicketByID.length);
         setTicketBuyerLists(getTicketByID);
+        console.log("winner : ", nftInfoById.winnerAddress);
         setWinnerAddress(nftInfoById.winnerAddress);
 
         const user: any = await getUser(nftInfoById.walletAddress);
@@ -580,21 +584,25 @@ const DetailRaffle = () => {
                     {raffleStatus !== 2 && (
                       <div className="relative">
                         <div className="flex items-center justify-between gap-[8px] ">
-                        <input
+                          <input
                             type="text"
-                             name="solValue"
+                            name="solValue"
                             value={amount}
                             placeholder="QTY"
                             onChange={(e) => {
-                            const inputValue = e.target.value;
-                            const maxAllowed = nftInfo.total_tickets - currentBuyTicket; // Replace with actual property name
-                            if (Number(inputValue) >= 0 && Number(inputValue) <= maxAllowed) {
+                              const inputValue = e.target.value;
+                              const maxAllowed =
+                                nftInfo.total_tickets - currentBuyTicket; // Replace with actual property name
+                              if (
+                                Number(inputValue) >= 0 &&
+                                Number(inputValue) <= maxAllowed
+                              ) {
                                 setAmount(Number(inputValue));
-                               }
-                           }}
-                            className="w-[40%] block text-[#000] text-base text-center outline-none bg-[#82828240] border border-[#ECECEC] rounded-[0.7rem] py-3 px-5"
-                               disabled={raffleStatus !== 1}
-                              />
+                              }
+                            }}
+                            className="w-[20%] block text-[#000] text-base text-center outline-none bg-[#82828240] border border-[#ECECEC] rounded-[0.7rem] py-3 px-5"
+                            disabled={raffleStatus !== 1}
+                          />
                           <button
                             type="button"
                             onClick={handleBuyTicket}
