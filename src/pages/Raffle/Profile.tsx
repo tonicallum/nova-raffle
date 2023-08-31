@@ -189,7 +189,6 @@ const RaffleProfile = () => {
 
           for (let i = 0; i < getRaffles.length; i++) {
             const getTicketByID: any = await getTicketsById(getRaffles[i]._id);
-
             if (getTicketByID.length > 0) {
               for (let j = 0; j < getTicketByID.length; j++) {
                 if (
@@ -212,7 +211,7 @@ const RaffleProfile = () => {
 
           const wonraffles = getRaffles.filter(
             (item: any) =>
-              item.winnerAddress.toLowerCase() === storeData.address.toLowerCase()
+              item.winnerAddress?.toLowerCase() === storeData.address.toLowerCase()
           );
 
           const res_winnerCount: any = wonraffles.length;
