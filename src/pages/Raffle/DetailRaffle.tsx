@@ -580,16 +580,21 @@ const DetailRaffle = () => {
                     {raffleStatus !== 2 && (
                       <div className="relative">
                         <div className="flex items-center justify-between gap-[8px] ">
-                          <input
-                            type="number"
-                            name="solValue"
+                        <input
+                            type="text"
+                             name="solValue"
                             value={amount}
-                            min="0"
-                            placeholder=""
-                            onChange={(e) => setAmount(Number(e.target.value))}
-                            className="w-[20%] block text-[#000] text-base text-center outline-none bg-[#82828240] border border-[#ECECEC] rounded-[0.7rem] py-3 px-5"
-                            disabled={raffleStatus !== 1}
-                          />
+                            placeholder="QTY"
+                            onChange={(e) => {
+                            const inputValue = e.target.value;
+                            const maxAllowed = nftInfo.total_tickets - currentBuyTicket; // Replace with actual property name
+                            if (Number(inputValue) >= 0 && Number(inputValue) <= maxAllowed) {
+                                setAmount(Number(inputValue));
+                               }
+                           }}
+                            className="w-[40%] block text-[#000] text-base text-center outline-none bg-[#82828240] border border-[#ECECEC] rounded-[0.7rem] py-3 px-5"
+                               disabled={raffleStatus !== 1}
+                              />
                           <button
                             type="button"
                             onClick={handleBuyTicket}
