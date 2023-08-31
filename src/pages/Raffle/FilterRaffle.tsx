@@ -7,23 +7,23 @@ import {
   fetchRaffle1155Items,
   fetchTicket1155ItemsByID,
 } from "../../services/contracts/raffle1155";
-import {
-  fetchRaffleItems,
-} from "../../services/contracts/raffle";
 import { API_URL } from "../../config/dev";
 import axios from "axios";
 import RedFavouriteIcon from "../../assets/fav-icon.svg";
 import GreyFavouriteIcon from "../../assets/grey-fav-icon.svg";
 import { getTicketsById } from "../../services/api";
+import { useSelector } from "react-redux";
 
 const FilterRaffles = ({ item, filterSideBar }: any) => {
   const [sellAmount, setSellAmount] = useState(0);
   const [favouriteState, setFavouriteState] = useState<any>(item?.favourite);
+  const storeData: any = useSelector((status) => status);
   const handleFavourite = async (id: any, favourite: boolean) => {
     try {
       const res = await axios.post(`${API_URL}/raffle/updateUserFavourite`, {
         id: id,
         favourite: favourite,
+        walletAddress:storeData.address
       });
       setFavouriteState(favourite);
     } catch (error) {
@@ -88,7 +88,7 @@ const FilterRaffles = ({ item, filterSideBar }: any) => {
       <p>Ended</p>
     ) : (
       <div className="flex items-center gap-2">
-        <p>Live</p>
+        <p>End in</p>
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:

@@ -88,7 +88,7 @@ const DetailUserAuction = () => {
         </div>
         :
         <div className="" >
-          <p className="text-[#878787]" >Live</p>
+          <p className="text-[#878787]" >End in</p>
           <p>
             {days.toString().length === 1 ? `0${days}` : days}:
             {hours.toString().length === 1 ? `0${hours}` : hours}:

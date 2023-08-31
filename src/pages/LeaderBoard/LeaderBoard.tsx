@@ -122,7 +122,7 @@ const LeaderBoard = () => {
 
     let ans = allRaffle.reduce((agg: any, curr: any) => {
       let found = agg.find(
-        (x: { walletAddress: any }) => x.walletAddress === curr.walletAddress
+        (x: { seller: any }) => x.seller.toLowerCase() === curr.walletAddress.toLowerCase()
       );
       if (found) {
         found.sellerCount.push(curr.walletAddress);
@@ -175,7 +175,6 @@ const LeaderBoard = () => {
 
   const fetchBuyRaffler = async (tempAllRaffle: any) => {
     setRaffleLoading(true);
-    const allRaffles = await fetchRaffleLists();
     let buyAllRaffle: any = [],
       dayBuyRaffleFilter: any = [],
       tempBuyAllRaffle: any = [];
@@ -189,22 +188,11 @@ const LeaderBoard = () => {
       buyAllRaffle.map(async (item: any, index: number) => {
         const fetchItem: any = await getTicketsById(item._id);
         console.log("fetchItem", fetchItem)
-        let matchingRaffle = null;
-        for (let i = 0; i < allRaffles.length; i++) {
-          const raffle = allRaffles[i];
-          if (
-            raffle.nftId === item.tokenId &&
-            raffle.nftAddress.toLowerCase() === item.tokenAddress.toLowerCase()
-          ) {
-            matchingRaffle = raffle;
-            break;
-          }
-        }
 
         if (fetchItem.length !== 0) {
           return {
             ...fetchItem[0],
-            winner: matchingRaffle.winner,
+            winner: item.winnerAddress,
             ticketPrice: item.price,
           };
         }

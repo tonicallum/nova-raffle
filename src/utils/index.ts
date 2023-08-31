@@ -23,11 +23,14 @@ export const connectWallet = async () => {
   try {
     if (window.ethereum) {
       try {
+        
         const chain = await window.ethereum.request({ method: 'eth_chainId' })
         if (chain === CONFIG.CHAINID) {
           const addressArray = await window.ethereum.request({
             method: 'eth_requestAccounts',
           })
+
+          console.log("addressArray", addressArray)
           if (addressArray.length > 0) {
             return {
               address: await addressArray[0],

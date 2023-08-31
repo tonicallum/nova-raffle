@@ -74,7 +74,7 @@ const SwiperItem = (props: any) => {
       <p>Ended</p>
     ) : (
       <div className="flex gap-1">
-        <p>Live</p>
+        <p>End in</p>
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:

@@ -18,7 +18,10 @@ import { toast } from "react-toastify";
 import CONFIG from "../../config";
 import { connectWallet, delay } from "../../utils";
 import { sign } from "crypto";
-import { fetchRaffleItems, fetchRaffleLists } from "../../services/contracts/raffle";
+import {
+  fetchRaffleItems,
+  fetchRaffleLists,
+} from "../../services/contracts/raffle";
 
 const RaffleProfile = () => {
   const [isLoading, setLoading] = useState(false);
@@ -150,22 +153,21 @@ const RaffleProfile = () => {
       try {
         if (storeData.wallet === "connected") {
           setLoading(true);
-          const getWalletAddress: any = await connectWallet();
-          setWalletAddress(getWalletAddress.address);
-
+          setWalletAddress(storeData.address);
           const getRaffles: any = await getAllRaffle();
           const filterMyRaffles = getRaffles.filter(
-            (item: any) => item.walletAddress.toLowerCase() === storeData.address.toLowerCase()
+            (item: any) =>
+              item.walletAddress.toLowerCase() ===
+              storeData.address.toLowerCase()
           );
-
           setParticipantLists(filterMyRaffles);
           const filterFavouriteRaffles = getRaffles.filter(
-            (item: any) => item.favourite === true
+            (item: any) => item.favourite.includes(storeData.address.toLowerCase())
           );
           setFavouriteRaffles([...filterFavouriteRaffles]);
 
           const filterFollowRaffles = getRaffles.filter(
-            (item: any) => item.follow === true
+            (item: any) => item.follow.includes(storeData.address.toLowerCase())
           );
           setFollowRaffles([...filterFollowRaffles]);
 
@@ -173,7 +175,8 @@ const RaffleProfile = () => {
             getSalesVolume_721 = 0;
           for (let i = 0; i < filterMyRaffles.length; i++) {
             total_tickets_721 += filterMyRaffles[i].sold_tickets;
-            getSalesVolume_721 += filterMyRaffles[i]?.price * filterMyRaffles[i].sold_tickets;
+            getSalesVolume_721 +=
+              filterMyRaffles[i]?.price * filterMyRaffles[i].sold_tickets;
             filterMyRaffles[i].totalAmount = filterMyRaffles[i].sold_tickets;
           }
           const res_ticketsSold = total_tickets_721;
@@ -199,7 +202,7 @@ const RaffleProfile = () => {
                 }
               }
             }
-            
+
             let totalAmount = 0;
             for (let i = 0; i < getTicketByID.length; i++) {
               totalAmount += getTicketByID[i].amount;
@@ -207,8 +210,10 @@ const RaffleProfile = () => {
             getPurchasedVolume_721 += getRaffles[i].price * totalAmount;
           }
 
-          const raffles : any = await fetchRaffleLists();
-          const wonraffles = raffles.filter((item: any) => item.winner.toLowerCase() === storeData.address.toLowerCase())
+          const wonraffles = getRaffles.filter(
+            (item: any) =>
+              item.winnerAddress.toLowerCase() === storeData.address.toLowerCase()
+          );
 
           const res_winnerCount: any = wonraffles.length;
           const res_raffleBought = [...raffleBought_721];
@@ -234,9 +239,6 @@ const RaffleProfile = () => {
         }
       } catch (error) {
         console.log("error", error);
-        // if (error = 'unknown account #0') {
-        //   toast.error(`Please connect your wallet again`)
-        // }
         setLoading(false);
       }
     })();
@@ -413,7 +415,7 @@ const RaffleProfile = () => {
                 <div className="bg-white rounded-md py-8 px-8 flex items-center">
                   <img src={infoIconBlack} alt="infoIconBlack" />
                   <h1 className="xl:text-[3.2rem] lg:text-[2.5rem] md:text-[1.8rem] ml-10">
-                    You haven’t created  any Raffles!
+                    You haven’t created any Raffles!
                   </h1>
                 </div>
               </div>
@@ -467,7 +469,7 @@ const RaffleProfile = () => {
                 <div className="bg-white rounded-md py-8 px-8 flex items-center">
                   <img src={infoIconBlack} alt="infoIconBlack" />
                   <h1 className="xl:text-[3.2rem] lg:text-[2.5rem] md:text-[1.8rem] ml-10">
-                    You haven’t followed  any Raffles!
+                    You haven’t followed any Raffles!
                   </h1>
                 </div>
               </div>

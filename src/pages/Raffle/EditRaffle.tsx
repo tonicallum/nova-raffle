@@ -17,8 +17,6 @@ import {
 	CancelRaffleContract,
 	UpdateRaffleContract,
 	FinishRaffleContract,
-	fetchRaffleItems,
-	getDesiredRaffle,
 } from "../../services/contracts/raffle";
 import {
 	CancelRaffle1155Contract,
@@ -54,159 +52,7 @@ const EditRaffle = () => {
 		end_date: new Date(),
 		mint: ``,
 	});
-
-	const handleRaffleUpdateBtn = async () => {
-		try {
-			const chainStatus = await connectedChain();
-			if (!chainStatus) return;
-
-			if (!updateBtnActive) {
-				toast.error(`You can't update`);
-				return;
-			}
-			if (storeData.wallet !== "connected") {
-				toast.error(`Please connect your wallet`);
-				return;
-			}
-
-			const validation = validationRaffle(raffleValue);
-			if (!validation) return;
-
-			setLoading(true);
-
-			let updateRaffleTx;
-			if (raffleValue.type === `ERC1155`) {
-				const getRaffleInfo = await fetchRaffle1155Items(
-					raffleValue.tokenId,
-					raffleValue.tokenAddress,
-					Math.floor(raffleValue.start_date?.getTime() / 1000)
-				);
-
-				updateRaffleTx = await UpdateRaffle1155Contract(
-					getRaffleInfo?.itemId + 1,
-					raffleValue.price,
-					raffleValue.total_tickets,
-					Math.floor(raffleValue.start_date?.getTime() / 1000),
-					Math.floor(raffleValue.end_date?.getTime() / 1000)
-				);
-			} else {
-				const getRaffleInfo = await getDesiredRaffle(
-					raffleValue.tokenId,
-					raffleValue.tokenAddress,
-				);
-
-				updateRaffleTx = await UpdateRaffleContract(
-					getRaffleInfo.index + 1,
-					raffleValue.price,
-					raffleValue.total_tickets,
-					Math.floor(raffleValue.start_date?.getTime() / 1000),
-					Math.floor(raffleValue.end_date?.getTime() / 1000)
-				);
-			}
-
-			if (updateRaffleTx) {
-				const payload: any = {
-					name: nftName,
-					project: raffleValue.project,
-					description: "",
-					discord: "",
-					twitter: "",
-					total_tickets: raffleValue.total_tickets,
-					price: raffleValue.price,
-					start_date: Math.floor(
-						raffleValue.start_date?.getTime() / 1000
-					).toString(),
-					end_date: Math.floor(
-						raffleValue.end_date?.getTime() / 1000
-					).toString(),
-					tokenAddress: raffleValue.tokenAddress,
-					tokenId: raffleValue.tokenId,
-					sold_tickets : raffleValue.sold_tickets,
-					image: raffleValue.image,
-					walletAddress: storeData.address,
-				};
-				const res = await updateRaffle(id, payload);
-				if (res) {
-					toast("Success in updating raffle", {
-						onClose: () => {
-							setTimeout(() => {
-								navigate("/");
-							}, TOAST_TIME_OUT);
-						},
-					});
-				} else {
-					toast("Error in updating raffle");
-				}
-			}
-		} catch (error) {
-			console.log("error", error);
-			toast("Error in Update raffle");
-		}
-		setLoading(false);
-	};
-
-	const handleRaffleFinishBtn = async () => {
-		try {
-			const chainStatus = await connectedChain();
-			if (!chainStatus) return;
-
-			if (!updateBtnActive) {
-				toast.error(`You can't update`);
-				return;
-			}
-			if (storeData.wallet !== "connected") {
-				toast.error(`Please connect your wallet`);
-				return;
-			}
-
-			const validation = validationRaffle(raffleValue);
-			if (!validation) return;
-
-			setLoading(true);
-
-			let finishRaffleTx;
-			if (raffleValue.type === `ERC1155`) {
-				const getRaffleInfo = await fetchRaffle1155Items(
-					raffleValue.tokenId,
-					raffleValue.tokenAddress,
-					Math.floor(raffleValue.start_date?.getTime() / 1000)
-				);
-
-				finishRaffleTx = await FinishRaffle1155Contract(
-					getRaffleInfo?.itemId + 1
-				);
-			} else {
-				const getRaffleInfo = await getDesiredRaffle(
-					raffleValue.tokenId,
-					raffleValue.tokenAddress,
-				);
-
-				finishRaffleTx = await FinishRaffleContract(
-					getRaffleInfo.index
-				);
-			}
-
-			if (finishRaffleTx) {
-				const res = await finishRaffle(id);
-				if (res) {
-					toast("Success in finish raffle", {
-						onClose: () => {
-							setTimeout(() => {
-								navigate("/");
-							}, TOAST_TIME_OUT);
-						},
-					});
-				} else {
-					toast("Error in finish raffle");
-				}
-			}
-		} catch (error) {
-			console.log("error", error);
-			toast("Error in Finish raffle");
-		}
-		setLoading(false);
-	};
-
+	
 	const handleRaffleDeleteBtn = async () => {
 		try {
 			const chainStatus = await connectedChain();
@@ -230,12 +76,8 @@ const EditRaffle = () => {
 					getRaffleInfo.itemId + 1
 				);
 			} else {
-				const getRaffleInfo: any = await getDesiredRaffle(
-					raffleValue.tokenId,
-					raffleValue.tokenAddress,
-				);
 				raffleDeleteTx = await CancelRaffleContract(
-					getRaffleInfo.index
+					raffleValue.raffleId
 				);
 			}
 

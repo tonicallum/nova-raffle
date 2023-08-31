@@ -74,7 +74,8 @@ const DetailRaffle1155 = () => {
     try{
       const res = await axios.post(`${API_URL}/raffle/updateUserFollow`, {
         id: id,
-        follow: follow
+        follow: follow,
+        walletAddress:storeData.address
       })
       setNftInfo({...nftInfo, follow: follow})
     }catch(error){
@@ -120,7 +121,7 @@ const DetailRaffle1155 = () => {
         <p className="text-[18px] font-semibold  " >ENDED</p>
         :
         <div className="flex gap-1 text-white text-[18px] font-semibold" >
-          <p>Live</p>
+          <p>End in</p>
           <p>
             {days.toString().length === 1 ? `0${days}` : days}:
             {hours.toString().length === 1 ? `0${hours}` : hours}:

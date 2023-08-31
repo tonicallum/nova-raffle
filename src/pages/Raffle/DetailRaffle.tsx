@@ -9,10 +9,9 @@ import Navbar from "../../components/Navbar";
 import {
   createTicketTransaction,
   deleteRaffle,
-  getAllRaffle,
   getRaffleById,
   getTicketsById,
-  getUser
+  getUser,
 } from "../../services/api";
 
 import ReturnIcon from "../../assets/detailpage/return-icon.svg";
@@ -33,19 +32,19 @@ import PolygonIcon from "../../assets/polygon-icon.svg";
 import IdCardIcon from "../../assets/idcard.svg";
 import DiscordIcon from "../../assets/discord.svg";
 import TwitterIcon from "../../assets/twitter.svg";
-import EditIcon from "../../assets/edit.png";
 
 import {
   buyTicket,
-  fetchRaffleItems,
-  getDesiredRaffle,
   claimWinnings,
   CancelRaffleContract,
 } from "../../services/contracts/raffle";
 import { connectedChain, getBalance } from "../../utils";
 import { API_URL, TOAST_TIME_OUT } from "../../config/dev";
 import axios from "axios";
-import { CancelRaffle1155Contract, fetchRaffle1155Items } from "../../services/contracts/raffle1155";
+import {
+  CancelRaffle1155Contract,
+  fetchRaffle1155Items,
+} from "../../services/contracts/raffle1155";
 
 const DetailRaffle = () => {
   const { id } = useParams();
@@ -56,7 +55,6 @@ const DetailRaffle = () => {
   const [amount, setAmount] = useState(0);
   const [raffleStatus, setRaffleStatus] = useState(0);
   const [buyStatus, setBuyStatus] = useState(0);
-  const [raffleId, setRaffleId] = useState(0);
   const [raffleInfo, showraffleInfo] = React.useState<string>("raffleinfo");
   const [currentBuyTicket, setCurrnetBuyTicket] = useState(0);
   const [isWinner, setWinner] = useState(false);
@@ -68,9 +66,9 @@ const DetailRaffle = () => {
   const [ticketBuyerLists, setTicketBuyerLists] = useState<any>([]);
   const [ticketHolder, setTicketHolder] = useState(0);
   const [winningChance, setWinningChance] = useState(0);
-  const [ShowCreator , setShowCreator] = useState('');
-  const [isDiscord,setDiscord] = useState(false);
-  const [isTwitter,setTwitter] = useState(false);
+  const [ShowCreator, setShowCreator] = useState("");
+  const [isDiscord, setDiscord] = useState(false);
+  const [isTwitter, setTwitter] = useState(false);
 
   let startCountdownApi: CountdownApi | null = null;
   let countdownEndApi: CountdownApi | null = null;
@@ -86,6 +84,7 @@ const DetailRaffle = () => {
       const res = await axios.post(`${API_URL}/raffle/updateUserFollow`, {
         id: id,
         follow: follow,
+        walletAddress:storeData.address
       });
       setNftInfo({ ...nftInfo, follow: follow });
     } catch (error) {
@@ -150,7 +149,7 @@ const DetailRaffle = () => {
       </p>
     ) : (
       <div className="flex gap-1 text-white text-[18px] font-semibold">
-        <p>Live</p>
+        <p>End in</p>
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -163,51 +162,44 @@ const DetailRaffle = () => {
 
   const handleBuyTicket = async () => {
     try {
-     
       const chainStatus = await connectedChain();
       if (!chainStatus) return;
 
-      if (raffleStatus === 2 || raffleStatus === 0) return;
+      if (raffleStatus === 2 || raffleStatus === 0) {
+        toast.error(`You can not buy ticket now`);
+        return;
+      }
+      
       if (storeData.wallet !== "connected") {
         toast.error(`Please connect your wallet`);
         return;
       }
 
-      setLoading(true);
-
-      if(nftInfo.walletAddress === storeData.address){
+      if (nftInfo.walletAddress === storeData.address) {
         toast.error("You cannot Buy The Raffle Which You Created");
-        setLoading(false);
         return;
       }
 
       const walletBalance: any = await getBalance();
       if (walletBalance < nftInfo.price * amount) {
         toast.error(`Wallet Balance must bigger than buy price`);
-        setLoading(false);
-        return;
-      }
-
-      if (ticketsOwned / nftInfo.total_tickets > 0.2) {
-        toast.error(`You can only buy 20% of total tickets`);
-        setLoading(false);
         return;
       }
 
       if (amount > nftInfo.total_tickets - currentBuyTicket) {
         toast.error(`Amount must be smaller than Max Amount`);
-        setLoading(false);
         return;
       }
 
       if (amount <= 0) {
         toast.error(`Amount must be bigger than 0`);
-        setLoading(false);
         return;
       }
-      console.log("raffleId", raffleId);
+
+      setLoading(true);
+      
       const buyTicketTx = await buyTicket(
-        raffleId,
+        nftInfo.raffleId,
         amount,
         nftInfo.price * amount
       );
@@ -216,8 +208,8 @@ const DetailRaffle = () => {
         const payload: any = {
           raffle_id: id,
           amount: amount,
-          buyer: storeData.address,
-          token_address: nftInfo.tokenAddress,
+          buyer: storeData.address.toLowerCase(),
+          token_address: nftInfo.tokenAddress.toLowerCase(),
           token_id: nftInfo.tokenId,
         };
         console.log("payload", payload);
@@ -225,6 +217,13 @@ const DetailRaffle = () => {
         if (res) {
           toast.success(`Success In Buying Ticket `);
           setCurrnetBuyTicket(currentBuyTicket + amount);
+          setTicketsOwned(ticketsOwned + amount);
+          if(!ticketBuyerLists.includes(storeData.address.toLowerCase())){
+            setTicketHolder(ticketHolder + 1);
+          }
+          const getWinningChance =
+          (100 * (ticketsOwned + amount)) / (nftInfo.sold_tickets + amount);
+          setWinningChance(getWinningChance);
           setBuyStatus(1);
           if (buyStatus === 0) {
             const findIdx = ticketBuyerLists.findIndex(
@@ -332,68 +331,61 @@ const DetailRaffle = () => {
     return (
       <>
         {raffleStatus === 0 && (
-          <p className="text-black text-[1.25rem] text-center">None</p>
+          <p className="text-black text-[1.25rem] text-center"></p>
         )}
 
         {raffleStatus === 1 && buyStatus === 0 && (
-          <p className="text-black text-[1.25rem] text-center">None</p>
+          <p className="text-black text-[1.25rem] text-center"></p>
         )}
 
         {raffleStatus === 1 && buyStatus === 1 && (
           <p className="text-black text-[1.25rem] text-center">Pending</p>
         )}
 
-        {
-          // raffleStatus === 2 && buyStatus === 0 && <p className="text-black text-[1.25rem] text-center">None</p>
-          raffleStatus === 2 && buyStatus === 0 && (
-            <div className="flex flex-col gap-2">
-              <p className="text-[#8652FF] text-[0.75rem] text-center">
-                Raffle Winner
-              </p>
-              <p className="text-[#8652FF] text-[1.25rem] text-center">
-                {winnerAddress
-                  ? winnerAddress?.substr(0, 6) +
-                    "..." +
-                    winnerAddress?.substr(storeData?.address.length - 4, 4)
-                  : ``}
-              </p>
-            </div>
-          )
-        }
+        {raffleStatus === 2 && buyStatus === 0 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-[#8652FF] text-[0.75rem] text-center">
+              Raffle Winner
+            </p>
+            <p className="text-[#8652FF] text-[1.25rem] text-center">
+              {winnerAddress
+                ? winnerAddress?.substr(0, 6) +
+                  "..." +
+                  winnerAddress?.substr(storeData?.address.length - 4, 4)
+                : ``}
+            </p>
+          </div>
+        )}
 
-        {
-          // raffleStatus === 2 && buyStatus === 1 && <p className="text-black text-[1.25rem] text-center">Fail</p>
-          raffleStatus === 2 && buyStatus === 1 && (
-            <div className="flex flex-col gap-2">
-              <p className="text-[#8652FF] text-[0.75rem] text-center">
-                Raffle Winner
-              </p>
-              <p className="text-[#8652FF] text-[1.25rem] text-center">
-                {winnerAddress
-                  ? winnerAddress?.substr(0, 6) +
-                    "..." +
-                    winnerAddress?.substr(storeData?.address.length - 4, 4)
-                  : ``}
-              </p>
+        {raffleStatus === 2 && buyStatus === 1 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-[#8652FF] text-[0.75rem] text-center">
+              Raffle Winner
+            </p>
+            <p className="text-[#8652FF] text-[1.25rem] text-center">
+              {winnerAddress
+                ? winnerAddress?.substr(0, 6) +
+                  "..." +
+                  winnerAddress?.substr(storeData?.address.length - 4, 4)
+                : ``}
+            </p>
 
-              {isWinner && (
-                <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
-                  Claim Winnings
-                </button>
-              )}
-            </div>
-          )
-        }
+            {isWinner && (
+              <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
+                Claim Winnings
+              </button>
+            )}
+          </div>
+        )}
       </>
     );
   };
 
   const handleclaimWinnings = async () => {
-    console.log("id of raffle to claim >>>", raffleId);
     console.log("type of winner Address", winnerAddress);
     console.log("type of storage wallet", storeData.address);
 
-    const tx = await claimWinnings(raffleId);
+    const tx = await claimWinnings(nftInfo.raffleId);
     if (tx) {
       setClaimWinning(true);
       toast.success("Reward Claiming Successfull");
@@ -404,61 +396,55 @@ const DetailRaffle = () => {
   };
 
   const handleRaffleDeleteBtn = async () => {
-		try {
-			const chainStatus = await connectedChain();
-			if (!chainStatus) return;
+    try {
+      const chainStatus = await connectedChain();
+      if (!chainStatus) return;
 
-			setLoading(true);
+      setLoading(true);
 
-			let raffleDeleteTx;
-			if (nftInfo.type === `ERC1155`) {
-				const getRaffleInfo: any = await fetchRaffle1155Items(
-					nftInfo.tokenId,
-					nftInfo.tokenAddress,
-					Math.floor(nftInfo.start_date?.getTime() / 1000)
-				);
-				raffleDeleteTx = await CancelRaffle1155Contract(
-					getRaffleInfo.itemId + 1
-				);
-			} else {
-				const getRaffleInfo: any = await getDesiredRaffle(
-					nftInfo.tokenId,
-					nftInfo.tokenAddress,
-				);
-				raffleDeleteTx = await CancelRaffleContract(
-					getRaffleInfo.index
-				);
-			}
+      let raffleDeleteTx;
+      if (nftInfo.type === `ERC1155`) {
+        const getRaffleInfo: any = await fetchRaffle1155Items(
+          nftInfo.tokenId,
+          nftInfo.tokenAddress,
+          Math.floor(nftInfo.start_date?.getTime() / 1000)
+        );
+        raffleDeleteTx = await CancelRaffle1155Contract(
+          getRaffleInfo.itemId + 1
+        );
+      } else {
+        raffleDeleteTx = await CancelRaffleContract(nftInfo.raffleId);
+      }
 
-			if (raffleDeleteTx) {
-				const res = await deleteRaffle(id);
-				if (res) {
-					toast.success("Raffle Deleted Successfully", {
-						onClose: () => {
-							setTimeout(() => {
-								navigate("/");
-							}, TOAST_TIME_OUT);
-						},
-					});
-				} else {
-					toast.error("Error in Delete Raffle");
-				}
-			}
+      if (raffleDeleteTx) {
+        const res = await deleteRaffle(id);
+        if (res) {
+          toast.success("Raffle Deleted Successfully", {
+            onClose: () => {
+              setTimeout(() => {
+                navigate("/");
+              }, TOAST_TIME_OUT);
+            },
+          });
+        } else {
+          toast.error("Error in Delete Raffle");
+        }
+      }
 
-			setLoading(false);
-		} catch (error) {
-			console.log("error", error);
-			setLoading(false);
-			toast.error("Error in delete raffle");
-		}
-	};
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      setLoading(false);
+      toast.error("Error in delete raffle");
+    }
+  };
 
   function formatAddress(address: string): string {
     const firstChars = address.slice(0, 3);
     const lastChars = address.slice(-4);
     return `${firstChars}...${lastChars}`;
   }
-  
+
   useEffect(() => {
     (async () => {
       try {
@@ -479,6 +465,7 @@ const DetailRaffle = () => {
 
         setNftInfo({
           ...nftInfoById,
+          follow :nftInfoById.follow.includes(storeData.address.toLowerCase()),
           _id: nftInfoById._id,
           project: nftInfoById.project,
           price: nftInfoById.price,
@@ -520,51 +507,26 @@ const DetailRaffle = () => {
         const getWinningChance =
           (100 * resTicketsOwned) / nftInfoById.sold_tickets;
         setWinningChance(getWinningChance);
-        const percentTicketsOwned =
-          (100 * resTicketsOwned) / nftInfoById.total_tickets;
-        setTicketsOwned(percentTicketsOwned);
+        setTicketsOwned(resTicketsOwned);
         setTicketHolder(getTicketByID.length);
-
         setTicketBuyerLists(getTicketByID);
+        setWinnerAddress(nftInfoById.winnerAddress);
 
-        // const allRaffles: any = await getAllRaffle();
-        // const tempRaffleIndex =
-        //   allRaffles.findIndex((raffle: any) => raffle._id === id) + 1;
-        // setRaffleId(tempRaffleIndex);
-
-        const raffleInfo = await getDesiredRaffle(
-          nftInfoById.tokenId,
-          nftInfoById.tokenAddress
-        );
-        setRaffleId(raffleInfo.index);
-        console.log("raffleInfo", raffleInfo.raffle);
-
-        setWinnerAddress(raffleInfo.raffle?.winner);
-        //setShowCreator(raffleInfo.raffle?.creator);
-        console.log('show creator ???',raffleInfo.raffle?.creator)
-        console.log('storedata dadress',storeData.address)
-        const user:any = await getUser(raffleInfo.raffle?.creator)
-        console.log('usera aa raha hai',user)
-        if(user){
-            if(user.twitter){
-              setTwitter(true);
-              setShowCreator(user.twitter);
-            }
-            else if(user.discordName){
-              setDiscord(true);
-              setShowCreator(user.discordName);
-            }
-            else {
-              console.log('last part to display',raffleInfo.raffle?.creator)
-                setShowCreator(formatAddress(raffleInfo.raffle?.creator))
-            }
+        const user: any = await getUser(nftInfoById.walletAddress);
+        console.log("user data", user);
+        if (user) {
+          if (user.twitter) {
+            setTwitter(true);
+            setShowCreator(user.twitter);
+          } else if (user.discordName) {
+            setDiscord(true);
+            setShowCreator(user.discordName);
+          } else {
+            setShowCreator(formatAddress(nftInfoById.walletAddress));
+          }
+        } else {
+          setShowCreator(formatAddress(nftInfoById.walletAddress));
         }
-        else {
-          setShowCreator(formatAddress(raffleInfo.raffle?.creator))
-        }
-
-
-
         setLoading(false);
       } catch (error) {
         console.log("error", error);
@@ -692,9 +654,7 @@ const DetailRaffle = () => {
                           )}
                       </div>
                     ) : raffleStatus === 0 ? (
-                      <p className="text-black text-[1.25rem] text-center">
-                        None
-                      </p>
+                      <p className="text-black text-[1.25rem] text-center"></p>
                     ) : (
                       <BuyStatus />
                     )}
@@ -719,14 +679,6 @@ const DetailRaffle = () => {
                     <h1 className="text-[24px] text-[#1A1A1A] mt-1">
                       {nftInfo.nftName}
                     </h1>
-                    {/* <div className="flex items-center" >
-                      <p className="text-[16px] text-grey " >NFT Contract Address:</p>
-                      <p className="text-[16px] text-grey" >{nftInfo.tokenAddress}</p>
-                    </div>
-                    <div className="flex items-center" >
-                      <p className="text-[16px] text-grey " >NFT Token ID:</p>
-                      <p className="text-[16px] text-grey" >{nftInfo.tokenId}</p>
-                    </div> */}
                     <div className="flex items-center gap-2">
                       <a
                         href={`https://opensea.io/assets/ethereum/${nftInfo.tokenAddress}/${nftInfo.tokenId}`}
@@ -800,7 +752,6 @@ const DetailRaffle = () => {
                             <Countdown
                               ref={setStartCountdownRef}
                               date={nftInfo?.start_date * 1000}
-                              // date={1675428664291}
                               zeroPadTime={3}
                               renderer={startCountdownRenderer}
                               onComplete={() => {
@@ -842,7 +793,7 @@ const DetailRaffle = () => {
                         />
                         <p className="text-[white]">Tickets Owned</p>
                         <p className="text-white text-[18px] font-semibold">
-                          {ticketsOwned ? ticketsOwned.toFixed(2) : 0}%
+                          {ticketsOwned}
                         </p>
                       </div>
 
@@ -919,7 +870,6 @@ const DetailRaffle = () => {
                             {item?.buyer.substr(0, 6) +
                               "..." +
                               item?.buyer.substr(item?.buyer.length - 4, 4)}
-                            {/* {item?.name} */}
                           </li>
                           <li className="basis-[50%] text-[#666] text-[14px] text-center">
                             {item?.amount}
@@ -933,16 +883,9 @@ const DetailRaffle = () => {
                   <p className="text-[#8652FF] text-[24px] ">Raffler</p>
                   <div className="flex items-center gap-2 ">
                     <p>{ShowCreator}</p>
-
                     <img src={IdCardIcon} />
-                    {isTwitter &&
-                        <img src={TwitterIcon} />
-                    }
-                    {isDiscord && 
-                         <img src={DiscordIcon} />
-                    }
-                    
-                   
+                    {isTwitter && <img src={TwitterIcon} />}
+                    {isDiscord && <img src={DiscordIcon} />}
                   </div>
                   {!nftInfo?.follow ? (
                     <button
@@ -987,20 +930,13 @@ const DetailRaffle = () => {
               </div>
 
               {showEdit && (
-                // <Link
-                //   to={`/raffle/${nftInfo._id}`}
-                //   className=" mt-5 flex gap-[16px] items-center bg-[#ECECEC] rounded-[9px] py-[8px] px-[10px] max-w-fit cursor-pointer ml-[auto] "
-                // >
                 <button
                   type="button"
                   onClick={handleRaffleDeleteBtn}
                   className="bg-white-500 shadow-lg shadow-white-500/50 text-black bg-white rounded-[0.7rem] flex items-center py-3 px-5 mt-5 ml-[auto]"
                 >
-                  {/* <img src={EditIcon} className="w-[18px] h-[18px] " /> */}
                   <p>Delete Raffle</p>
                 </button>
-
-                // </Link>
               )}
             </div>
           </div>

@@ -7,19 +7,14 @@ import { API_URL } from "../config/dev";
 import RedFavouriteIcon from "../assets/fav-icon.svg";
 import GreyFavouriteIcon from "../assets/grey-fav-icon.svg";
 import { getUser } from "../services/api";
+import { useSelector } from "react-redux";
 
-
-
-
-
-const RaffleItem =  (props: any) => {
-
-
+const RaffleItem = (props: any) => {
   const { item } = props;
-  
   const [raffle, setRaffle] = useState({ ...item });
   const [sellAmount, setSellAmount] = useState(0);
-  const [ShowCreator,setShowCreator] = useState('');
+  const [ShowCreator, setShowCreator] = useState("");
+  const storeData: any = useSelector((status) => status);
 
   let startCountdownApi: CountdownApi | null = null;
   let endCountdownApi: CountdownApi | null = null;
@@ -29,8 +24,7 @@ const RaffleItem =  (props: any) => {
     const lastChars = address.slice(-4);
     return `${firstChars}...${lastChars}`;
   }
-  
- 
+
   const setStartCountdownRef = (countdown: Countdown | null) => {
     if (countdown) {
       startCountdownApi = countdown.getApi();
@@ -105,7 +99,7 @@ const RaffleItem =  (props: any) => {
       <p>Ended</p>
     ) : (
       <div className="flex gap-1">
-        <p>Live</p>
+        <p>End in</p>
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -121,6 +115,7 @@ const RaffleItem =  (props: any) => {
       const res = await axios.post(`${API_URL}/raffle/updateUserFavourite`, {
         id: id,
         favourite: favourite,
+        walletAddress: storeData.address,
       });
       setRaffle({ ...raffle, favourite: favourite });
     } catch (error) {
@@ -132,27 +127,24 @@ const RaffleItem =  (props: any) => {
     (async () => {
       try {
         setSellAmount(raffle.sold_tickets);
-        setRaffle({ ...item });
-        const user:any = await getUser(item.walletAddress)
-        if(user){
-            if(user.twitter){
-              setShowCreator(user.twitter);
-            }
-            else if(user.discordName){
-              setShowCreator(user.discordName);
-            }
-            else {
-            
-                setShowCreator(formatAddress(item.walletAddress))
-            }
-        }
-        else {
-          setShowCreator(formatAddress(item.walletAddress))
+        setRaffle({
+          ...item,
+          favourite: raffle.favourite.includes(storeData.address.toLowerCase()),
+        });
+        const user: any = await getUser(item.walletAddress);
+        if (user) {
+          if (user.twitter) {
+            setShowCreator(user.twitter);
+          } else if (user.discordName) {
+            setShowCreator(user.discordName);
+          } else {
+            setShowCreator(formatAddress(item.walletAddress));
+          }
+        } else {
+          setShowCreator(formatAddress(item.walletAddress));
         }
         // const floorPrice = await getFloorPrice(item.name);
         // console.log('floor price aa raha hai??',floorPrice)
-
-
       } catch (error) {
         console.log("error", error);
       }
