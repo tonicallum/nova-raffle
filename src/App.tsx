@@ -10,20 +10,35 @@ import RaffleProfile from "./pages/Raffle/Profile";
 import "./App.css";
 import LeaderBoard from "./pages/LeaderBoard/LeaderBoard";
 
+import { WagmiConfig, createConfig, configureChains, mainnet } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
+
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [mainnet],
+  [publicProvider()]
+);
+
+const config = createConfig({
+  autoConnect: true,
+  publicClient,
+  webSocketPublicClient,
+});
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Raffle />} />
-        <Route path="/raffle/create" element={<CreateRaffle />} />
-        <Route path="/leaderboard" element={<LeaderBoard />} />
-        <Route path="raffle/:id" element={<EditRaffle />} />
-        <Route path="/raffle/detail/:id" element={<DetailRaffle />} />
-        <Route path="/profile/raffle" element={<RaffleProfile />} />
-        <Route path="/raffle1155/detail/:id" element={<DetailRaffle1155 />} />
-      </Routes>
-    </BrowserRouter>
+    <WagmiConfig config={config}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Raffle />} />
+          <Route path="/raffle/create" element={<CreateRaffle />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="raffle/:id" element={<EditRaffle />} />
+          <Route path="/raffle/detail/:id" element={<DetailRaffle />} />
+          <Route path="/profile/raffle" element={<RaffleProfile />} />
+          <Route path="/raffle1155/detail/:id" element={<DetailRaffle1155 />} />
+        </Routes>
+      </BrowserRouter>
+    </WagmiConfig>
   );
 };
 

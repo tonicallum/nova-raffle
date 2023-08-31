@@ -86,7 +86,7 @@ const DetailRaffle = () => {
         follow: follow,
         walletAddress:storeData.address
       });
-      setNftInfo({ ...nftInfo, follow: follow });
+      setNftInfo({ ...nftInfo, followed: follow });
     } catch (error) {
       console.log("error", error);
     }
@@ -465,7 +465,7 @@ const DetailRaffle = () => {
 
         setNftInfo({
           ...nftInfoById,
-          follow :nftInfoById.follow.includes(storeData.address.toLowerCase()),
+          followed :nftInfoById.follow.includes(storeData.address.toLowerCase()),
           _id: nftInfoById._id,
           project: nftInfoById.project,
           price: nftInfoById.price,
@@ -887,7 +887,7 @@ const DetailRaffle = () => {
                     {isTwitter && <img src={TwitterIcon} />}
                     {isDiscord && <img src={DiscordIcon} />}
                   </div>
-                  {!nftInfo?.follow ? (
+                  {!nftInfo?.followed ? (
                     <button
                       className="bg-[#8652FF] max-w-fit rounded-[4px] py-[6px] px-[25px] text-white "
                       onClick={() => handleFollow(nftInfo._id, true)}

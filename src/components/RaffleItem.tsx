@@ -129,7 +129,7 @@ const RaffleItem = (props: any) => {
         setSellAmount(raffle.sold_tickets);
         setRaffle({
           ...item,
-          favourite: raffle.favourite.includes(storeData.address.toLowerCase()),
+          favourited: raffle.favourite.includes(storeData.address.toLowerCase()),
         });
         const user: any = await getUser(item.walletAddress);
         if (user) {
@@ -170,7 +170,7 @@ const RaffleItem = (props: any) => {
             className="min-h-[360px] object-cover"
           />
 
-          {raffle?.favourite ? (
+          {raffle?.favourited ? (
             <div
               className="absolute top-2 right-2 bg-white p-[8px] cursor-pointer rounded-[6px]"
               onClick={() => handleFavourite(raffle._id, false)}
