@@ -746,7 +746,7 @@ const DetailRaffle = () => {
                           alt="TimingIcon"
                           className="max-w-[60px] m-auto"
                         />
-                        <p className="text-[white]">Time Remaining</p>
+                        <p className="text-[white] invisible">Time Remaining</p>
                         <p className="text-white">
                           {nftInfo?.end_date && (
                             <Countdown

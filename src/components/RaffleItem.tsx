@@ -232,7 +232,7 @@ const RaffleItem = (props: any) => {
               </p>
             </div>
             <div className="flex justify-between items-center ">
-              <p className=" text-[#1A1A1A] text-[15px]">Time Remaining</p>
+              <p className=" text-[#1A1A1A] text-[15px]"></p>
               <div className="text-sm text-[#8652FF] font-medium ">
                 <Countdown
                   ref={setStartCountdownRef}
