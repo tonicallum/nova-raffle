@@ -75,7 +75,7 @@ const RaffleItem = (props: any) => {
       />
     ) : (
       <div className="flex gap-1">
-        <p>Starts In</p>
+        {/* <p>Starts In</p> */}
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -99,7 +99,7 @@ const RaffleItem = (props: any) => {
       <p>Ended</p>
     ) : (
       <div className="flex gap-1">
-        <p>End in</p>
+        {/* <p>End in</p> */}
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -129,7 +129,9 @@ const RaffleItem = (props: any) => {
         setSellAmount(raffle.sold_tickets);
         setRaffle({
           ...item,
-          favourited: raffle.favourite.includes(storeData.address.toLowerCase()),
+          favourited: raffle.favourite.includes(
+            storeData.address.toLowerCase()
+          ),
         });
         const user: any = await getUser(item.walletAddress);
         if (user) {
@@ -232,7 +234,11 @@ const RaffleItem = (props: any) => {
               </p>
             </div>
             <div className="flex justify-between items-center ">
-              <p className=" text-[#1A1A1A] text-[15px]"></p>
+              <p className="text-[#1A1A1A] text-[15px]">
+                {raffle.start_date * 1000 > Date.now()
+                  ? "Starts in"
+                  : "Time remaining"}
+              </p>
               <div className="text-sm text-[#8652FF] font-medium ">
                 <Countdown
                   ref={setStartCountdownRef}
