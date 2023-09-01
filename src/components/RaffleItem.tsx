@@ -169,7 +169,7 @@ const RaffleItem = (props: any) => {
             src={raffle.image}
             alt="CoodeImage"
             loading="lazy"
-            className="min-h-[360px] object-cover"
+            className="min-h-[360px] object-contain"
           />
 
           {raffle?.favourited ? (
