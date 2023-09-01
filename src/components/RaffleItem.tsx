@@ -201,8 +201,8 @@ const RaffleItem = (props: any) => {
           </div>
         </div>
         <div className=" flex flex-col gap-[8px] bg-white p-[18px]  ">
-          {raffle.end_date * 1000 > Date.now() ? (
-            <>
+          {/* {raffle.end_date * 1000 > Date.now() ? ( */}
+            {/* <> */}
               <div>
                 <div className="flex items-center">
                   {/* <span className="leading-none inline-block text-[20px] ">
@@ -256,7 +256,7 @@ const RaffleItem = (props: any) => {
                   </div>
                 </div>
               </div>
-            </>
+            {/* </>
           ) : (
             <div className="flex justify-center flex-col">
               <p>Raffle Winner</p>
@@ -271,7 +271,7 @@ const RaffleItem = (props: any) => {
                   : ``}
               </p>
             </div>
-          )}
+          )} */}
 
           <div className="text-center mt-4 ">
             <Link
