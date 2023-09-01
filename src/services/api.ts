@@ -232,6 +232,19 @@ export const createUser = async (wallet: string, signedMessage: string | null) =
 }
 
 
+export const disconnectSocial = async (wallet: string, social :string) => {
+  try {
+    const result = await commonService({
+      method: "get",
+      route: `${API_URL}/user/disconnect-social/${wallet}/${wallet}`,
+    })
+    return result;
+  }
+  catch (error) {
+    console.log('error', error);
+  }
+}
+
 export const checkDiscordStatus = async (wallet: string) => {
   try {
     const result = await commonService({

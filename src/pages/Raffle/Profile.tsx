@@ -12,11 +12,13 @@ import {
   checkDiscordStatus,
   checkTwitterStatus,
   getTicketsById,
+  disconnectSocial,
 } from "../../services/api";
 import RaffleRarticipant from "./RaffleParticipant";
 import { toast } from "react-toastify";
 import CONFIG from "../../config";
 import { delay } from "../../utils";
+import { disconnect } from "process";
 
 
 const RaffleProfile = () => {
@@ -50,8 +52,10 @@ const RaffleProfile = () => {
   const handleConnectDiscord = async () => {
     try {
       if (discord) {
-        toast.error(`You have already Discord Account`);
-        return;
+        // toast.error(`You have already Discord Account`);
+        // return;
+        await disconnectSocial(storeData.address, "discord");
+        setDiscord("");
       }
       if (storeData.wallet !== "connected") {
         toast.error("Connect your Wallet!");
@@ -102,32 +106,36 @@ const RaffleProfile = () => {
   const handleConnectTwitter = async () => {
     try {
       if (twitter) {
-        toast.error(`You have already Twitter Account`);
-        return;
+        // toast.error(`You have already Twitter Account`);
+        // return;
+        await disconnectSocial(storeData.address, "twitter");
+        setTwitter("");
       }
-      if (storeData.wallet !== `connected`) {
-        toast.error("Connect your Wallet!");
-        return;
-      }
-      let user = await getUser(storeData.address);
-      let signedMessage = null;
-      if (!user) {
-        signedMessage = await window.ethereum.request({
-          method: "personal_sign",
-          params: ["Sign Message", storeData.address],
-        });
-      }
-      const verifyToken: any = await createUser(
-        storeData.address,
-        signedMessage
-      );
-      localStorage.setItem("token", JSON.stringify(verifyToken));
-      setToken(verifyToken);
-      if (verifyToken) {
-        window.open(
-          CONFIG.Backend_URL + "/api/oauth/twitter?token=" + verifyToken
+      else {
+        if (storeData.wallet !== `connected`) {
+          toast.error("Connect your Wallet!");
+          return;
+        }
+        let user = await getUser(storeData.address);
+        let signedMessage = null;
+        if (!user) {
+          signedMessage = await window.ethereum.request({
+            method: "personal_sign",
+            params: ["Sign Message", storeData.address],
+          });
+        }
+        const verifyToken: any = await createUser(
+          storeData.address,
+          signedMessage
         );
-        setSocial(!social);
+        localStorage.setItem("token", JSON.stringify(verifyToken));
+        setToken(verifyToken);
+        if (verifyToken) {
+          window.open(
+            CONFIG.Backend_URL + "/api/oauth/twitter?token=" + verifyToken
+          );
+          setSocial(!social);
+        }
       }
     } catch (error) {
       console.log("error", error);
@@ -294,7 +302,7 @@ const RaffleProfile = () => {
                   alt="TwitterBlack"
                   className="w-[25px]"
                 />
-                <span className="ml-3 text-white ">Link Twitter</span>
+                <span className="ml-3 text-white ">{twitter ? twitter : "Link Twitter"}</span>
               </button>
               <button
                 type="button"
@@ -306,7 +314,7 @@ const RaffleProfile = () => {
                   alt="TwitterBlack"
                   className="w-[25px]"
                 />
-                <span className="ml-3 text-white ">Link Discord</span>
+                <span className="ml-3 text-white ">{discord ? discord : "Link Discord"}</span>
               </button>
             </div>
           </div>
