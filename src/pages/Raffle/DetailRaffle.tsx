@@ -490,9 +490,9 @@ const DetailRaffle = () => {
         const user: any = await getUser(nftInfoById.walletAddress);
         console.log("user data", user);
         if (user) {
-          if (user.twitter) {
+          if (user.twitterName) {
             setTwitter(true);
-            setShowCreator(user.twitter);
+            setShowCreator(user.twitterName );
           } else if (user.discordName) {
             setDiscord(true);
             setShowCreator(user.discordName);
