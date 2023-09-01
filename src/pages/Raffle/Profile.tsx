@@ -302,7 +302,7 @@ const RaffleProfile = () => {
                   alt="TwitterBlack"
                   className="w-[25px]"
                 />
-                <span className="ml-3 text-white ">{twitter ? twitter : "Link Twitter"}</span>
+                <span className="ml-3 text-white ">{twitter ? 'disconnect twitter' : "Link Twitter"}</span>
               </button>
               <button
                 type="button"
@@ -314,7 +314,7 @@ const RaffleProfile = () => {
                   alt="TwitterBlack"
                   className="w-[25px]"
                 />
-                <span className="ml-3 text-white ">{discord ? discord : "Link Discord"}</span>
+                <span className="ml-3 text-white ">{discord ? 'disconnect discord' : "Link Discord"}</span>
               </button>
             </div>
           </div>
