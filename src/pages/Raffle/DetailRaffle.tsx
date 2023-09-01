@@ -329,20 +329,32 @@ const DetailRaffle = () => {
 
         {raffleStatus === 2 && (
           <div className="flex flex-col gap-2">
-            <p className="text-[#8652FF] text-[0.75rem] text-center">
-              Raffle Winner
-            </p>
-            <a href={`profile/raffle/${winnerAddress}`}>
-              <p className="text-[#8652FF] text-[1.25rem] text-center">
-                {winnerAddress
-                  ? winnerAddress?.substr(0, 6) +
-                    "..." +
-                    winnerAddress?.substr(storeData?.address.length - 4, 4)
-                  : ``}
-              </p>
-            </a>
+            {
+                   storeData.address.toLowerCase() === winnerAddress.toLowerCase()? 
+                    <p className="text-[#8652FF] text-xl text-center font-bold">
+                        You Won!
+                    </p>: 
+                    <>
+                     <p className="text-[#8652FF] text-[0.75rem] text-center">
+                       Raffle Winner
+                      </p>
+                      <a href={`/profile/raffle/${winnerAddress}`}>
+                        <p className="text-[#8652FF] text-[1.25rem] text-center">
+                          {winnerAddress
+                            ? winnerAddress?.substr(0, 6) +
+                              "..." +
+                              winnerAddress?.substr(
+                              storeData?.address.length - 4,
+                               4
+                             )
+                         : ``}
+                         </p>
+                       </a>
+                      </>
+                          
+                        }
             {isWinner && (
-              <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
+              <button className="w-[60%] rounder-[14px] mx-auto text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
                 Claim Winnings
               </button>
             )}
@@ -362,7 +374,7 @@ const DetailRaffle = () => {
       toast.success("Reward Claiming Successfull");
     } else {
       toast.error("Error In Reward Claiming");
-      setClaimWinning(false);
+    
     }
   };
 
@@ -420,6 +432,7 @@ const DetailRaffle = () => {
     (async () => {
       try {
         setLoading(true);
+        console.log('win status', isclaimWinnings);
         const nftInfoById: any = await getRaffleById(id); //data base se araha
         console.log("from db : ", nftInfoById);
         const dateFormat = new Date(nftInfoById.start_date * 1000);
@@ -614,25 +627,35 @@ const DetailRaffle = () => {
                     {isWinner === true ? (
                       // <p className="text-[#8652FF] text-[1.25rem] text-center">Win</p>
                       <div className="flex flex-col gap-2">
-                        <p className="text-[#8652FF] text-[0.75rem] text-center">
-                          Raffle Winner
-                        </p>
-                        <a href={`/profile/raffle/${winnerAddress}`}>
-                          <p className="text-[#8652FF] text-[1.25rem] text-center">
-                            {winnerAddress
-                              ? winnerAddress?.substr(0, 6) +
-                                "..." +
-                                winnerAddress?.substr(
-                                  storeData?.address.length - 4,
-                                  4
-                                )
-                              : ``}
-                          </p>
-                        </a>
+                        {
+                          storeData.address.toLowerCase() === winnerAddress.toLowerCase()? 
+                          <p className="text-[#8652FF] text-xl text-center font-bold">
+                              You Won!
+                          </p>: 
+                          <>
+                           <p className="text-[#8652FF] text-[0.75rem] text-center">
+                           Raffle Winner
+                         </p>
+                         <a href={`/profile/raffle/${winnerAddress}`}>
+                           <p className="text-[#8652FF] text-[1.25rem] text-center">
+                             {winnerAddress
+                               ? winnerAddress?.substr(0, 6) +
+                                 "..." +
+                                 winnerAddress?.substr(
+                                   storeData?.address.length - 4,
+                                   4
+                                 )
+                               : ``}
+                           </p>
+                         </a>
+                          </>
+                          
+                        }
+                       
                         {!isclaimWinnings &&
                           storeData.address.toLowerCase() === winnerAddress.toLowerCase() && (
                             <button
-                              className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover"
+                              className="w-[60%] rounder-[14px] mx-auto text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover"
                               onClick={handleclaimWinnings}
                             >
                               Claim Winnings
