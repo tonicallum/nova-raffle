@@ -14,14 +14,13 @@ import {
   getTicketsById,
 } from "../../services/api";
 import RaffleRarticipant from "./RaffleParticipant";
-import { toast } from "react-toastify";
 import CONFIG from "../../config";
-import { delay } from "../../utils";
+import { useParams } from "react-router-dom";
 
-
-const RaffleProfile = () => {
+const RaffleOtherProfile = () => {
+  const { id } = useParams();
   const [isLoading, setLoading] = useState(false);
-  const [walletAddress, setWalletAddress] = useState(``);
+  const [walletAddress, setWalletAddress] = useState(id);
   const [participantLists, setParticipantLists] = useState<any[]>([]);
   const [purchasedRaffles, setPurchasedRaffles] = useState<any>([]);
   const [favouriteRaffles, setFavouriteRaffles] = useState<any>([]);
@@ -46,101 +45,100 @@ const RaffleProfile = () => {
   const [isPurchased, setPurchased] = useState(false);
   const [isFollowed, setFollowed] = useState(false);
 
+  // const handleConnectDiscord = async () => {
+  //   try {
+  //     if (discord) {
+  //       toast.error(`You have already Discord Account`);
+  //       return;
+  //     }
+  //     if (storeData.wallet !== "connected") {
+  //       toast.error("Connect your Wallet!");
+  //       return;
+  //     }
+  //     setLoading(true);
+  //     let user = await getUser(id as string);
+  //     let signedMessage = null;
+  //     if (!user) {
+  //       signedMessage = await window.ethereum.request({
+  //         method: "personal_sign",
+  //         params: ["Sign Message", id],
+  //       });
+  //     }
+  //     const verifyToken: any = await createUser(
+  //       id,
+  //       signedMessage
+  //     );
+  //     localStorage.setItem("token", JSON.stringify(verifyToken));
+  //     if (verifyToken) {
+  //       const res = window.open(
+  //         CONFIG.Backend_URL + "/api/oauth/discord?token=" + verifyToken
+  //       );
+  //       if (res) {
+  //         setTimeout(() => {
+  //           toast.error(`It's time out to discord connecting`);
+  //           setLoading(false);
+  //           return;
+  //         }, 300 * 1000);
+  //         for (let i = 0; i < 1; ) {
+  //           const user: any = await getUser(id);
+  //           await delay(5 * 1000);
+  //           if (user.discordName) {
+  //             setDiscord(user.discordName);
+  //             toast.success(`Successfully connected`);
+  //             break;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log("error", error);
+  //     setLoading(false);
+  //   }
+  // };
 
-  const handleConnectDiscord = async () => {
-    try {
-      if (discord) {
-        toast.error(`You have already Discord Account`);
-        return;
-      }
-      if (storeData.wallet !== "connected") {
-        toast.error("Connect your Wallet!");
-        return;
-      }
-      setLoading(true);
-      let user = await getUser(storeData.address);
-      let signedMessage = null;
-      if (!user) {
-        signedMessage = await window.ethereum.request({
-          method: "personal_sign",
-          params: ["Sign Message", storeData.address],
-        });
-      }
-      const verifyToken: any = await createUser(
-        storeData.address,
-        signedMessage
-      );
-      localStorage.setItem("token", JSON.stringify(verifyToken));
-      if (verifyToken) {
-        const res = window.open(
-          CONFIG.Backend_URL + "/api/oauth/discord?token=" + verifyToken
-        );
-        if (res) {
-          setTimeout(() => {
-            toast.error(`It's time out to discord connecting`);
-            setLoading(false);
-            return;
-          }, 300 * 1000);
-          for (let i = 0; i < 1; ) {
-            const user: any = await getUser(storeData.address);
-            await delay(5 * 1000);
-            if (user.discordName) {
-              setDiscord(user.discordName);
-              toast.success(`Successfully connected`);
-              break;
-            }
-          }
-        }
-      }
-      setLoading(false);
-    } catch (error) {
-      console.log("error", error);
-      setLoading(false);
-    }
-  };
-
-  const handleConnectTwitter = async () => {
-    try {
-      if (twitter) {
-        toast.error(`You have already Twitter Account`);
-        return;
-      }
-      if (storeData.wallet !== `connected`) {
-        toast.error("Connect your Wallet!");
-        return;
-      }
-      let user = await getUser(storeData.address);
-      let signedMessage = null;
-      if (!user) {
-        signedMessage = await window.ethereum.request({
-          method: "personal_sign",
-          params: ["Sign Message", storeData.address],
-        });
-      }
-      const verifyToken: any = await createUser(
-        storeData.address,
-        signedMessage
-      );
-      localStorage.setItem("token", JSON.stringify(verifyToken));
-      setToken(verifyToken);
-      if (verifyToken) {
-        window.open(
-          CONFIG.Backend_URL + "/api/oauth/twitter?token=" + verifyToken
-        );
-        setSocial(!social);
-      }
-    } catch (error) {
-      console.log("error", error);
-      setLoading(false);
-    }
-  };
+  // const handleConnectTwitter = async () => {
+  //   try {
+  //     if (twitter) {
+  //       toast.error(`You have already Twitter Account`);
+  //       return;
+  //     }
+  //     if (storeData.wallet !== `connected`) {
+  //       toast.error("Connect your Wallet!");
+  //       return;
+  //     }
+  //     let user = await getUser(id);
+  //     let signedMessage = null;
+  //     if (!user) {
+  //       signedMessage = await window.ethereum.request({
+  //         method: "personal_sign",
+  //         params: ["Sign Message", id],
+  //       });
+  //     }
+  //     const verifyToken: any = await createUser(
+  //       id,
+  //       signedMessage
+  //     );
+  //     localStorage.setItem("token", JSON.stringify(verifyToken));
+  //     setToken(verifyToken);
+  //     if (verifyToken) {
+  //       window.open(
+  //         CONFIG.Backend_URL + "/api/oauth/twitter?token=" + verifyToken
+  //       );
+  //       setSocial(!social);
+  //     }
+  //   } catch (error) {
+  //     console.log("error", error);
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     (async () => {
       if (storeData.wallet !== "connected") return;
-      const discord: any = await checkDiscordStatus(storeData.address);
+      const discord: any = await checkDiscordStatus(id as string);
       if (discord) setDiscord(discord);
-      const twitter: any = await checkTwitterStatus(storeData.address);
+      const twitter: any = await checkTwitterStatus(id as string);
       if (twitter) setTwitter(twitter);
     })();
   }, [storeData, token, social]);
@@ -150,21 +148,22 @@ const RaffleProfile = () => {
       try {
         if (storeData.wallet === "connected") {
           setLoading(true);
-          setWalletAddress(storeData.address);
+          // setWalletAddress(id);
+          setWalletAddress(id);
           const getRaffles: any = await getAllRaffle();
           const filterMyRaffles = getRaffles.filter(
             (item: any) =>
               item.walletAddress.toLowerCase() ===
-              storeData.address.toLowerCase()
+              id?.toString().toLowerCase()
           );
           setParticipantLists(filterMyRaffles);
-          const filterFavouriteRaffles = getRaffles.filter(
-            (item: any) => item.favourite.includes(storeData.address.toLowerCase())
+          const filterFavouriteRaffles = getRaffles.filter((item: any) =>
+            item.favourite.includes(id?.toString().toLowerCase())
           );
           setFavouriteRaffles([...filterFavouriteRaffles]);
 
-          const filterFollowRaffles = getRaffles.filter(
-            (item: any) => item.follow.includes(storeData.address.toLowerCase())
+          const filterFollowRaffles = getRaffles.filter((item: any) =>
+            item.follow.includes(id?.toString().toLowerCase())
           );
           setFollowRaffles([...filterFollowRaffles]);
 
@@ -190,7 +189,7 @@ const RaffleProfile = () => {
               for (let j = 0; j < getTicketByID.length; j++) {
                 if (
                   getTicketByID[j].buyer.toString().toLowerCase() ===
-                  storeData.address
+                  id
                 ) {
                   purchasedList_721.push(getRaffles[i]);
                   raffleBought_721.push(getTicketByID[j]);
@@ -208,7 +207,8 @@ const RaffleProfile = () => {
 
           const wonraffles = getRaffles.filter(
             (item: any) =>
-              item.winnerAddress?.toLowerCase() === storeData.address.toLowerCase()
+              item.winnerAddress?.toLowerCase() ===
+              id?.toString().toLowerCase()
           );
 
           const res_winnerCount: any = wonraffles.length;
@@ -287,7 +287,7 @@ const RaffleProfile = () => {
               <button
                 type="button"
                 className="py-3 px-4 bg-[#03A9F4] rounded-md flex items-center"
-                onClick={handleConnectTwitter}
+                // onClick={handleConnectTwitter}
               >
                 <img
                   src={TwitterBlack}
@@ -299,7 +299,7 @@ const RaffleProfile = () => {
               <button
                 type="button"
                 className="py-3 px-4 bg-[#5865F2] rounded-md flex items-center ml-4"
-                onClick={handleConnectDiscord}
+                // onClick={handleConnectDiscord}
               >
                 <img
                   src={DiscordBlack}
@@ -476,4 +476,4 @@ const RaffleProfile = () => {
   );
 };
 
-export default RaffleProfile;
+export default RaffleOtherProfile;

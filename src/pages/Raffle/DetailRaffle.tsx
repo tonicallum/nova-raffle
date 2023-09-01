@@ -347,13 +347,15 @@ const DetailRaffle = () => {
             <p className="text-[#8652FF] text-[0.75rem] text-center">
               Raffle Winner
             </p>
-            <p className="text-[#8652FF] text-[1.25rem] text-center">
-              {winnerAddress
-                ? winnerAddress?.substr(0, 6) +
-                  "..." +
-                  winnerAddress?.substr(storeData?.address.length - 4, 4)
-                : ``}
-            </p>
+            <a href={`profile/raffle/${winnerAddress}`}>
+              <p className="text-[#8652FF] text-[1.25rem] text-center">
+                {winnerAddress
+                  ? winnerAddress?.substr(0, 6) +
+                    "..." +
+                    winnerAddress?.substr(storeData?.address.length - 4, 4)
+                  : ``}
+              </p>
+            </a>
           </div>
         )}
 
@@ -362,14 +364,15 @@ const DetailRaffle = () => {
             <p className="text-[#8652FF] text-[0.75rem] text-center">
               Raffle Winner
             </p>
-            <p className="text-[#8652FF] text-[1.25rem] text-center">
-              {winnerAddress
-                ? winnerAddress?.substr(0, 6) +
-                  "..." +
-                  winnerAddress?.substr(storeData?.address.length - 4, 4)
-                : ``}
-            </p>
-
+            <a href={`profile/raffle/${winnerAddress}`}>
+              <p className="text-[#8652FF] text-[1.25rem] text-center">
+                {winnerAddress
+                  ? winnerAddress?.substr(0, 6) +
+                    "..." +
+                    winnerAddress?.substr(storeData?.address.length - 4, 4)
+                  : ``}
+              </p>
+            </a>
             {isWinner && (
               <button className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
                 Claim Winnings
@@ -646,16 +649,18 @@ const DetailRaffle = () => {
                         <p className="text-[#8652FF] text-[0.75rem] text-center">
                           Raffle Winner
                         </p>
-                        <p className="text-[#8652FF] text-[1.25rem] text-center">
-                          {winnerAddress
-                            ? winnerAddress?.substr(0, 6) +
-                              "..." +
-                              winnerAddress?.substr(
-                                storeData?.address.length - 4,
-                                4
-                              )
-                            : ``}
-                        </p>
+                        <a href={`/profile/raffle/${winnerAddress}`}>
+                          <p className="text-[#8652FF] text-[1.25rem] text-center">
+                            {winnerAddress
+                              ? winnerAddress?.substr(0, 6) +
+                                "..." +
+                                winnerAddress?.substr(
+                                  storeData?.address.length - 4,
+                                  4
+                                )
+                              : ``}
+                          </p>
+                        </a>
                         {!isclaimWinnings &&
                           storeData.address === winnerAddress && (
                             <button
@@ -895,7 +900,10 @@ const DetailRaffle = () => {
                 <div className=" flex flex-col gap-2 p-4">
                   <p className="text-[#8652FF] text-[24px] ">Raffler</p>
                   <div className="flex items-center gap-2 ">
-                    <p>{ShowCreator}</p>
+                  <a href={`/profile/raffle/${nftInfo.walletAddress}`}>
+                  <p>{ShowCreator}</p>
+                  </a>
+                    
                     <img src={IdCardIcon} />
                     {isTwitter && <img src={TwitterIcon} />}
                     {isDiscord && <img src={DiscordIcon} />}

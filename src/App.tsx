@@ -6,6 +6,7 @@ import DetailRaffle from "./pages/Raffle/DetailRaffle";
 import DetailRaffle1155 from "./pages/Raffle/DetailRaffle1155";
 import EditRaffle from "./pages/Raffle/EditRaffle";
 import RaffleProfile from "./pages/Raffle/Profile";
+import RaffleOtherProfile from "./pages/Raffle/OtherProfile";
 
 import "./App.css";
 import LeaderBoard from "./pages/LeaderBoard/LeaderBoard";
@@ -34,7 +35,8 @@ const App = () => {
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="raffle/:id" element={<EditRaffle />} />
           <Route path="/raffle/detail/:id" element={<DetailRaffle />} />
-          <Route path="/profile/raffle" element={<RaffleProfile />} />
+          <Route path="/profile/raffle/" element={<RaffleProfile />} />
+          <Route path="/profile/raffle/:id" element={<RaffleOtherProfile />} />
           <Route path="/raffle1155/detail/:id" element={<DetailRaffle1155 />} />
         </Routes>
       </BrowserRouter>

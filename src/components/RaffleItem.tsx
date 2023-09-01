@@ -213,7 +213,7 @@ const RaffleItem = (props: any) => {
               />
             </div>
             <h1 className="text-[16px]">{raffle.name}</h1>
-            <p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p>
+            <a href={`/profile/raffle/${item.walletAddress}`}><p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p></a>
           </div>
 
           <div className="border-[1px] border-dashed border-[grey] rounded-[8px] p-[10px] flex flex-col gap-[10px] ">
