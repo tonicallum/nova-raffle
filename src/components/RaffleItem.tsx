@@ -31,15 +31,15 @@ const RaffleItem = (props: any) => {
     }
   };
 
-  const fetchRaffleRank = async () => {
-    try {
-      // let api_url = `${API_URL}/raffle/rank/${item?.tokenAddress}/${item?.tokenId}`;
-      let api_url = `${API_URL}/raffle/rank/0xED5AF388653567Af2F388E6224dC7C4b3241C544/3427`;
-      const res = await axios.get(api_url);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  // const fetchRaffleRank = async () => {
+  //   try {
+  //     // let api_url = `${API_URL}/raffle/rank/${item?.tokenAddress}/${item?.tokenId}`;
+  //     let api_url = `${API_URL}/raffle/rank/0xED5AF388653567Af2F388E6224dC7C4b3241C544/3427`;
+  //     const res = await axios.get(api_url);
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
 
   // const fetchRaffleRank = async () => {
   //   try{
@@ -126,6 +126,8 @@ const RaffleItem = (props: any) => {
   useEffect(() => {
     (async () => {
       try {
+        console.log("date now", Date.now())
+        console.log("end", raffle.end_date, raffle.start_date)
         setSellAmount(raffle.sold_tickets);
         setRaffle({
           ...item,
@@ -153,9 +155,9 @@ const RaffleItem = (props: any) => {
     })();
   }, [item]);
 
-  useEffect(() => {
-    fetchRaffleRank();
-  });
+  // useEffect(() => {
+  //   fetchRaffleRank();
+  // });
 
   return (
     <div
@@ -200,73 +202,85 @@ const RaffleItem = (props: any) => {
           </div>
         </div>
         <div className=" flex flex-col gap-[8px] bg-white p-[18px]  ">
-          <div>
-            <div className="flex items-center">
-              {/* <span className="leading-none inline-block text-[20px] ">
+          {raffle.end_date * 1000 < Date.now() ? (
+            <>
+              <div>
+                <div className="flex items-center">
+                  {/* <span className="leading-none inline-block text-[20px] ">
                 {raffle.project}
               </span> */}
-              <img
-                src={VerificationIcon}
-                alt="VerificationIcon"
-                style={{ width: "16px" }}
-                className="ml-1"
-              />
-            </div>
-            <h1 className="text-[16px]">{raffle.name}</h1>
-            <a href={`/profile/raffle/${item.walletAddress}`}><p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p></a>
-          </div>
-
-          <div className="border-[1px] border-dashed border-[grey] rounded-[8px] p-[10px] flex flex-col gap-[10px] ">
-            <div className="flex justify-between items-center">
-              <p className=" text-[#1A1A1A] text-[15px]">Ticket Price</p>
-              <p className="text-sm text-[#8652FF] font-medium ">
-                <span className="text-[12px]">{raffle.price}</span> MATIC
-              </p>
-            </div>
-            <div className="flex justify-between items-center ">
-              <p className=" text-[#1A1A1A] text-[15px]">Tickets Remaining</p>
-              <p className="text-sm text-[#8652FF] font-medium ">
-                <span className="text-[12px]">
-                  {" "}
-                  {raffle.total_tickets - sellAmount}{" "}
-                </span>{" "}
-                /{raffle.total_tickets}
-              </p>
-            </div>
-            <div className="flex justify-between items-center ">
-              <p className="text-[#1A1A1A] text-[15px]">
-                {raffle.start_date * 1000 > Date.now()
-                  ? "Starts in"
-                  : "Time remaining"}
-              </p>
-              <div className="text-sm text-[#8652FF] font-medium ">
-                <Countdown
-                  ref={setStartCountdownRef}
-                  date={raffle.start_date * 1000}
-                  zeroPadTime={3}
-                  // onComplete={() => setShowEdit(false)}
-                  renderer={startCountdownRenderer}
-                />
+                  <img
+                    src={VerificationIcon}
+                    alt="VerificationIcon"
+                    style={{ width: "16px" }}
+                    className="ml-1"
+                  />
+                </div>
+                <h1 className="text-[16px]">{raffle.name}</h1>
+                <a href={`/profile/raffle/${item.walletAddress}`}>
+                  <p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p>
+                </a>
+              </div>
+              <div className="border-[1px] border-dashed border-[grey] rounded-[8px] p-[10px] flex flex-col gap-[10px] ">
+                <div className="flex justify-between items-center">
+                  <p className=" text-[#1A1A1A] text-[15px]">Ticket Price</p>
+                  <p className="text-sm text-[#8652FF] font-medium ">
+                    <span className="text-[12px]">{raffle.price}</span> MATIC
+                  </p>
+                </div>
+                <div className="flex justify-between items-center ">
+                  <p className=" text-[#1A1A1A] text-[15px]">
+                    Tickets Remaining
+                  </p>
+                  <p className="text-sm text-[#8652FF] font-medium ">
+                    <span className="text-[12px]">
+                      {" "}
+                      {raffle.total_tickets - sellAmount}{" "}
+                    </span>{" "}
+                    /{raffle.total_tickets}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center ">
+                  <p className="text-[#1A1A1A] text-[15px]">
+                    {raffle.start_date * 1000 > Date.now()
+                      ? "Starts in"
+                      : "Time remaining"}
+                  </p>
+                  <div className="text-sm text-[#8652FF] font-medium ">
+                    <Countdown
+                      ref={setStartCountdownRef}
+                      date={raffle.start_date * 1000}
+                      zeroPadTime={3}
+                      // onComplete={() => setShowEdit(false)}
+                      renderer={startCountdownRenderer}
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <div>Raffle Winner</div>
+              <div>
+                {item?.winnerAddress?.toLowerCase() ==
+                storeData.address.toString().toLowerCase()
+                  ? "You win!"
+                  : item.winnerAddress
+                  ? item.winnerAddress?.substr(0, 6) +
+                    "..." +
+                    item.winnerAddress?.substr(storeData?.address.length - 4, 4)
+                  : ``}
               </div>
             </div>
-          </div>
+          )}
 
           <div className="text-center mt-4 ">
-            {raffle.type === `ERC1155` ? (
-              <Link
-                to={`/raffle1155/detail/${raffle._id}`}
-                className="bg-[#8652FF] text-white rounded-[4px] py-[10px] px-[10px] md:px-[80px] button-hover"
-              >
-                View Raffle
-              </Link>
-            ) : (
-              <Link
-                to={`/raffle/detail/${raffle._id}`}
-                className="bg-[#8652FF] text-white rounded-[4px] py-[10px] px-[10px] md:px-[80px] button-hover"
-              >
-                View Raffle
-              </Link>
-            )}
+            <Link
+              to={`/raffle/detail/${raffle._id}`}
+              className="bg-[#8652FF] text-white rounded-[4px] py-[10px] px-[10px] md:px-[80px] button-hover"
+            >
+              View Raffle
+            </Link>
           </div>
         </div>
       </div>

@@ -298,27 +298,12 @@ const DetailRaffle = () => {
   const handleTickedEndedTime = async () => {
     try {
       console.log("handleTickedEndedTime");
-      // if (nftInfo.state !== 0) return
       setLoading(true);
-      // const nftInfoById: any = await getRaffleById(id); //data base se araha
-      // const getRaffleInfo: any = await fetchRaffleItems(
-      //   nftInfoById.tokenId,
-      //   nftInfoById.tokenAddress,
-      //   nftInfoById.start_date
-      // );
-      // console.log("Raffle Id", getRaffleInfo?.itemId + 1);
-      // const fetch_lists = await idToRaffleItemBlock(getRaffleInfo?.itemId + 1);
-      // console.log("fetch_lists", fetch_lists);
-      // const get_winner = await calculateWinner(
-      //   getRaffleInfo?.itemId + 1,
-      //   fetch_lists.randomIndex
-      // );
-      // console.log("WInner WInner", get_winner);
-      // setWinnerAddress(nftInfoById.winnerAddress);
-      // console.log("mera address", typeof storeData.address);
-      // const ZEROADDRESS = ethers.constants.AddressZero;
-      // console.log("zero Address", typeof ZEROADDRESS);
-      setWinner(true);
+      const nftInfoById: any = await getRaffleById(id); //data base se araha
+      setWinnerAddress(nftInfoById.winnerAddress);
+      if(nftInfoById.winnerAddress.toLowerCase() === storeData.address.toString().toLowerCase()){
+        setWinner(true);
+      }
       setRaffleStatus(2);
       setLoading(false);
     } catch (error) {
@@ -342,24 +327,7 @@ const DetailRaffle = () => {
           <p className="text-black text-[1.25rem] text-center">Pending</p>
         )}
 
-        {raffleStatus === 2 && buyStatus === 0 && (
-          <div className="flex flex-col gap-2">
-            <p className="text-[#8652FF] text-[0.75rem] text-center">
-              Raffle Winner
-            </p>
-            <a href={`profile/raffle/${winnerAddress}`}>
-              <p className="text-[#8652FF] text-[1.25rem] text-center">
-                {winnerAddress
-                  ? winnerAddress?.substr(0, 6) +
-                    "..." +
-                    winnerAddress?.substr(storeData?.address.length - 4, 4)
-                  : ``}
-              </p>
-            </a>
-          </div>
-        )}
-
-        {raffleStatus === 2 && buyStatus === 1 && (
+        {raffleStatus === 2 && (
           <div className="flex flex-col gap-2">
             <p className="text-[#8652FF] text-[0.75rem] text-center">
               Raffle Winner
@@ -662,7 +630,7 @@ const DetailRaffle = () => {
                           </p>
                         </a>
                         {!isclaimWinnings &&
-                          storeData.address === winnerAddress && (
+                          storeData.address.toLowerCase() === winnerAddress.toLowerCase() && (
                             <button
                               className="w-[60%] rounder-[14px] text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover"
                               onClick={handleclaimWinnings}
