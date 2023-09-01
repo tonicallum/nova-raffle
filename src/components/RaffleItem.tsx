@@ -126,8 +126,6 @@ const RaffleItem = (props: any) => {
   useEffect(() => {
     (async () => {
       try {
-        console.log("date now", Date.now())
-        console.log("end", raffle.end_date, raffle.start_date)
         setSellAmount(raffle.sold_tickets);
         setRaffle({
           ...item,
@@ -203,7 +201,7 @@ const RaffleItem = (props: any) => {
           </div>
         </div>
         <div className=" flex flex-col gap-[8px] bg-white p-[18px]  ">
-          {raffle.end_date * 1000 < Date.now() ? (
+          {raffle.end_date * 1000 > Date.now() ? (
             <>
               <div>
                 <div className="flex items-center">
@@ -260,9 +258,9 @@ const RaffleItem = (props: any) => {
               </div>
             </>
           ) : (
-            <div>
-              <div>Raffle Winner</div>
-              <div>
+            <div className="flex justify-center flex-col">
+              <p>Raffle Winner</p>
+              <p>
                 {item?.winnerAddress?.toLowerCase() ==
                 storeData.address.toString().toLowerCase()
                   ? "You win!"
@@ -271,7 +269,7 @@ const RaffleItem = (props: any) => {
                     "..." +
                     item.winnerAddress?.substr(storeData?.address.length - 4, 4)
                   : ``}
-              </div>
+              </p>
             </div>
           )}
 

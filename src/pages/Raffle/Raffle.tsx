@@ -9,7 +9,7 @@ import { datetimeLocal } from "../../utils";
 import { getAllRaffle } from "../../services/api";
 import RaffleSwiper from "./RaffleSwiper";
 import { isReadable } from "stream";
-import { idToRaffleItem } from "../../services/contracts/raffle";
+import { fetchRaffleLists, idToRaffleItem } from "../../services/contracts/raffle";
 import { ToastContainer } from "react-toastify";
 
 
@@ -203,6 +203,8 @@ const Raffle = () => {
     (async () => {
       setLoading(true);
       await getData();
+      const raa = await fetchRaffleLists();
+      console.log("eeeeeee", raa);
       setLoading(false);
     })();
   }, [storeData, isFeatured, isAllRaffles, isPastRaffles]);
