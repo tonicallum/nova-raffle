@@ -198,7 +198,7 @@ const RaffleProfile = () => {
               for (let j = 0; j < getTicketByID.length; j++) {
                 if (
                   getTicketByID[j].buyer.toString().toLowerCase() ===
-                  storeData.address
+                  storeData.address.toLowerCase()
                 ) {
                   purchasedList_721.push(getRaffles[i]);
                   raffleBought_721.push(getTicketByID[j]);
