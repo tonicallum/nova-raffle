@@ -13,13 +13,11 @@ import {
   fetchRaffle1155Items,
   fetchTicket1155ItemsByID,
 } from "../../services/contracts/raffle1155";
-import {
-  fetchRaffleItems,
-} from "../../services/contracts/raffle";
+import { fetchRaffleItems } from "../../services/contracts/raffle";
 import { getTicketsById } from "../../services/api";
 
 const RaffleRarticipant = (props: any) => {
-  const { item, idx } = props;
+  const { item, idx, mode } = props;
   const storeData: any = useSelector((status) => status);
   const [sellAmount, setSellAmount] = useState(0);
   const [winningChance, setWinningChance] = useState(0);
@@ -120,7 +118,8 @@ const RaffleRarticipant = (props: any) => {
 
           const getTicketsOwned = filter_TicketByID.find(
             (item: any) =>
-              item.owner.toString().toLowerCase() === storeData.address.toLowerCase()
+              item.owner.toString().toLowerCase() ===
+              storeData.address.toLowerCase()
           );
           const resTicketsOwned = getTicketsOwned.ticketAmount
             ? getTicketsOwned?.ticketAmount.toNumber()
@@ -165,16 +164,18 @@ const RaffleRarticipant = (props: any) => {
             totalAmount += filter_TicketByID[i].amount;
           }
           setSellAmount(totalAmount);
-          
+
           const getTicketsOwned = filter_TicketByID.find(
             (item: any) =>
-              item.buyer.toString().toLowerCase() === storeData.address.toLowerCase()
+              item.buyer.toString().toLowerCase() ===
+              storeData.address.toLowerCase()
           );
           console.log("getTicketsOwned", getTicketsOwned);
           const resTicketsOwned = getTicketsOwned?.amount
             ? getTicketsOwned?.amount
             : 0;
-          const getWinningChance: any = totalAmount > 0 ? (100 * resTicketsOwned) / totalAmount : 0;
+          const getWinningChance: any =
+            totalAmount > 0 ? (100 * resTicketsOwned) / totalAmount : 0;
           setWinningChance(getWinningChance.toFixed(2));
         }
       } catch (error) {
@@ -259,24 +260,28 @@ const RaffleRarticipant = (props: any) => {
                 <h1 className="text-[#fff]">Tickets Remaining</h1>
                 <p className="text-white">{item?.total_tickets - sellAmount}</p>
               </div>
-              <div className="text-center flex flex-col items-center">
-                <img
-                  src={BoughtIcon}
-                  alt="TimingIcon"
-                  className="mb-2 w-[60px]"
-                />
-                <h1 className="text-[#fff]">Tickets Bought</h1>
-                <p className="text-white">{sellAmount}</p>
-              </div>
-              <div className="text-center flex flex-col items-center">
-                <img
-                  src={WinningIcon}
-                  alt="TimingIcon"
-                  className="mb-2 w-[60px]"
-                />
-                <h1 className="text-[#fff]">Winning Chance</h1>
-                <p className="text-white">{winningChance}%</p>
-              </div>
+              {
+                mode !=1 && <>
+                  <div className="text-center flex flex-col items-center">
+                    <img
+                      src={BoughtIcon}
+                      alt="TimingIcon"
+                      className="mb-2 w-[60px]"
+                    />
+                    <h1 className="text-[#fff]">Tickets Bought</h1>
+                    <p className="text-white">{sellAmount}</p>
+                  </div>
+                  <div className="text-center flex flex-col items-center">
+                    <img
+                      src={WinningIcon}
+                      alt="TimingIcon"
+                      className="mb-2 w-[60px]"
+                    />
+                    <h1 className="text-[#fff]">Winning Chance</h1>
+                    <p className="text-white">{winningChance}%</p>
+                  </div>
+                </>
+              }
             </div>
           </div>
         </div>

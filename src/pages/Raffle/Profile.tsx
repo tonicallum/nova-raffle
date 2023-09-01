@@ -405,7 +405,7 @@ const RaffleProfile = () => {
           {isCreated &&
             (participantLists.length > 0 ? (
               participantLists.map((item: any, idx: any) => (
-                <RaffleRarticipant item={item} idx={idx} key={idx} />
+                <RaffleRarticipant item={item} idx={idx} key={idx} mode={1} />
               ))
             ) : isLoading ? (
               <></>
