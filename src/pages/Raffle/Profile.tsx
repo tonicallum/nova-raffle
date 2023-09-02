@@ -285,38 +285,56 @@ const RaffleProfile = () => {
       <Navbar />
       <div className="md:flex gap-[32px] mt-4">
         <div className=" w-full md:w-[30%] border-white border-b-2 px-[16px] ">
-          <div className=" py-5 px-4 rounded-[16px] border-[1px] border-[solid] border-[#ECECEC] navbar-shado ">
+          <div className=" py-5 px-4 rounded-[16px] border-[1px] border-[solid] border-[#ECECEC] navbar-shadow ">
             <div className=" text-[24px] text-[#8652FF]">
               {walletAddress?.substr(0, 6) +
                 "..." +
                 walletAddress?.substr(walletAddress.length - 4, 4)}
             </div>
-            <div className="flex">
-              <button
-                type="button"
-                className="py-3 px-4 bg-[#03A9F4] rounded-md flex items-center"
-                onClick={handleConnectTwitter}
-              >
-                <img
-                  src={TwitterBlack}
-                  alt="TwitterBlack"
-                  className="w-[25px]"
-                />
-                <span className="ml-3 text-white ">{twitter ? 'disconnect twitter' : "Link Twitter"}</span>
-              </button>
-              <button
-                type="button"
-                className="py-3 px-4 bg-[#5865F2] rounded-md flex items-center ml-4"
-                onClick={handleConnectDiscord}
-              >
-                <img
-                  src={DiscordBlack}
-                  alt="TwitterBlack"
-                  className="w-[25px]"
-                />
-                <span className="ml-3 text-white ">{discord ? 'disconnect discord' : "Link Discord"}</span>
-              </button>
-            </div>
+            
+
+              <div className="flex">
+
+                <div className="flex flex-col items-center">
+                  <button
+                  type="button"
+                  className="py-3 px-4 bg-[#03A9F4] rounded-md flex items-center"
+                  onClick={handleConnectTwitter}
+                  >
+                  <img
+                    src={TwitterBlack}
+                    alt="TwitterBlack"
+                    className="w-[25px]"
+                  />
+                        <span className="ml-3 text-white ">{twitter ? twitter : "Link Twitter"}</span>
+                  </button>
+                  
+                  {twitter && <p className="text-red-500"> disconnect</p>}
+                 </div>
+
+                <div className="flex flex-col items-center"> 
+                  <button
+                  type="button"
+                  className="py-3 px-4 bg-[#5865F2] rounded-md flex items-center ml-4"
+                  onClick={handleConnectDiscord}
+                >
+                  <img
+                    src={DiscordBlack}
+                    alt="TwitterBlack"
+                    className="w-[25px]"
+                  />
+                  <span className="ml-3 text-white ">{discord ? discord : "Link Discord"}</span>
+                  </button>
+
+                  {discord && <p className="text-red-500 ml-4">disconnect </p>}
+                </div>
+             
+               </div>
+
+              
+          
+           
+           
           </div>
           <div className="bg-white p-[24px] rounded-[16px] border-[1px] border-[solid] border-[#ECECEC] navbar-shadow mt-[30px]">
             <div

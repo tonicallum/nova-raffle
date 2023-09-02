@@ -134,7 +134,7 @@ const RaffleItem = (props: any) => {
           ),
         });
         const user: any = await getUser(item.walletAddress);
-        console.log('user joined ',user);
+       
         if (user) {
           if (user.twitterName) {
             setShowCreator(user.twitterName);
