@@ -31,7 +31,6 @@ const Raffle = () => {
   const [searchNft, setSearchNft] = useState(``)
   const [filterSideBar, setFilterSideBar] = useState(true)
   const [sortList, setSortList] = useState<any[]>([]);
-  const [sortListData, setSortListData] = useState<any[]>([]);
 
   const handleFeatured = () => {
     setFeatured(true);
@@ -154,7 +153,7 @@ const Raffle = () => {
       const getRaffle: any = await getAllRaffle();  
      
       const temp_featuredEndSoonData = getRaffle.filter(
-        (item: any) => item.end_date >= Date.now() / 1000 && item.end_date - Date.now() / 1000 <= 60 * 60
+        (item: any) => item.end_date >= Date.now() / 1000 && item.start_date - Date.now() / 1000 <= 60 * 60
         ).sort((a: any, b: any) => a.end_date - b.end_date);
       
       const temp_featuredData = getRaffle.filter(
