@@ -9,11 +9,6 @@ import TimingIcon from "../../assets/Subtract-timing-icon.png";
 import TicketIcon from "../../assets/Subtract-ticket-icon.png";
 import BoughtIcon from "../../assets/Subtract-bought-icon.png";
 import WinningIcon from "../../assets/Subtract-winning-icon.png";
-import {
-  fetchRaffle1155Items,
-  fetchTicket1155ItemsByID,
-} from "../../services/contracts/raffle1155";
-import { fetchRaffleItems } from "../../services/contracts/raffle";
 import { getTicketsById } from "../../services/api";
 
 const RaffleRarticipant = (props: any) => {
@@ -94,90 +89,33 @@ const RaffleRarticipant = (props: any) => {
     (async () => {
       try {
         if (storeData.wallet !== "connected") return;
-        if (item.type === `ERC1155`) {
-          const getRaffleInfo = await fetchRaffle1155Items(
-            item.tokenId,
-            item.tokenAddress,
-            item.start_date
-          );
-          const getTicketByID = await fetchTicket1155ItemsByID(
-            getRaffleInfo?.itemId + 1
-          );
-          let filter_TicketByID = getTicketByID.filter(
-            (person: any, index: any) =>
-              index ===
-              getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
-              )
-          );
-          let totalAmount = 0;
-          for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].ticketAmount.toNumber();
-          }
-          setSellAmount(totalAmount);
 
-          const getTicketsOwned = filter_TicketByID.find(
-            (item: any) =>
-              item.owner.toString().toLowerCase() ===
-              storeData.address.toLowerCase()
-          );
-          const resTicketsOwned = getTicketsOwned.ticketAmount
-            ? getTicketsOwned?.ticketAmount.toNumber()
-            : 0;
-          const getWinningChance = (100 * resTicketsOwned) / totalAmount;
-          setWinningChance(getWinningChance);
-        } else {
-          // const getRaffleInfo = await fetchRaffleItems(
-          //   item.tokenId,
-          //   item.tokenAddress,
-          //   item.start_date
-          // );
-          // console.log("Bhayankar", getRaffleInfo); //
-
-          // const getTicketByID = await fetchTicketItemsByID(
-          //   getRaffleInfo?.itemId + 1
-          // );
-          // console.log("atma", getTicketByID); //
-
-          // let filter_TicketByID = getTicketByID.filter(
-          //   (person: any, index: any) =>
-          //     index ===
-          //     getTicketByID.findIndex(
-          //       (other: any) => person.owner === other.owner
-          //     )
-          // );
-          // let totalAmount = 0;
-          // for (let i = 0; i < filter_TicketByID.length; i++) {
-          //   totalAmount += filter_TicketByID[i]?.entryNum;
-          // }
-
-          const getTicketByID = (await getTicketsById(item._id)) as any[];
-          let filter_TicketByID = getTicketByID.filter(
-            (person: any, index: any) =>
-              index ===
-              getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
-              )
-          );
-          let totalAmount = 0;
-          for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].amount;
-          }
-          setSellAmount(totalAmount);
-
-          const getTicketsOwned = filter_TicketByID.find(
-            (item: any) =>
-              item.buyer.toString().toLowerCase() ===
-              storeData.address.toLowerCase()
-          );
-          console.log("getTicketsOwned", getTicketsOwned);
-          const resTicketsOwned = getTicketsOwned?.amount
-            ? getTicketsOwned?.amount
-            : 0;
-          const getWinningChance: any =
-            totalAmount > 0 ? (100 * resTicketsOwned) / totalAmount : 0;
-          setWinningChance(getWinningChance.toFixed(2));
+        const getTicketByID = (await getTicketsById(item._id)) as any[];
+        let filter_TicketByID = getTicketByID.filter(
+          (person: any, index: any) =>
+            index ===
+            getTicketByID.findIndex(
+              (other: any) => person.buyer === other.buyer
+            )
+        );
+        let totalAmount = 0;
+        for (let i = 0; i < filter_TicketByID.length; i++) {
+          totalAmount += filter_TicketByID[i].amount;
         }
+        setSellAmount(totalAmount);
+
+        const getTicketsOwned = filter_TicketByID.find(
+          (item: any) =>
+            item.buyer.toString().toLowerCase() ===
+            storeData.address.toLowerCase()
+        );
+        console.log("getTicketsOwned", getTicketsOwned);
+        const resTicketsOwned = getTicketsOwned?.amount
+          ? getTicketsOwned?.amount
+          : 0;
+        const getWinningChance: any =
+          totalAmount > 0 ? (100 * resTicketsOwned) / totalAmount : 0;
+        setWinningChance(getWinningChance.toFixed(2));
       } catch (error) {
         console.log("error", error);
       }
@@ -260,8 +198,8 @@ const RaffleRarticipant = (props: any) => {
                 <h1 className="text-[#fff]">Tickets Remaining</h1>
                 <p className="text-white">{item?.total_tickets - sellAmount}</p>
               </div>
-              {
-                mode !=1 && <>
+              {mode != 1 && (
+                <>
                   <div className="text-center flex flex-col items-center">
                     <img
                       src={BoughtIcon}
@@ -281,7 +219,7 @@ const RaffleRarticipant = (props: any) => {
                     <p className="text-white">{winningChance}%</p>
                   </div>
                 </>
-              }
+              )}
             </div>
           </div>
         </div>

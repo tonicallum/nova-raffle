@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import Countdown, { CountdownApi } from "react-countdown";
 import { Link } from "react-router-dom";
 import VerificationIcon from "../../assets/verification-icon.svg";
-import FavouriteIcon from "../../assets/fav-icon.svg";
-import {
-  fetchRaffle1155Items,
-  fetchTicket1155ItemsByID,
-} from "../../services/contracts/raffle1155";
+
 import { API_URL } from "../../config/dev";
 import axios from "axios";
 import RedFavouriteIcon from "../../assets/fav-icon.svg";
@@ -23,7 +19,7 @@ const FilterRaffles = ({ item, filterSideBar }: any) => {
       const res = await axios.post(`${API_URL}/raffle/updateUserFavourite`, {
         id: id,
         favourite: favourite,
-        walletAddress:storeData.address
+        walletAddress: storeData.address,
       });
       setFavouriteState(favourite);
     } catch (error) {
@@ -102,54 +98,19 @@ const FilterRaffles = ({ item, filterSideBar }: any) => {
   useEffect(() => {
     (async () => {
       try {
-        if (item.type === `ERC1155`) {
-          const getRaffleInfo = await fetchRaffle1155Items(
-            item.tokenId,
-            item.tokenAddress,
-            item.start_date
-          );
-          const getTicketByID = await fetchTicket1155ItemsByID(
-            getRaffleInfo?.itemId + 1
-          );
-          let filter_TicketByID = getTicketByID.filter(
-            (person: any, index: any) =>
-              index ===
-              getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
-              )
-          );
-          let totalAmount = 0;
-          for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].ticketAmount.toNumber();
-          }
-          setSellAmount(totalAmount);
-        } else {
-          // const getRaffleInfo = await fetchRaffleItems(item.tokenId, item.tokenAddress, item.start_date)
-
-          // const getTicketByID = await fetchTicketItemsByID(getRaffleInfo?.itemId + 1)
-
-          // let filter_TicketByID = getTicketByID.filter(
-          //   (person: any, index: any) => index === getTicketByID.findIndex(
-          //     (other: any) => person.buyer === other.buyer
-          //   ));
-          // let totalAmount = 0
-          // for (let i = 0; i < filter_TicketByID.length; i++) {
-          //   totalAmount += filter_TicketByID[i].ticketAmount.toNumber()
-          // }
-          const getTicketByID = (await getTicketsById(item._id)) as any[];
-          let filter_TicketByID = getTicketByID.filter(
-            (person: any, index: any) =>
-              index ===
-              getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
-              )
-          );
-          let totalAmount = 0;
-          for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].amount;
-          }
-          setSellAmount(totalAmount);
+        const getTicketByID = (await getTicketsById(item._id)) as any[];
+        let filter_TicketByID = getTicketByID.filter(
+          (person: any, index: any) =>
+            index ===
+            getTicketByID.findIndex(
+              (other: any) => person.buyer === other.buyer
+            )
+        );
+        let totalAmount = 0;
+        for (let i = 0; i < filter_TicketByID.length; i++) {
+          totalAmount += filter_TicketByID[i].amount;
         }
+        setSellAmount(totalAmount);
       } catch (error) {
         console.log("error", error);
       }

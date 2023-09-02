@@ -1,16 +1,8 @@
 import { useState, useEffect } from "react";
-import { SwiperSlide } from "swiper/react";
 import { Link } from "react-router-dom";
 import Countdown, { CountdownApi } from "react-countdown";
 
 import VerificationIcon from "../assets/verification-icon.svg";
-import {
-  fetchRaffle1155Items,
-  fetchTicket1155ItemsByID,
-} from "../services/contracts/raffle1155";
-import {
-  fetchRaffleItems,
-} from "../services/contracts/raffle";
 import { getTicketsById } from "../services/api";
 
 const SwiperItem = (props: any) => {
@@ -88,47 +80,19 @@ const SwiperItem = (props: any) => {
   useEffect(() => {
     (async () => {
       try {
-        if (item.type === `ERC1155`) {
-          const getRaffleInfo = await fetchRaffle1155Items(
-            item.tokenId,
-            item.tokenAddress,
-            item.start_date
-          );
-          const getTicketByID = await fetchTicket1155ItemsByID(
-            getRaffleInfo?.itemId + 1
-          );
-          let filter_TicketByID = getTicketByID.filter(
-            (person: any, index: any) =>
-              index ===
-              getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
-              )
-          );
-          let totalAmount = 0;
-          for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].ticketAmount.toNumber();
-          }
-          setSellAmount(totalAmount);
-        } else {
-          // const getRaffleInfo = await fetchRaffleItems(
-          //   item.tokenId,
-          //   item.tokenAddress,
-          //   item.start_date
-          // );
-          const getTicketByID = (await getTicketsById(item._id)) as any[];
-          let filter_TicketByID = getTicketByID.filter(
-            (person: any, index: any) =>
-              index ===
-              getTicketByID.findIndex(
-                (other: any) => person.buyer === other.buyer
-              )
-          );
-          let totalAmount = 0;
-          for (let i = 0; i < filter_TicketByID.length; i++) {
-            totalAmount += filter_TicketByID[i].amount;
-          }
-          setSellAmount(totalAmount);
+        const getTicketByID = (await getTicketsById(item._id)) as any[];
+        let filter_TicketByID = getTicketByID.filter(
+          (person: any, index: any) =>
+            index ===
+            getTicketByID.findIndex(
+              (other: any) => person.buyer === other.buyer
+            )
+        );
+        let totalAmount = 0;
+        for (let i = 0; i < filter_TicketByID.length; i++) {
+          totalAmount += filter_TicketByID[i].amount;
         }
+        setSellAmount(totalAmount);
       } catch (error) {
         console.log("error", error);
       }

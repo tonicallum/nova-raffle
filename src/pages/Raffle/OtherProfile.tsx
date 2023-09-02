@@ -7,8 +7,6 @@ import DiscordBlack from "../../assets/discord-profile.png";
 import infoIconBlack from "../../assets/InfoIconBlack.png";
 import {
   getAllRaffle,
-  createUser,
-  getUser,
   checkDiscordStatus,
   checkTwitterStatus,
   getTicketsById,
@@ -44,94 +42,6 @@ const RaffleOtherProfile = () => {
   const [isFavourited, setFavourited] = useState(false);
   const [isPurchased, setPurchased] = useState(false);
   const [isFollowed, setFollowed] = useState(false);
-
-  // const handleConnectDiscord = async () => {
-  //   try {
-  //     if (discord) {
-  //       toast.error(`You have already Discord Account`);
-  //       return;
-  //     }
-  //     if (storeData.wallet !== "connected") {
-  //       toast.error("Connect your Wallet!");
-  //       return;
-  //     }
-  //     setLoading(true);
-  //     let user = await getUser(id as string);
-  //     let signedMessage = null;
-  //     if (!user) {
-  //       signedMessage = await window.ethereum.request({
-  //         method: "personal_sign",
-  //         params: ["Sign Message", id],
-  //       });
-  //     }
-  //     const verifyToken: any = await createUser(
-  //       id,
-  //       signedMessage
-  //     );
-  //     localStorage.setItem("token", JSON.stringify(verifyToken));
-  //     if (verifyToken) {
-  //       const res = window.open(
-  //         CONFIG.Backend_URL + "/api/oauth/discord?token=" + verifyToken
-  //       );
-  //       if (res) {
-  //         setTimeout(() => {
-  //           toast.error(`It's time out to discord connecting`);
-  //           setLoading(false);
-  //           return;
-  //         }, 300 * 1000);
-  //         for (let i = 0; i < 1; ) {
-  //           const user: any = await getUser(id);
-  //           await delay(5 * 1000);
-  //           if (user.discordName) {
-  //             setDiscord(user.discordName);
-  //             toast.success(`Successfully connected`);
-  //             break;
-  //           }
-  //         }
-  //       }
-  //     }
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.log("error", error);
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const handleConnectTwitter = async () => {
-  //   try {
-  //     if (twitter) {
-  //       toast.error(`You have already Twitter Account`);
-  //       return;
-  //     }
-  //     if (storeData.wallet !== `connected`) {
-  //       toast.error("Connect your Wallet!");
-  //       return;
-  //     }
-  //     let user = await getUser(id);
-  //     let signedMessage = null;
-  //     if (!user) {
-  //       signedMessage = await window.ethereum.request({
-  //         method: "personal_sign",
-  //         params: ["Sign Message", id],
-  //       });
-  //     }
-  //     const verifyToken: any = await createUser(
-  //       id,
-  //       signedMessage
-  //     );
-  //     localStorage.setItem("token", JSON.stringify(verifyToken));
-  //     setToken(verifyToken);
-  //     if (verifyToken) {
-  //       window.open(
-  //         CONFIG.Backend_URL + "/api/oauth/twitter?token=" + verifyToken
-  //       );
-  //       setSocial(!social);
-  //     }
-  //   } catch (error) {
-  //     console.log("error", error);
-  //     setLoading(false);
-  //   }
-  // };
 
   useEffect(() => {
     (async () => {

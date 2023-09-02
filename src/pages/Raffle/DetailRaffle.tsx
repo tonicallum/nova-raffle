@@ -41,10 +41,6 @@ import {
 import { connectedChain, getBalance } from "../../utils";
 import { API_URL, TOAST_TIME_OUT } from "../../config/dev";
 import axios from "axios";
-import {
-  CancelRaffle1155Contract,
-  fetchRaffle1155Items,
-} from "../../services/contracts/raffle1155";
 
 const DetailRaffle = () => {
   const { id } = useParams();
@@ -301,7 +297,10 @@ const DetailRaffle = () => {
       setLoading(true);
       const nftInfoById: any = await getRaffleById(id); //data base se araha
       setWinnerAddress(nftInfoById.winnerAddress);
-      if(nftInfoById.winnerAddress.toLowerCase() === storeData.address.toString().toLowerCase()){
+      if (
+        nftInfoById.winnerAddress.toLowerCase() ===
+        storeData.address.toString().toLowerCase()
+      ) {
         setWinner(true);
       }
       setRaffleStatus(2);
@@ -329,30 +328,26 @@ const DetailRaffle = () => {
 
         {raffleStatus === 2 && (
           <div className="flex flex-col gap-2">
-            {
-                   storeData.address.toLowerCase() === winnerAddress.toLowerCase()? 
-                    <p className="text-[#8652FF] text-xl text-center font-bold">
-                        You Won!
-                    </p>: 
-                    <>
-                     <p className="text-[#8652FF] text-[0.75rem] text-center">
-                       Raffle Winner
-                      </p>
-                      <a href={`/profile/raffle/${winnerAddress}`}>
-                        <p className="text-[#8652FF] text-[1.25rem] text-center">
-                          {winnerAddress
-                            ? winnerAddress?.substr(0, 6) +
-                              "..." +
-                              winnerAddress?.substr(
-                              storeData?.address.length - 4,
-                               4
-                             )
-                         : ``}
-                         </p>
-                       </a>
-                      </>
-                          
-                        }
+            {storeData.address.toLowerCase() === winnerAddress.toLowerCase() ? (
+              <p className="text-[#8652FF] text-xl text-center font-bold">
+                You Won!
+              </p>
+            ) : (
+              <>
+                <p className="text-[#8652FF] text-[0.75rem] text-center">
+                  Raffle Winner
+                </p>
+                <a href={`/profile/raffle/${winnerAddress}`}>
+                  <p className="text-[#8652FF] text-[1.25rem] text-center">
+                    {winnerAddress
+                      ? winnerAddress?.substr(0, 6) +
+                        "..." +
+                        winnerAddress?.substr(storeData?.address.length - 4, 4)
+                      : ``}
+                  </p>
+                </a>
+              </>
+            )}
             {isWinner && (
               <button className="w-[60%] rounder-[14px] mx-auto text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover">
                 Claim Winnings
@@ -374,7 +369,6 @@ const DetailRaffle = () => {
       toast.success("Reward Claiming Successfull");
     } else {
       toast.error("Error In Reward Claiming");
-    
     }
   };
 
@@ -386,19 +380,7 @@ const DetailRaffle = () => {
       setLoading(true);
 
       let raffleDeleteTx;
-      if (nftInfo.type === `ERC1155`) {
-        const getRaffleInfo: any = await fetchRaffle1155Items(
-          nftInfo.tokenId,
-          nftInfo.tokenAddress,
-          Math.floor(nftInfo.start_date?.getTime() / 1000)
-        );
-        raffleDeleteTx = await CancelRaffle1155Contract(
-          getRaffleInfo.itemId + 1
-        );
-      } else {
-        raffleDeleteTx = await CancelRaffleContract(nftInfo.raffleId);
-      }
-
+      raffleDeleteTx = await CancelRaffleContract(nftInfo.raffleId);
       if (raffleDeleteTx) {
         const res = await deleteRaffle(id);
         if (res) {
@@ -432,7 +414,7 @@ const DetailRaffle = () => {
     (async () => {
       try {
         setLoading(true);
-        console.log('win status', isclaimWinnings);
+        console.log("win status", isclaimWinnings);
         const nftInfoById: any = await getRaffleById(id); //data base se araha
         console.log("from db : ", nftInfoById);
         const dateFormat = new Date(nftInfoById.start_date * 1000);
@@ -503,15 +485,14 @@ const DetailRaffle = () => {
         const user: any = await getUser(nftInfoById.walletAddress);
         console.log("user data", user);
 
-
         if (user) {
-          if(user.discordName){
-              setDiscord(true);
+          if (user.discordName) {
+            setDiscord(true);
           }
 
           if (user.twitterName) {
             setTwitter(true);
-            setShowCreator(user.twitterName );
+            setShowCreator(user.twitterName);
           } else if (user.discordName) {
             setDiscord(true);
             setShowCreator(user.discordName);
@@ -633,33 +614,34 @@ const DetailRaffle = () => {
                     {isWinner === true ? (
                       // <p className="text-[#8652FF] text-[1.25rem] text-center">Win</p>
                       <div className="flex flex-col gap-2">
-                        {
-                          storeData.address.toLowerCase() === winnerAddress.toLowerCase()? 
+                        {storeData.address.toLowerCase() ===
+                        winnerAddress.toLowerCase() ? (
                           <p className="text-[#8652FF] text-xl text-center font-bold">
-                              You Won!
-                          </p>: 
+                            You Won!
+                          </p>
+                        ) : (
                           <>
-                           <p className="text-[#8652FF] text-[0.75rem] text-center">
-                           Raffle Winner
-                         </p>
-                         <a href={`/profile/raffle/${winnerAddress}`}>
-                           <p className="text-[#8652FF] text-[1.25rem] text-center">
-                             {winnerAddress
-                               ? winnerAddress?.substr(0, 6) +
-                                 "..." +
-                                 winnerAddress?.substr(
-                                   storeData?.address.length - 4,
-                                   4
-                                 )
-                               : ``}
-                           </p>
-                         </a>
+                            <p className="text-[#8652FF] text-[0.75rem] text-center">
+                              Raffle Winner
+                            </p>
+                            <a href={`/profile/raffle/${winnerAddress}`}>
+                              <p className="text-[#8652FF] text-[1.25rem] text-center">
+                                {winnerAddress
+                                  ? winnerAddress?.substr(0, 6) +
+                                    "..." +
+                                    winnerAddress?.substr(
+                                      storeData?.address.length - 4,
+                                      4
+                                    )
+                                  : ``}
+                              </p>
+                            </a>
                           </>
-                          
-                        }
-                       
+                        )}
+
                         {!isclaimWinnings &&
-                          storeData.address.toLowerCase() === winnerAddress.toLowerCase() && (
+                          storeData.address.toLowerCase() ===
+                            winnerAddress.toLowerCase() && (
                             <button
                               className="w-[60%] rounder-[14px] mx-auto text-white bg-[#8652FF] rounded-[0.7rem] py-3 sm:px-5 button-hover"
                               onClick={handleclaimWinnings}
@@ -897,10 +879,10 @@ const DetailRaffle = () => {
                 <div className=" flex flex-col gap-2 p-4">
                   <p className="text-[#8652FF] text-[24px] ">Raffler</p>
                   <div className="flex items-center gap-2 ">
-                  <a href={`/profile/raffle/${nftInfo.walletAddress}`}>
-                  <p>{ShowCreator}</p>
-                  </a>
-                    
+                    <a href={`/profile/raffle/${nftInfo.walletAddress}`}>
+                      <p>{ShowCreator}</p>
+                    </a>
+
                     <img src={IdCardIcon} />
                     {isTwitter && <img src={TwitterIcon} />}
                     {isDiscord && <img src={DiscordIcon} />}
