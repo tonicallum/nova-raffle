@@ -155,7 +155,6 @@ const RaffleProfile = () => {
           setLoading(true);
           setWalletAddress(storeData.address);
           const profile :any = await getProfile(storeData.address);
-          console.log("ssss", profile)
           setParticipantLists(profile.myRaffles);
           setFavouriteRaffles([...profile.favoriteRaffles]);
           setFollowRaffles([...profile.followedRaffles]);

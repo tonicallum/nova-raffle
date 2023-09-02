@@ -61,14 +61,7 @@ const RaffleOtherProfile = () => {
           setLoading(true);
           // setWalletAddress(id);
           setWalletAddress(id);
-          const getRaffles: any = await getAllRaffle();
-          const filterMyRaffles = getRaffles.filter(
-            (item: any) =>
-              item.walletAddress.toLowerCase() ===
-              id?.toString().toLowerCase()
-          );
-          const profile :any = await getProfile(storeData.address);
-          console.log("ssss", profile)
+          const profile :any = await getProfile(id as string);
           setParticipantLists(profile.myRaffles);
           setFavouriteRaffles([...profile.favoriteRaffles]);
           setFollowRaffles([...profile.followedRaffles]);

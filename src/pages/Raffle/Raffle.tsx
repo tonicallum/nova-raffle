@@ -4,12 +4,9 @@ import { useSelector } from "react-redux";
 import Navbar from "../../components/Navbar";
 import searchIcon from "../../assets/search-icon.png";
 import RaffleItem from "../../components/RaffleItem";
-import FilterRaffles from "./FilterRaffle";
 import { datetimeLocal } from "../../utils";
 import { getAllRaffle } from "../../services/api";
 import RaffleSwiper from "./RaffleSwiper";
-import { isReadable } from "stream";
-import { fetchRaffleLists, idToRaffleItem } from "../../services/contracts/raffle";
 import { ToastContainer } from "react-toastify";
 
 
@@ -203,8 +200,6 @@ const Raffle = () => {
     (async () => {
       setLoading(true);
       await getData();
-      const raa = await fetchRaffleLists();
-      console.log("eeeeeee", raa);
       setLoading(false);
     })();
   }, [storeData, isFeatured, isAllRaffles, isPastRaffles]);
