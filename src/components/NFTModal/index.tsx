@@ -39,10 +39,10 @@ const NFTModal = (props: any) => {
           setNfts([]);
           setModalLoading(true);
 
-          const lists: any = await getNfts(storeData.address);
-          // const lists: any = await getNfts(
-          //   "0x398818ca588209Fec5348e6CA901629C553c902E"
-          // );
+          // const lists: any = await getNfts(storeData.address);
+          const lists: any = await getNfts(
+            "0x398818ca588209Fec5348e6CA901629C553c902E"
+          );
 
           console.log("lists : ", lists);
           let filtered_nfts1: any = [];

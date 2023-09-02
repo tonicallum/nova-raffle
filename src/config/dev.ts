@@ -1,8 +1,8 @@
 import Raffle721Abi from "../constants/Raffle/RaffleErc721.json";
 import TokenErc721 from "../constants/Token/Erc721Token.json";
 
-export const Backend_URL = "https://novaraffle-b98cb5f11cc1.herokuapp.com";
-// export const Backend_URL = 'http://localhost:5000'
+// export const Backend_URL = "https://novaraffle-b98cb5f11cc1.herokuapp.com";
+export const Backend_URL = 'http://localhost:5000'
 
 export const API_URL = `${Backend_URL}/api`;
 

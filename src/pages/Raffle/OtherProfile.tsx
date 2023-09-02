@@ -10,6 +10,7 @@ import {
   checkDiscordStatus,
   checkTwitterStatus,
   getTicketsById,
+  getProfile,
 } from "../../services/api";
 import RaffleRarticipant from "./RaffleParticipant";
 import CONFIG from "../../config";
@@ -66,81 +67,22 @@ const RaffleOtherProfile = () => {
               item.walletAddress.toLowerCase() ===
               id?.toString().toLowerCase()
           );
-          setParticipantLists(filterMyRaffles);
-          const filterFavouriteRaffles = getRaffles.filter((item: any) =>
-            item.favourite.includes(id?.toString().toLowerCase())
-          );
-          setFavouriteRaffles([...filterFavouriteRaffles]);
-
-          const filterFollowRaffles = getRaffles.filter((item: any) =>
-            item.follow.includes(id?.toString().toLowerCase())
-          );
-          setFollowRaffles([...filterFollowRaffles]);
-
-          let total_tickets_721 = 0,
-            getSalesVolume_721 = 0;
-          for (let i = 0; i < filterMyRaffles.length; i++) {
-            total_tickets_721 += filterMyRaffles[i].sold_tickets;
-            getSalesVolume_721 +=
-              filterMyRaffles[i]?.price * filterMyRaffles[i].sold_tickets;
-            filterMyRaffles[i].totalAmount = filterMyRaffles[i].sold_tickets;
-          }
-          const res_ticketsSold = total_tickets_721;
-          const res_saleVolume = getSalesVolume_721 / CONFIG.DECIMAL;
-
-          let getPurchasedVolume_721 = 0;
-          let raffleBought_721 = [];
-          let purchasedList_721 = [];
-          let ticketBought_721 = 0;
-
-          for (let i = 0; i < getRaffles.length; i++) {
-            const getTicketByID: any = await getTicketsById(getRaffles[i]._id);
-            if (getTicketByID.length > 0) {
-              for (let j = 0; j < getTicketByID.length; j++) {
-                if (
-                  getTicketByID[j].buyer.toString().toLowerCase() ===
-                  id?.toString().toLowerCase()
-                ) {
-                  purchasedList_721.push(getRaffles[i]);
-                  raffleBought_721.push(getTicketByID[j]);
-                  ticketBought_721 += getTicketByID[j]?.amount;
-                }
-              }
-            }
-
-            let totalAmount = 0;
-            for (let i = 0; i < getTicketByID.length; i++) {
-              totalAmount += getTicketByID[i].amount;
-            }
-            getPurchasedVolume_721 += getRaffles[i].price * totalAmount;
-          }
-
-          const wonraffles = getRaffles.filter(
-            (item: any) =>
-              item.winnerAddress?.toLowerCase() ===
-              id?.toString().toLowerCase()
-          );
-
-          const res_winnerCount: any = wonraffles.length;
-          const res_raffleBought = [...raffleBought_721];
-          const res_purchasedLists = [...purchasedList_721];
-          const res_ticketsBought = ticketBought_721;
-          const res_purchased = getPurchasedVolume_721 / CONFIG.DECIMAL;
-          let uniqueSet: any = new Set(res_purchasedLists);
-          const uniqueArr: any = [...uniqueSet];
-
-          setPurchasedRaffles([...uniqueArr]);
+          const profile :any = await getProfile(storeData.address);
+          console.log("ssss", profile)
+          setParticipantLists(profile.myRaffles);
+          setFavouriteRaffles([...profile.favoriteRaffles]);
+          setFollowRaffles([...profile.followedRaffles]);
+          setPurchasedRaffles([...profile.purchasedRaffles]);
           setRaffleStats({
             ...raffleStats,
-            raffleCreated: filterMyRaffles.length,
-            ticketsSold: res_ticketsSold,
-            salesVolume: res_saleVolume,
-            raffleBought: res_raffleBought.length,
-            ticketBought: res_ticketsBought,
-            raffleWon: res_winnerCount,
-            purchaseVolume: res_purchased,
+            raffleCreated: profile.raffleCreated,
+            ticketsSold: profile.ticketsSold,
+            salesVolume: profile.salesVolume,
+            raffleBought: profile.raffleBought,
+            ticketBought:profile.ticketBought,
+            raffleWon: profile.raffleWon,
+            purchaseVolume: profile.purchaseVolume,
           });
-
           setLoading(false);
         }
       } catch (error) {

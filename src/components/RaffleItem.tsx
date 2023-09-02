@@ -192,7 +192,7 @@ const RaffleItem = (props: any) => {
           <div className=" absolute bottom-2 right-2 bg-[#8652FF]  flex overflow-hidden rounded-[4px] ">
             <p className="bg-white text-base text-center basis-[70%]  pl-2 pr-4 para-clip text-[10px]">
               TTV:{" "}
-              {(raffle.price * (raffle.total_tickets - sellAmount)).toFixed(3)}
+              {(raffle.price * raffle.total_tickets).toFixed(3)}
             </p>
             <p className="flex  text-center px-2 text-base basis-[30%] bg-[#8652FF]  text-white text-[10px] ">
               <span>FP:</span>
