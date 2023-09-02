@@ -213,6 +213,20 @@ export const getUser = async (wallet: string) => {
   }
 }
 
+export const getProfile = async (wallet: string) => {
+  try {
+    const result = await commonService({
+      method: "get",
+      route: `${API_URL}/user/get-profile/${wallet}`,
+    })
+    return result;
+  }
+  catch (error) {
+    console.log('error', error);
+    return null;
+  }
+}
+
 export const createUser = async (wallet: string, signedMessage: string | null) => {
   try {
     const result = await commonService({

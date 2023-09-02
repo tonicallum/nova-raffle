@@ -6,20 +6,17 @@ import TwitterBlack from "../../assets/twitter-profile.png";
 import DiscordBlack from "../../assets/discord-profile.png";
 import infoIconBlack from "../../assets/InfoIconBlack.png";
 import {
-  getAllRaffle,
   createUser,
   getUser,
   checkDiscordStatus,
   checkTwitterStatus,
-  getTicketsById,
   disconnectSocial,
+  getProfile,
 } from "../../services/api";
 import RaffleRarticipant from "./RaffleParticipant";
 import { toast } from "react-toastify";
 import CONFIG from "../../config";
 import { delay } from "../../utils";
-import { disconnect } from "process";
-
 
 const RaffleProfile = () => {
   const [isLoading, setLoading] = useState(false);
@@ -47,7 +44,6 @@ const RaffleProfile = () => {
   const [isFavourited, setFavourited] = useState(false);
   const [isPurchased, setPurchased] = useState(false);
   const [isFollowed, setFollowed] = useState(false);
-
 
   const handleConnectDiscord = async () => {
     try {
@@ -110,8 +106,7 @@ const RaffleProfile = () => {
         // return;
         await disconnectSocial(storeData.address, "twitter");
         setTwitter("");
-      }
-      else {
+      } else {
         if (storeData.wallet !== `connected`) {
           toast.error("Connect your Wallet!");
           return;
@@ -159,84 +154,21 @@ const RaffleProfile = () => {
         if (storeData.wallet === "connected") {
           setLoading(true);
           setWalletAddress(storeData.address);
-          const getRaffles: any = await getAllRaffle();
-          const filterMyRaffles = getRaffles.filter(
-            (item: any) =>
-              item.walletAddress.toLowerCase() ===
-              storeData.address.toLowerCase()
-          );
-          setParticipantLists(filterMyRaffles);
-          const filterFavouriteRaffles = getRaffles.filter(
-            (item: any) => item.favourite.includes(storeData.address.toLowerCase())
-          );
-          setFavouriteRaffles([...filterFavouriteRaffles]);
-
-          const filterFollowRaffles = getRaffles.filter(
-            (item: any) => item.follow.includes(storeData.address.toLowerCase())
-          );
-          setFollowRaffles([...filterFollowRaffles]);
-
-          let total_tickets_721 = 0,
-            getSalesVolume_721 = 0;
-          for (let i = 0; i < filterMyRaffles.length; i++) {
-            total_tickets_721 += filterMyRaffles[i].sold_tickets;
-            getSalesVolume_721 +=
-              filterMyRaffles[i]?.price * filterMyRaffles[i].sold_tickets;
-            filterMyRaffles[i].totalAmount = filterMyRaffles[i].sold_tickets;
-          }
-          const res_ticketsSold = total_tickets_721;
-          const res_saleVolume = getSalesVolume_721 / CONFIG.DECIMAL;
-
-          let getPurchasedVolume_721 = 0;
-          let raffleBought_721 = [];
-          let purchasedList_721 = [];
-          let ticketBought_721 = 0;
-
-          for (let i = 0; i < getRaffles.length; i++) {
-            const getTicketByID: any = await getTicketsById(getRaffles[i]._id);
-            if (getTicketByID.length > 0) {
-              for (let j = 0; j < getTicketByID.length; j++) {
-                if (
-                  getTicketByID[j].buyer.toString().toLowerCase() ===
-                  storeData.address.toLowerCase()
-                ) {
-                  purchasedList_721.push(getRaffles[i]);
-                  raffleBought_721.push(getTicketByID[j]);
-                  ticketBought_721 += getTicketByID[j]?.amount;
-                }
-              }
-            }
-
-            let totalAmount = 0;
-            for (let i = 0; i < getTicketByID.length; i++) {
-              totalAmount += getTicketByID[i].amount;
-            }
-            getPurchasedVolume_721 += getRaffles[i].price * totalAmount;
-          }
-
-          const wonraffles = getRaffles.filter(
-            (item: any) =>
-              item.winnerAddress?.toLowerCase() === storeData.address.toLowerCase()
-          );
-
-          const res_winnerCount: any = wonraffles.length;
-          const res_raffleBought = [...raffleBought_721];
-          const res_purchasedLists = [...purchasedList_721];
-          const res_ticketsBought = ticketBought_721;
-          const res_purchased = getPurchasedVolume_721 / CONFIG.DECIMAL;
-          let uniqueSet: any = new Set(res_purchasedLists);
-          const uniqueArr: any = [...uniqueSet];
-
-          setPurchasedRaffles([...uniqueArr]);
+          const profile :any = await getProfile(storeData.address);
+          console.log("ssss", profile)
+          setParticipantLists(profile.myRaffles);
+          setFavouriteRaffles([...profile.favoriteRaffles]);
+          setFollowRaffles([...profile.followedRaffles]);
+          setPurchasedRaffles([...profile.purchasedRaffles]);
           setRaffleStats({
             ...raffleStats,
-            raffleCreated: filterMyRaffles.length,
-            ticketsSold: res_ticketsSold,
-            salesVolume: res_saleVolume,
-            raffleBought: res_raffleBought.length,
-            ticketBought: res_ticketsBought,
-            raffleWon: res_winnerCount,
-            purchaseVolume: res_purchased,
+            raffleCreated: profile.raffleCreated,
+            ticketsSold: profile.ticketsSold,
+            salesVolume: profile.salesVolume,
+            raffleBought: profile.raffleBought,
+            ticketBought:profile.ticketBought,
+            raffleWon: profile.raffleWon,
+            purchaseVolume: profile.purchaseVolume,
           });
 
           setLoading(false);
@@ -291,29 +223,29 @@ const RaffleProfile = () => {
                 "..." +
                 walletAddress?.substr(walletAddress.length - 4, 4)}
             </div>
-            
 
-              <div className="flex">
-
-                <div className="flex flex-col items-center">
-                  <button
+            <div className="flex">
+              <div className="flex flex-col items-center">
+                <button
                   type="button"
                   className="py-3 px-4 bg-[#03A9F4] rounded-md flex items-center"
                   onClick={handleConnectTwitter}
-                  >
+                >
                   <img
                     src={TwitterBlack}
                     alt="TwitterBlack"
                     className="w-[25px]"
                   />
-                        <span className="ml-3 text-white ">{twitter ? twitter : "Link Twitter"}</span>
-                  </button>
-                  
-                  {twitter && <p className="text-red-500"> disconnect</p>}
-                 </div>
+                  <span className="ml-3 text-white ">
+                    {twitter ? twitter : "Link Twitter"}
+                  </span>
+                </button>
 
-                <div className="flex flex-col items-center"> 
-                  <button
+                {twitter && <p className="text-red-500"> disconnect</p>}
+              </div>
+
+              <div className="flex flex-col items-center">
+                <button
                   type="button"
                   className="py-3 px-4 bg-[#5865F2] rounded-md flex items-center ml-4"
                   onClick={handleConnectDiscord}
@@ -323,18 +255,14 @@ const RaffleProfile = () => {
                     alt="TwitterBlack"
                     className="w-[25px]"
                   />
-                  <span className="ml-3 text-white ">{discord ? discord : "Link Discord"}</span>
-                  </button>
+                  <span className="ml-3 text-white ">
+                    {discord ? discord : "Link Discord"}
+                  </span>
+                </button>
 
-                  {discord && <p className="text-red-500 ml-4">disconnect </p>}
-                </div>
-             
-               </div>
-
-              
-          
-           
-           
+                {discord && <p className="text-red-500 ml-4">disconnect </p>}
+              </div>
+            </div>
           </div>
           <div className="bg-white p-[24px] rounded-[16px] border-[1px] border-[solid] border-[#ECECEC] navbar-shadow mt-[30px]">
             <div
