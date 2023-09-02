@@ -306,9 +306,12 @@ const LeaderBoard = () => {
       <div>
         <Navbar />
         <div className="max-w-[1280px] mx-[auto] my-0 ">
-          <h1 className="hidden md:block text-5xl font-bold px-8 md:px-0 mt-3 sm:mb-5 text-purple-500/30 mr-5 ">
-            Leaderboard
-          </h1>
+          <div className="flex justify-center  ">
+              <div className="hidden md:inline-block  rounded-[10px] py-[2px] px-[35px] max-w-fit  mt-3 mb-5 text-[24px] md:text-[35px] lg:text-[42px] font-bold  bg-[#8652FF] text-white mr-5 ">
+                Leaderboard
+          </div>
+          </div>
+          
           <div className="flex gap-4 ">
             <div className="basis-[48%]">
               <div className="w-full flex justify-between items-center  ">
