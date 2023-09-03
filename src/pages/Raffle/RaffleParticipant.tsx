@@ -136,7 +136,7 @@ const RaffleRarticipant = (props: any) => {
                 />
               </div>
               <div>
-                <div className="flex flex-col gap-[30px] h-full">
+                <div className="flex flex-col  gap-[30px] h-full">
                   <div>
                     <div className="flex items-center">
                       <img src={VerificationIcon} alt="VerificationIcon" />
@@ -172,7 +172,7 @@ const RaffleRarticipant = (props: any) => {
                 </div>
               </div>
             </div>
-            <div className="basis-[70%] flex justify-around pt-2">
+            <div className="basis-[70%] flex flex-col gap-2 sm:flex-row justify-around pt-2">
               <div className="text-center flex flex-col items-center">
                 <img
                   src={TimingIcon}

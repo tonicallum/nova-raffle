@@ -112,7 +112,7 @@ const DetailRaffle = () => {
         renderer={countdownEndRenderer}
       />
     ) : (
-      <div className="flex gap-1 text-white text-[18px] font-semibold">
+      <div className="flex  justify-center gap-1 text-white text-[15px] sm:text-[18px] font-semibold">
         {nftInfo ? (
           <>
             <p>Starts In</p>
@@ -140,11 +140,11 @@ const DetailRaffle = () => {
   }: any) => {
     if (api.isPaused()) api.start();
     return completed ? (
-      <p className="text-[18px] font-semibold">
+      <p className="text-[15px] sm:text-[18px] font-semibold">
         {nftInfo.end_date ? ` ENDED` : `loading...`}
       </p>
     ) : (
-      <div className="flex gap-1 text-white text-[18px] font-semibold">
+      <div className="flex  justify-center gap-1 text-white text-[15px] sm:text-[18px] font-semibold">
         <p>End in</p>
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
@@ -323,7 +323,7 @@ const DetailRaffle = () => {
         )}
 
         {raffleStatus === 1 && buyStatus === 1 && (
-          <p className="text-black text-[1.25rem] text-center">Pending</p>
+          <p className="text-black text-[1.25rem] text-center"></p>
         )}
 
         {raffleStatus === 2 && (
@@ -508,7 +508,9 @@ const DetailRaffle = () => {
         setLoading(false);
       }
     })();
-  }, [storeData, raffleInfo, id]);
+  }, [storeData, raffleInfo, id,isclaimWinnings]);
+
+  
 
   return (
     <div>
@@ -639,7 +641,7 @@ const DetailRaffle = () => {
                           </>
                         )}
 
-                        {!isclaimWinnings &&
+                        {nftInfo.state!=4 && //added this beacause button was visible even after claiming 
                           storeData.address.toLowerCase() ===
                             winnerAddress.toLowerCase() && (
                             <button
@@ -736,15 +738,15 @@ const DetailRaffle = () => {
                 <div className="h-[2px] w-[95%] m-auto bg-[#606060]"></div>
                 {raffleInfo === "raffleinfo" && (
                   <div className="bg-[#8652FF] rounded-[16px] py-4 px-4 sm:px-0 mt-4">
-                    <div className="relative sm:flex block justify-between sm:w-[85%] m-auto">
-                      <div className="text-center min-h-[110px] ">
+                    <div className="relative flex  justify-between  sm:w-[85%] m-auto">
+                      <div className="text-center w-[150px] sm:w-[180px] min-h-[110px] items-center">
                         <img
                           src={TimingIcon}
                           alt="TimingIcon"
                           className="max-w-[60px] m-auto"
                         />
-                        <p className="text-[white] invisible">Time Remaining</p>
-                        <p className="text-white">
+                        <p className="text-[white] invisible ">Time Remaining</p>
+                        <p className="text-white ">
                           {nftInfo?.end_date && (
                             <Countdown
                               ref={setStartCountdownRef}
@@ -771,7 +773,7 @@ const DetailRaffle = () => {
                           className="max-w-[60px] m-auto"
                         />
                         <p className="text-[white]">Tickets Remaining</p>
-                        <p className="text-white text-[18px] font-semibold ">
+                        <p className="text-white text-[15px] sm:text-[18px] font-semibold ">
                           {nftInfo.total_tickets
                             ? nftInfo.total_tickets - currentBuyTicket
                             : 0}
@@ -780,7 +782,7 @@ const DetailRaffle = () => {
                       </div>
                       <div
                         className={`
-                        absolute w-[200px] left-[52%] translate-x-[63%] text-center
+                        absolute w-[150px] sm:w-[200px] left-[49%] sm:left-[52%] translate-x-[63%] text-center
                         `}
                       >
                         <img
@@ -789,7 +791,7 @@ const DetailRaffle = () => {
                           className="max-w-[60px] m-auto"
                         />
                         <p className="text-[white]">Tickets Owned</p>
-                        <p className="text-white text-[18px] font-semibold">
+                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
                           {ticketsOwned}
                         </p>
                       </div>
@@ -798,15 +800,15 @@ const DetailRaffle = () => {
                       <div className="absolute left-[66%] md: border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white  " />
                     </div>
 
-                    <div className="relative sm:flex block justify-between sm:w-[85%] m-auto mt-6 ">
-                      <div className="text-center">
+                    <div className="relative  flex justify-between sm:w-[85%] m-auto mt-6 ">
+                      <div className="text-center w-[150px] sm:w-[180px] min-h-[110px] ">
                         <img
                           src={DateIcon}
                           alt="TimingIcon"
                           className="max-w-[60px] m-auto"
                         />
                         <p className="text-[white]">Start Date</p>
-                        <p className="text-white text-[18px] font-semibold">
+                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
                           {nftInfo?.start}
                         </p>
                       </div>
@@ -820,19 +822,19 @@ const DetailRaffle = () => {
                           alt="TimingIcon"
                           className="max-w-[60px] m-auto"
                         />
-                        <p className="text-[white]">Unique Ticket Holders</p>
-                        <p className="text-white text-[18px] font-semibold">
+                        <p className="text-[white] text-[15px] sm:text-[16px]">Unique Ticket Holders</p>
+                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
                           {ticketHolder}
                         </p>
                       </div>
-                      <div className="text-center  absolute w-[200px] left-[52%] translate-x-[63%] text-center">
+                      <div className="  absolute  w-[150px] sm:w-[200px] left-[49%] sm:left-[52%] translate-x-[63%] text-center">
                         <img
                           src={WinningIcon}
                           alt="TimingIcon"
                           className="max-w-[60px] m-auto"
                         />
                         <p className="text-[white]">Winning Chance</p>
-                        <p className="text-white text-[18px] font-semibold">
+                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
                           {winningChance ? winningChance.toFixed(2) : 0}%
                         </p>
                       </div>
