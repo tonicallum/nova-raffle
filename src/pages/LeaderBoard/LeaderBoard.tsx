@@ -239,8 +239,9 @@ const LeaderBoard = () => {
     let tempfoundBuyGroupBy: any = [],
       tempFoundBuyGroupBySort: any = [];
     foundBuyGroupBy.forEach((item: any, index: number) => {
+      console.log("sss", item.won[0])
       let wonCount = item.won.filter(
-        (_item: any) => _item.toString().toLowerCase() === item.buyer.toString().toLowerCase()
+        (_item: any) => _item != undefined && _item.toString().toLowerCase() === item.buyer.toString().toLowerCase()
       ).length;
       tempfoundBuyGroupBy.push({ ...item, wonCount: wonCount });
     });

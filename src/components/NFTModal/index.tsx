@@ -16,6 +16,7 @@ const NFTModal = (props: any) => {
     title,
     setNftName,
     setShortNftName,
+    setProjectName,
     setContractType,
     raffleValue,
     setRaffleValue,
@@ -144,6 +145,7 @@ const NFTModal = (props: any) => {
             : selectedNft.token_id
         } `
       );
+      setProjectName(selectedNft?.name)
       setContractType(selectedNft?.type);
       props.onCancel();
     }

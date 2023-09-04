@@ -134,7 +134,7 @@ const RaffleItem = (props: any) => {
           ),
         });
         const user: any = await getUser(item.walletAddress);
-       
+
         if (user) {
           if (user.twitterName) {
             setShowCreator(user.twitterName);
@@ -191,8 +191,7 @@ const RaffleItem = (props: any) => {
 
           <div className=" absolute bottom-2 right-2 bg-[#8652FF]  flex overflow-hidden rounded-[4px] ">
             <p className="bg-white text-base text-center basis-[70%]  pl-2 pr-4 para-clip text-[10px]">
-              TTV:{" "}
-              {(raffle.price * raffle.total_tickets).toFixed(3)}
+              TTV: {(raffle.price * raffle.total_tickets).toFixed(3)}
             </p>
             <p className="flex  text-center px-2 text-base basis-[30%] bg-[#8652FF]  text-white text-[10px] ">
               <span>FP:</span>
@@ -202,61 +201,59 @@ const RaffleItem = (props: any) => {
         </div>
         <div className=" flex flex-col gap-[8px] bg-white p-[18px]  ">
           {/* {raffle.end_date * 1000 > Date.now() ? ( */}
-            {/* <> */}
-              <div>
-                <div className="flex items-center">
-                  {/* <span className="leading-none inline-block text-[20px] ">
+          {/* <> */}
+          <div>
+            <div className="flex items-center">
+              <span className="leading-none inline-block text-[20px] ">
                 {raffle.project}
-              </span> */}
-                  <img
-                    src={VerificationIcon}
-                    alt="VerificationIcon"
-                    style={{ width: "16px" }}
-                    className="ml-1"
-                  />
-                </div>
-                <h1 className="text-[16px]">{raffle.name}</h1>
-                <a href={`/profile/raffle/${item.walletAddress}`}>
-                  <p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p>
-                </a>
+              </span>
+              <img
+                src={VerificationIcon}
+                alt="VerificationIcon"
+                style={{ width: "16px" }}
+                className="ml-1"
+              />
+            </div>
+            <h1 className="text-[16px]">{raffle.name}</h1>
+            <a href={`/profile/raffle/${item.walletAddress}`}>
+              <p className="text-[#1A1A1A] text-[16px] "> {ShowCreator}</p>
+            </a>
+          </div>
+          <div className="border-[1px] border-dashed border-[grey] rounded-[8px] p-[10px] flex flex-col gap-[10px] ">
+            <div className="flex justify-between items-center">
+              <p className=" text-[#1A1A1A] text-[15px]">Ticket Price</p>
+              <p className="text-sm text-[#8652FF] font-medium ">
+                <span className="text-[12px]">{raffle.price}</span> MATIC
+              </p>
+            </div>
+            <div className="flex justify-between items-center ">
+              <p className=" text-[#1A1A1A] text-[15px]">Tickets Remaining</p>
+              <p className="text-sm text-[#8652FF] font-medium ">
+                <span className="text-[12px]">
+                  {" "}
+                  {raffle.total_tickets - sellAmount}{" "}
+                </span>{" "}
+                /{raffle.total_tickets}
+              </p>
+            </div>
+            <div className="flex justify-between items-center ">
+              <p className="text-[#1A1A1A] text-[15px]">
+                {raffle.start_date * 1000 > Date.now()
+                  ? "Starts in"
+                  : "Time remaining"}
+              </p>
+              <div className="text-sm text-[#8652FF] font-medium ">
+                <Countdown
+                  ref={setStartCountdownRef}
+                  date={raffle.start_date * 1000}
+                  zeroPadTime={3}
+                  // onComplete={() => setShowEdit(false)}
+                  renderer={startCountdownRenderer}
+                />
               </div>
-              <div className="border-[1px] border-dashed border-[grey] rounded-[8px] p-[10px] flex flex-col gap-[10px] ">
-                <div className="flex justify-between items-center">
-                  <p className=" text-[#1A1A1A] text-[15px]">Ticket Price</p>
-                  <p className="text-sm text-[#8652FF] font-medium ">
-                    <span className="text-[12px]">{raffle.price}</span> MATIC
-                  </p>
-                </div>
-                <div className="flex justify-between items-center ">
-                  <p className=" text-[#1A1A1A] text-[15px]">
-                    Tickets Remaining
-                  </p>
-                  <p className="text-sm text-[#8652FF] font-medium ">
-                    <span className="text-[12px]">
-                      {" "}
-                      {raffle.total_tickets - sellAmount}{" "}
-                    </span>{" "}
-                    /{raffle.total_tickets}
-                  </p>
-                </div>
-                <div className="flex justify-between items-center ">
-                  <p className="text-[#1A1A1A] text-[15px]">
-                    {raffle.start_date * 1000 > Date.now()
-                      ? "Starts in"
-                      : "Time remaining"}
-                  </p>
-                  <div className="text-sm text-[#8652FF] font-medium ">
-                    <Countdown
-                      ref={setStartCountdownRef}
-                      date={raffle.start_date * 1000}
-                      zeroPadTime={3}
-                      // onComplete={() => setShowEdit(false)}
-                      renderer={startCountdownRenderer}
-                    />
-                  </div>
-                </div>
-              </div>
-            {/* </>
+            </div>
+          </div>
+          {/* </>
           ) : (
             <div className="flex justify-center flex-col">
               <p>Raffle Winner</p>

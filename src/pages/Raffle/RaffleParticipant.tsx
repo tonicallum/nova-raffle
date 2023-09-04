@@ -149,25 +149,14 @@ const RaffleRarticipant = (props: any) => {
                     </h1>
                   </div>
                   <div>
-                    {item.type === `ERC1155` ? (
-                      <Link
-                        to={`/raffle1155/detail/${item?._id}`}
-                        type="button"
-                        className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
-                      >
-                        <img src={VeiwIcon} alt="VeiwIcon" />
-                        <span className="ml-1">View Raffle</span>
-                      </Link>
-                    ) : (
-                      <Link
-                        to={`/raffle/detail/${item?._id}`}
-                        type="button"
-                        className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
-                      >
-                        <img src={VeiwIcon} alt="VeiwIcon" />
-                        <span className="ml-1">View Raffle</span>
-                      </Link>
-                    )}
+                    <Link
+                      to={`/raffle/detail/${item?._id}`}
+                      type="button"
+                      className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
+                    >
+                      <img src={VeiwIcon} alt="VeiwIcon" />
+                      <span className="ml-1">View Raffle</span>
+                    </Link>
                   </div>
                 </div>
               </div>
