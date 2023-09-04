@@ -216,7 +216,7 @@ const Raffle = () => {
             onClick={handleFilterRaffles}
             className={`${filterSideBar
               ? "flex items-center py-3 px-5 bg-[#8652FF] text-white border border-white rounded-[0.7rem]"
-              : "flex items-center py-3 px-5 bg-[white] border-[1px] border-[solid] border-[transparent] text-[#666666] hover:text-[#8652FF]  rounded-[0.7rem] hover:border-[#8652FF] "
+              : "flex items-center py-3 px-5 bg-[white] border-[1px] border-[solid] text-[#666666] hover:text-[#8652FF]  rounded-[0.7rem] hover:border-[#8652FF] "
               }`}
           >
             <svg
