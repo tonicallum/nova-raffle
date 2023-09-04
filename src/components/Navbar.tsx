@@ -100,7 +100,7 @@ const Navbar = () => {
       <Link to="/" className="sm:max-w-[165px]">
         <img src={Logo} alt="l" className="min-w-[60px]" />
       </Link>
-      <ul className="flex items-center gap-1 text-xs sm:text-base">
+      <ul className="flex items-center gap-1 sm:gap-4 text-xs sm:text-base">
         <li>
           <Link
             to="/leaderboard"
