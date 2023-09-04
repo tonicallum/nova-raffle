@@ -328,7 +328,7 @@ const DetailRaffle = () => {
 
         {raffleStatus === 2 && (
           <div className="flex flex-col gap-2">
-            {storeData.address.toLowerCase() === winnerAddress.toLowerCase() ? (
+            {storeData.address.toLowerCase() === winnerAddress?.toLowerCase() ? (
               <p className="text-[#8652FF] text-xl text-center font-bold">
                 You Won!
               </p>
