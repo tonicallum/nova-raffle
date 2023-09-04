@@ -96,20 +96,16 @@ const Navbar = () => {
 
   return (
     <div className="header-section">
-      <div className="flex justify-between items-center py-5 px-4">
-        <Link to="/" className="sm:max-w-[165px] max-w-[100px]">
-          <img src={Logo} alt="l" />
-        </Link>
-        {/* <Link to="/">
-          <p className="text-[30px] font-semibold text-[white] uppercase " >Polygon Raffle</p>
-
-        </Link> */}
-        <ul className="flex items-center gap-[16px]">
-          <li>
-            <Link
-              to="/leaderboard"
-              className="fill-white hover:fill-[#1a1a1a] text-base font-archia hover:opacity-95 transition-all flex items-center gap-1 "
-            >
+    <div className="flex justify-between items-center py-3 px-4 sm:py-5 sm:px-4">
+      <Link to="/" className="sm:max-w-[165px]">
+        <img src={Logo} alt="l" className="min-w-[60px]" />
+      </Link>
+      <ul className="flex items-center gap-1 sm:gap-4 text-xs sm:text-base">
+        <li>
+          <Link
+            to="/leaderboard"
+            className="fill-white hover:fill-[#1a1a1a] font-archia hover:opacity-95 transition-all flex items-center gap-1"
+          >
               {/* <img src={LeaderBoardImg} /> */}
               <svg
                 width="17"
@@ -124,13 +120,13 @@ const Navbar = () => {
                 />
               </svg>
               <p className="text-white">Leaderboard</p>
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/raffle/create"
-              className="text-[#666666] text-base font-archia hover:opacity-95 transition-all flex items-center gap-1 "
-            >
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/raffle/create"
+            className="text-[#666666] font-archia hover:opacity-95 transition-all flex items-center gap-1"
+          >
               {/* <img src={CreateImg} /> */}
               <svg
                 width="16"
@@ -150,11 +146,11 @@ const Navbar = () => {
               </svg>
 
               <p className="text-white ">Create</p>
-            </Link>
-          </li>
-          {storeData.wallet === "connected" && (
-            <li>
-              <Link to="/profile/raffle">
+          </Link>
+        </li>
+        {storeData.wallet === "connected" && (
+          <li>
+            <Link to="/profile/raffle">
                 {/* <img src={ProfileImg} /> */}
                 <svg
                   width="27"
@@ -168,15 +164,15 @@ const Navbar = () => {
                     fill="white"
                   />
                 </svg>
-              </Link>
-            </li>
-          )}
-          <li>
+            </Link>
+          </li>
+        )}
+        <li>
             {walletStatus.status === `connected` ? (
-              <div
-                className="text-[white] text-base border-[white] border-solid border-[1px] rounded-[4px] py-1 px-2 cursor-pointer  "
-                onClick={handleDisConnect}
-              >
+            <div
+              className="text-[white] border-[white] border-solid border-[1px] rounded-[4px] py-[0.5rem] px-[1rem] cursor-pointer"
+              onClick={handleDisConnect}
+            >
                 {walletStatus?.address
                   ? walletStatus?.address?.substr(0, 6) +
                     "..." +
@@ -185,19 +181,19 @@ const Navbar = () => {
                       4
                     )
                   : `Connect Wallet`}
-              </div>
-            ) : (
-              <div
-                className="text-[white]  text-base border-[white] border-solid border-[1px] rounded-[4px] py-1 px-2 cursor-pointer "
-                onClick={handleConnect}
-              >
-                Connect Wallet
-              </div>
-            )}
-          </li>
-        </ul>
-      </div>
+            </div>
+          ) : (
+            <div
+              className="text-[white] border-[white] border-solid border-[1px] rounded-[4px] py-[0.5rem] px-[1rem] cursor-pointer"
+              onClick={handleConnect}
+            >
+              Connect Wallet
+            </div>
+          )}
+        </li>
+      </ul>
     </div>
+  </div>
   );
 };
 

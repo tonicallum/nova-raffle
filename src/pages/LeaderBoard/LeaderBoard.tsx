@@ -345,20 +345,20 @@ const LeaderBoard = () => {
               </div>
               <div className="border-[#5a2fbe] border-solid border-[1px] text-black rounded-2xl p-3 nftItem-shadow mt-4 ">
                 <div className="flex items-center">
-                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Rank
+                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black h-full">
+                  <span className="text-xs sm:text-[16px]">Rank </span>
                   </div>
-                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    User
+                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black h-full">
+                  <span className="text-xs sm:text-[16px]">User </span>
                   </div>
-                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Raffles
+                  <div className="w-[20%] text-center border-b-2 border-purple-500 pb-2 font-black h-full">
+                  <span className=" text-xs sm:text-[16px]">Raffles</span>
                   </div>
-                  <div className="w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Tickets Sold
+                  <div className="w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black h-full">
+                  <span className="text-xs sm:text-[16px]">Tickets Sold</span>
                   </div>
-                  <div className="w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Volume
+                  <div className="w-[25%] text-center border-b-2 border-purple-500 pb-2 font-black h-full">
+                  <span className="text-xs sm:text-[16px]">Volume</span>
                   </div>
                 </div>
                 {!raffleLoading &&
@@ -463,22 +463,22 @@ const LeaderBoard = () => {
               <div className="bg-white border-[#5a2fbe] border-solid border-[1px] text-black rounded-2xl p-3 nftItem-shadow mt-4 ">
                 <div className="flex items-cetner">
                   <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Rank
+                  <span className="text-xs sm:text-[16px]">Rank </span>
                   </div>
                   <div className="w-[35%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    User
+                  <span className="text-xs sm:text-[16px]">User</span>
                   </div>
                   <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Raffles
+                  <span className="text-xs sm:text-[16px]">Raffles</span>
                   </div>
                   <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Tickets
+                  <span className="text-xs sm:text-[16px]">Tickets</span>
                   </div>
                   <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Won
+                  <span className="text-xs sm:text-[16px]">Won</span>
                   </div>
                   <div className="w-[15%] text-center border-b-2 border-purple-500 pb-2 font-black">
-                    Volume
+                  <span className="text-xs sm:text-[16px]">Volume</span>
                   </div>
                 </div>
                 {!raffleLoading &&
