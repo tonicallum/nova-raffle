@@ -206,10 +206,11 @@ const Raffle = () => {
     <div className="bg-white min-h-[100vh] ">
       <Navbar />
       {/* <Menus /> */}
-      <div className="max-w-[1280px] m-auto pt-8 px-4">
-        <div className="text-white rounded-[12px] bg-[#8652FF] py-[12px] px-[50px] max-w-fit  my-[0] mx-[auto] text-[24px] md:text-[42px] " >FEATURED ENDING SOON </div>
+      <div className="md:max-w-[100%] lg:w-full m-auto pt-8 px-4">
+        <div className="text-white rounded-[12px] bg-[#8652FF] py-[12px] px-[50px] max-w-fit  my-[0] mx-[auto] text-[24px] md:text-[42px] " >FEATURED ENDING SOON 
+        </div>
         <RaffleSwiper featuredData={featuredEndingSoon} />
-        <div className="flex md:flex-col lg:flex-row justify-between items-center mt-[32px] md:mt-[60px] ">
+        <div className="flex flex-col md:flex-row justify-between items-center mt-[32px] md:mt-[60px] ">
           <button
             type="button"
             onClick={handleFilterRaffles}
@@ -232,13 +233,13 @@ const Raffle = () => {
             </svg>
             <span className="inline-block ml-2 text-base">Filter</span>
           </button>
-          <div className="flex items-center justify-between xl:basis-[35%] sm:w-[400px] sm:my-4 lg:my-0">
+          <div className="flex flex-col md:flex-row items-center justify-between xl:basis-[35%] sm:w-[400px] sm:my-4 lg:my-0">
             <button
               type="button"
               onClick={handleFeatured}
               className={`${isFeatured
                 ? "rounded-[10px] raffle-status-active text-[#8652FF] py-3 px-7"
-                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] border-[solid] border-[transparent] text-[#666666] py-3 px-7 hover:text-[#8652FF]  hover:rounded-[10px]"
+                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] sm:border-[solid] border-[transparent]  text-[#666666] py-3 px-7 hover:text-[#8652FF]  hover:rounded-[10px]"
                 }`}
             >
               Featured
@@ -248,7 +249,7 @@ const Raffle = () => {
               onClick={handleAllRaffles}
               className={`${isAllRaffles
                 ? "rounded-[10px] raffle-status-active text-[#8652FF] py-3 px-7"
-                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] border-[solid] border-[transparent] text-[#666666] py-3 px-7 hover:text-[#8652FF]   hover:rounded-[10px]"
+                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] sm:border-[solid] border-[transparent] text-[#666666] py-3 px-7 hover:text-[#8652FF]   hover:rounded-[10px]"
                 }`}
             >
               All Raffles
@@ -258,7 +259,7 @@ const Raffle = () => {
               onClick={handlePastRaffles}
               className={`${isPastRaffles
                 ? "rounded-[10px] raffle-status-active text-[#8652FF] py-3 px-7"
-                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] border-[solid] border-[transparent] text-[#666666] py-3 px-7 hover:text-[#8652FF]  hover:rounded-[10px] "
+                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] sm:border-[solid] border-[transparent] text-[#666666] py-3 px-7 hover:text-[#8652FF]  hover:rounded-[10px] "
                 }`}
             >
               Past Raffles
@@ -287,7 +288,7 @@ const Raffle = () => {
               <div id="preloader"></div>
             ) :
               <div className="bg-white">
-                <div className="max-w-[1280px] m-auto pt-8">
+                <div className="md:max-w-[100%] lg:w-full m-auto pt-8">
                   <div className="flex gap-[1rem]">
                     {
                       filterSideBar &&
@@ -459,7 +460,7 @@ const Raffle = () => {
                             }
                           </div>
                       }
-                      <div className="flex gap-[1rem] justify-left mt-4 flex-wrap pb-12 md:max-w-[768px] lg:max-w-[100%] sm:max-w-[100%] md:m-auto">
+                      <div className="flex gap-[1rem] justify-center mt-4 flex-wrap pb-12 md:max-w-[100%] lg:w-full  sm:max-w-[100%] md:m-auto">
                         {isLoading ? (
                           <div id="preloader"></div>
                         ) : filterByItem.length > 0 ? (
