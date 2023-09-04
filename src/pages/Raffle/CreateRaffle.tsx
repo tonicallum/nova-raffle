@@ -22,6 +22,7 @@ const CreateRaffle = () => {
   const [isLoading, setLoading] = useState(false);
   const [isModal, setModal] = useState(false);
   const [nftName, setNftName] = useState("Select NFT");
+  const [projectName, setProjectName] = useState("Select NFT");
   const [shortNftName, setShortNftName] = useState("");
   const [contractType, setContractType] = useState(``);
   const [raffleValue, setRaffleValue] = useState<any>({
@@ -72,7 +73,7 @@ const CreateRaffle = () => {
       if (createRaffleTx) {
         const payload: any = {
           name: nftName,
-          project: raffleValue?.project || "",
+          project: projectName,
           description: "description",
           discord: "discord",
           twitter: "twitter",
@@ -91,6 +92,8 @@ const CreateRaffle = () => {
           sold_tickets: 0,
           type: contractType,
         };
+
+        console.log("payload", payload)
 
         const res = await createRaffle(payload);
         if (res) {
@@ -327,6 +330,7 @@ const CreateRaffle = () => {
         show={isModal}
         onCancel={() => setModal(false)}
         setNftName={setNftName}
+        setProjectName={setProjectName}
         setShortNftName={setShortNftName}
         setContractType={setContractType}
         raffleValue={raffleValue}
