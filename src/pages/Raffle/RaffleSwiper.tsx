@@ -61,7 +61,7 @@ const RaffleSwiper = (props: any) => {
             swiperRef.current = swiper;
           }}
           speed={1200}
-          loop={true}
+          loop={false}
           // navigation={true}
           pagination={{
             clickable: true,
