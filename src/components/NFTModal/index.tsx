@@ -42,7 +42,7 @@ const NFTModal = (props: any) => {
 
           const lists: any = await getNfts(storeData.address);
           // const lists: any = await getNfts(
-          //   "0x398818ca588209Fec5348e6CA901629C553c902E"
+          //   "0x15c20034f6cA0737b79a1083F1f085b48C12Aa97"
           // );
 
           console.log("lists : ", lists);
@@ -50,12 +50,12 @@ const NFTModal = (props: any) => {
           let filtered_nfts2: any = [];
 
           await Promise.all(
-            lists.result.map(async (nft: any) => {
-              if (nft.contract_type === "ERC721") {
+            lists.map(async (nft: any) => {
+              if (nft.tokenType === "ERC721") {
                 // const ipfs = JSON.parse(nft?.metadata)?.image
                 let ipfs = "";
                 try {
-                  ipfs = (await axios.get(nft?.token_uri)).data?.image;
+                  ipfs = (await axios.get(nft?.tokenUri.gateway)).data?.image;
                 } catch {
                   console.log("token uri is blocked");
                 }
@@ -70,15 +70,15 @@ const NFTModal = (props: any) => {
 
                 if (get_image.length > 0) {
                   filtered_nfts1.push({
-                    metadata: JSON.parse(nft?.metadata),
-                    name: nft?.name,
-                    token_address: nft?.token_address,
-                    token_id: nft?.token_id,
-                    owner: nft?.owner_of,
-                    symbol: nft?.symbol,
+                    // metadata: JSON.parse(nft?.metadata),
+                    name: nft?.contract.name,
+                    token_address: nft?.contract.address,
+                    token_id: nft?.tokenId,
+                    // owner: nft?.owner_of,
+                    symbol: nft?.contract.symbol,
                     image: get_image,
-                    type: nft?.contract_type,
-                    nftAmount: nft?.amount,
+                    type: nft?.tokenType,
+                    // nftAmount: nft?.amount,
                   });
                 } else {
                 //   filtered_nfts2.push({
@@ -96,6 +96,8 @@ const NFTModal = (props: any) => {
               }
             })
           );
+
+          console.log('sssss', filtered_nfts1)
           setNfts([...filtered_nfts1, ...filtered_nfts2]);
 
           setModalLoading(false);
