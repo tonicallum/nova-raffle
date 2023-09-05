@@ -409,6 +409,21 @@ const DetailRaffle = () => {
     const lastChars = address.slice(-4);
     return `${firstChars}...${lastChars}`;
   }
+  function handleShare() {
+    const url = window.location.href; // Current page URL
+  try {
+    const tempInput = document.createElement('input');
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    toast.success('URL copied to clipboard');
+  } catch (error) {
+    console.error('Error copying to clipboard:', error);
+  }
+  }
 
   useEffect(() => {
     (async () => {
@@ -535,47 +550,47 @@ const DetailRaffle = () => {
                 </div>
                 <div className="p-3">
                   <div className="flex flex-col gap-[16px] bg-white p-[18px] ">
-                    <button
-                      type="button"
-                      className="bg-white-500 shadow-lg shadow-white-500/50 text-black bg-white rounded-[0.7rem] flex items-center py-3 px-5 "
-                    >
-                      <img
-                        src={PricetagIcon}
-                        alt="Pricetag-icon"
-                        className="w-[22px]"
-                      />
+                  <button
+                    type="button"
+                    className="bg-white-500 shadow-lg shadow-white-500/50 text-black bg-white rounded-[0.7rem] flex flex-col sm:flex-row items-center justify-center py-3 px-5 "
+                  >
+                    <img
+                      src={PricetagIcon}
+                      alt="Pricetag-icon"
+                      className="w-[22px] sm:mr-3"
+                    />
 
-                      <span className=" flex items-center gap-1 ml-3 text-lg">
-                        <span>Price:</span>
-                        <span className="font-medium">
-                          {nftInfo.price} MATIC
-                        </span>
-                        <span>per Ticket</span>
+                    <span className="text-lg sm:flex items-center gap-1">
+                      <span className="font-medium">
+                        Price: {nftInfo.price} MATIC per Ticket
                       </span>
-                    </button>
+                    </span>
+                  </button>
+
 
                     {raffleStatus !== 2 && (
                       <div className="relative">
-                        <div className="flex items-center justify-between gap-[8px] ">
-                          <input
-                            type="text"
-                            name="solValue"
-                            value={amount}
-                            placeholder="QTY"
-                            onChange={(e) => {
-                              const inputValue = e.target.value;
-                              const maxAllowed =
-                                nftInfo.total_tickets - currentBuyTicket; // Replace with actual property name
-                              if (
-                                Number(inputValue) >= 0 &&
-                                Number(inputValue) <= maxAllowed
-                              ) {
-                                setAmount(Number(inputValue));
-                              }
-                            }}
-                            className="w-[20%] block text-[#000] text-base text-center outline-none bg-[#82828240] border border-[#ECECEC] rounded-[0.7rem] py-3 px-5"
-                            disabled={raffleStatus !== 1}
-                          />
+                        <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-[8px] ">
+                        <input
+                          type="text"
+                          name="solValue"
+                          value={amount}
+                          placeholder="QTY"
+                          onChange={(e) => {
+                            const inputValue = e.target.value;
+                            const maxAllowed =
+                              nftInfo.total_tickets - currentBuyTicket; // Replace with actual property name
+                            if (
+                              Number(inputValue) >= 0 &&
+                              Number(inputValue) <= maxAllowed
+                            ) {
+                              setAmount(Number(inputValue));
+                            }
+                          }}
+                          className="w-full sm:w-[20%] block text-[#000] text-base text-center outline-none bg-[#82828240] border border-[#ECECEC] rounded-[0.7rem] py-3 px-5"
+                          disabled={raffleStatus !== 1}
+                        />
+
                           <button
                             type="button"
                             onClick={handleBuyTicket}
@@ -588,6 +603,7 @@ const DetailRaffle = () => {
                           </button>
                           <button
                             type="button"
+                            onClick={handleShare}
                             className="text-black bg-white rounded-[0.7rem] flex items-center justify-center py-3 px-5 nftItem-shadow"
                           >
                             <img
