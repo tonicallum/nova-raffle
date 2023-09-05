@@ -313,7 +313,7 @@ const LeaderBoard = () => {
               </div>
           </div>
           
-          <div className="flex flex-col lg:flex-row gap-4 justify-center ">
+          <div className="flex flex-col lg:flex-row gap-4 justify-center mr-1 ml-1 mb-1 ">
             <div className=" basis-[48%] ">
               <div className="w-full flex justify-between items-center  ">
                 <p className="text-black font-bold text-xl">Top Rafflers</p>

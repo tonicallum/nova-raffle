@@ -289,7 +289,7 @@ const Raffle = () => {
             ) :
               <div className="bg-white">
                 <div className="md:max-w-[100%] lg:w-full m-auto pt-8">
-                  <div className="flex gap-[1rem]">
+                  <div className="flex flex-col sm:flex-row gap-[1rem]">
                     {
                       filterSideBar &&
                       <div className="basis-[22%]">

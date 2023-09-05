@@ -115,7 +115,7 @@ const DetailRaffle = () => {
       <div className="flex  justify-center gap-1 text-white text-[15px] sm:text-[18px] font-semibold">
         {nftInfo ? (
           <>
-            <p>Starts In</p>
+            {/* <p>Starts In</p> */}
             <p>
               {days.toString().length === 1 ? `0${days}` : days}:
               {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -145,7 +145,7 @@ const DetailRaffle = () => {
       </p>
     ) : (
       <div className="flex  justify-center gap-1 text-white text-[15px] sm:text-[18px] font-semibold">
-        <p>End in</p>
+        {/* <p>End in</p> */}
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -737,111 +737,78 @@ const DetailRaffle = () => {
                 </div>
                 <div className="h-[2px] w-[95%] m-auto bg-[#606060]"></div>
                 {raffleInfo === "raffleinfo" && (
-                  <div className="bg-[#8652FF] rounded-[16px] py-4 px-4 sm:px-0 mt-4">
-                    <div className="relative flex  justify-between  sm:w-[85%] m-auto">
-                      <div className="text-center w-[150px] sm:w-[180px] min-h-[110px] items-center">
-                        <img
-                          src={TimingIcon}
-                          alt="TimingIcon"
-                          className="max-w-[60px] m-auto"
-                        />
-                        <p className="text-[white] invisible ">Time Remaining</p>
-                        <p className="text-white ">
-                          {nftInfo?.end_date && (
-                            <Countdown
-                              ref={setStartCountdownRef}
-                              date={nftInfo?.start_date * 1000}
-                              zeroPadTime={3}
-                              renderer={startCountdownRenderer}
-                              onComplete={() => {
-                                setRaffleStatus(1);
-                                setShowEdit(false);
-                              }}
-                            />
-                          )}
-                        </p>
-                      </div>
-                      <div
-                        className={`
-                        absolute left-[50%] translate-x-[-50%]
-                        text-center
-                        `}
-                      >
-                        <img
-                          src={TicketIcon}
-                          alt="TimingIcon"
-                          className="max-w-[60px] m-auto"
-                        />
-                        <p className="text-[white]">Tickets Remaining</p>
-                        <p className="text-white text-[15px] sm:text-[18px] font-semibold ">
-                          {nftInfo.total_tickets
-                            ? nftInfo.total_tickets - currentBuyTicket
-                            : 0}
-                          /{nftInfo.total_tickets}
-                        </p>
-                      </div>
-                      <div
-                        className={`
-                        absolute w-[150px] sm:w-[200px] left-[49%] sm:left-[52%] translate-x-[63%] text-center
-                        `}
-                      >
-                        <img
-                          src={TicketOwnedIcon}
-                          alt="TimingIcon"
-                          className="max-w-[60px] m-auto"
-                        />
-                        <p className="text-[white]">Tickets Owned</p>
-                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
-                          {ticketsOwned}
-                        </p>
-                      </div>
-
-                      <div className="absolute left-[33%] md: border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white  " />
-                      <div className="absolute left-[66%] md: border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white  " />
-                    </div>
-
-                    <div className="relative  flex justify-between sm:w-[85%] m-auto mt-6 ">
-                      <div className="text-center w-[150px] sm:w-[180px] min-h-[110px] ">
-                        <img
-                          src={DateIcon}
-                          alt="TimingIcon"
-                          className="max-w-[60px] m-auto"
-                        />
-                        <p className="text-[white]">Start Date</p>
-                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
-                          {nftInfo?.start}
-                        </p>
-                      </div>
-
-                      <div
-                        className="absolute left-[50%] translate-x-[-50%]
-                        text-center"
-                      >
-                        <img
-                          src={HoldersIcon}
-                          alt="TimingIcon"
-                          className="max-w-[60px] m-auto"
-                        />
-                        <p className="text-[white] text-[15px] sm:text-[16px]">Unique Ticket Holders</p>
-                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
-                          {ticketHolder}
-                        </p>
-                      </div>
-                      <div className="  absolute  w-[150px] sm:w-[200px] left-[49%] sm:left-[52%] translate-x-[63%] text-center">
-                        <img
-                          src={WinningIcon}
-                          alt="TimingIcon"
-                          className="max-w-[60px] m-auto"
-                        />
-                        <p className="text-[white]">Winning Chance</p>
-                        <p className="text-white text-[15px] sm:text-[18px] font-semibold">
-                          {winningChance ? winningChance.toFixed(2) : 0}%
-                        </p>
-                      </div>
-                      <div className="absolute left-[33%] md: border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white  " />
-                      <div className="absolute left-[66%] md: border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white  " />
-                    </div>
-                  </div>
+                 <div className="bg-[#8652FF] rounded-[16px] py-4 px-4 sm:px-0 mt-4">
+                 <div className="relative flex justify-between sm:w-[85%] m-auto">
+                   <div className="text-center w-[150px] sm:w-[180px] min-h-[110px] items-center">
+                     <img
+                       src={TimingIcon}
+                       alt="TimingIcon"
+                       className="max-w-[60px] m-auto"
+                     />
+                     <p className="text-[white]  "> 
+                     {nftInfo.start_date * 1000 > Date.now()
+                  ? "Starts in"
+                  : "Time remaining"}</p>
+                     <p className="text-white">
+                       {nftInfo?.end_date && (
+                         <Countdown
+                           ref={setStartCountdownRef}
+                           date={nftInfo?.start_date * 1000}
+                           zeroPadTime={3}
+                           renderer={startCountdownRenderer}
+                           onComplete={() => {
+                             setRaffleStatus(1);
+                             setShowEdit(false);
+                           }}
+                         />
+                       )}
+                     </p>
+                   </div>
+                   
+                   <div className="sm:absolute left-[50%] sm:translate-x-[-50%] text-center">
+                     <img src={TicketIcon} alt="TimingIcon" className="max-w-[60px] m-auto" />
+                     <p className="text-[white]">Tickets Remaining</p>
+                     <p className="text-white text-[15px] sm:text-[18px] font-semibold">
+                       {nftInfo.total_tickets ? nftInfo.total_tickets - currentBuyTicket : 0}/{nftInfo.total_tickets}
+                     </p>
+                   </div>
+               
+                   <div className="sm:absolute w-[150px] sm:w-[200px] left-[49%] sm:left-[52%] sm:translate-x-[63%] text-center">
+                     <img src={TicketOwnedIcon} alt="TimingIcon" className="max-w-[60px] m-auto" />
+                     <p className="text-[white]">Tickets Owned</p>
+                     <p className="text-white text-[15px] sm:text-[18px] font-semibold">{ticketsOwned}</p>
+                   </div>
+               
+                   <div className="absolute left-[33%] sm:left-[33%] md:border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white" />
+                   <div className="absolute left-[66%] sm:left-[66%] md:border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white" />
+                 </div>
+                 
+                 <div className="relative flex justify-between sm:w-[85%] m-auto mt-6">
+                   <div className="text-center w-[150px] sm:w-[180px] min-h-[110px] ">
+                     <img src={DateIcon} alt="TimingIcon" className="max-w-[60px] m-auto" />
+                     <p className="text-[white]">Start Date</p>
+                     <p className="text-white text-[15px] sm:text-[18px] font-semibold">{nftInfo?.start}</p>
+                   </div>
+               
+                   <div className="sm:absolute left-[50%] sm:translate-x-[-50%] text-center">
+                     <img src={HoldersIcon} alt="TimingIcon" className="max-w-[60px] m-auto" />
+                     <p className="text-[white] text-[15px] sm:text-[16px]">Unique Ticket Holders</p>
+                     <p className="text-white text-[15px] sm:text-[18px] font-semibold">{ticketHolder}</p>
+                   </div>
+               
+                   <div className="sm:absolute w-[150px] sm:w-[200px] left-[49%] sm:left-[52%] sm:translate-x-[63%] text-center">
+                     <img src={WinningIcon} alt="TimingIcon" className="max-w-[60px] m-auto" />
+                     <p className="text-[white]">Winning Chance</p>
+                     <p className="text-white text-[15px] sm:text-[18px] font-semibold">
+                       {winningChance ? winningChance.toFixed(2) : 0}%
+                     </p>
+                   </div>
+               
+                   <div className="absolute left-[33%] sm:left-[33%] md:border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white" />
+                   <div className="absolute left-[66%] sm:left-[66%] md:border-l-[1px] bg-[transparent] w-2 border-dashed h-[108px] border-white" />
+                 </div>
+               </div>
+               
                 )}
 
                 {raffleInfo === "participants" && (
