@@ -124,95 +124,94 @@ const RaffleRarticipant = (props: any) => {
 
   return (
     <div key={idx}>
-      <div className=" m-auto px-4">
-        <div className="border-2 border-white bg-[#8652FF] rounded-md mb-4">
-          <div className="flex p-4">
-            <div className="flex basis-[30%]">
-              <div className="mr-2">
-                <img
-                  src={item?.image ? item?.image : ``}
-                  alt="Coode"
-                  className="min-w-[110px] h-[110px] w-full object-cover rounded-[16px] "
-                />
+      <div className="m-auto px-4">
+  <div className="border-2 border-white bg-[#8652FF] rounded-md mb-4">
+    <div className="flex flex-col p-4 sm:flex-row">
+      <div className="flex basis-full sm:basis-[30%]">
+        <div className="mr-2">
+          <img
+            src={item?.image ? item?.image : ''}
+            alt="Coode"
+            className="min-w-[110px] h-[110px] w-full object-cover rounded-[16px]"
+          />
+        </div>
+        <div>
+          <div className="flex flex-col gap-[15px] h-full">
+            <div>
+              <div className="flex items-center">
+                <img src={VerificationIcon} alt="VerificationIcon" />
+                <span className="text-lg text-white inline-block ml-1">
+                  {item?.project}
+                </span>
               </div>
-              <div>
-                <div className="flex flex-col  gap-[30px] h-full">
-                  <div>
-                    <div className="flex items-center">
-                      <img src={VerificationIcon} alt="VerificationIcon" />
-                      <span className="text-lg text-white inline-block ml-1">
-                        {item?.project}
-                      </span>
-                    </div>
-                    <h1 className="text-[16px] text-white mt-1">
-                      {item?.name}
-                    </h1>
-                  </div>
-                  <div>
-                    <Link
-                      to={`/raffle/detail/${item?._id}`}
-                      type="button"
-                      className="max-w-fit flex items-center  bg-white rounded-[2.5px]  px-[5px] "
-                    >
-                      <img src={VeiwIcon} alt="VeiwIcon" />
-                      <span className="ml-1">View Raffle</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <h1 className="text-[16px] text-white mt-1">{item?.name}</h1>
             </div>
-            <div className="basis-[70%] flex flex-col gap-2 sm:flex-row justify-around pt-2">
-              <div className="text-center flex flex-col items-center">
+            <div>
+              <Link
+                to={`/raffle/detail/${item?._id}`}
+                type="button"
+                className="max-w-fit flex items-center bg-white rounded-[2.5px] px-[5px]"
+              >
+                <img src={VeiwIcon} alt="VeiwIcon" />
+                <span className="ml-1">View Raffle</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-2 sm:flex-row justify-around pt-2 w-full sm:basis-[70%]">
+        <div className="text-center flex flex-col items-center">
                 <img
                   src={TimingIcon}
                   alt="TimingIcon"
                   className="mb-2 w-[60px]"
                 />
-                <h1 className="text-[#fff]">Time Remaining</h1>
-                <p className="text-white">
-                  <Countdown
-                    ref={setStartCountdownRef}
-                    date={item?.start_date ? item?.start_date * 1000 : 0}
-                    zeroPadTime={3}
-                    renderer={startCountdownRenderer}
-                  />
-                </p>
-              </div>
-              <div className="text-center flex flex-col items-center">
+          <h1 className="text-[#fff]">Time Remaining</h1>
+          <p className="text-white">
+            <Countdown
+              ref={setStartCountdownRef}
+              date={item?.start_date ? item?.start_date * 1000 : 0}
+              zeroPadTime={3}
+              renderer={startCountdownRenderer}
+            />
+          </p>
+        </div>
+        <div className="text-center flex flex-col items-center">
                 <img
                   src={TicketIcon}
                   alt="TimingIcon"
                   className="mb-2 w-[60px]"
                 />
-                <h1 className="text-[#fff]">Tickets Remaining</h1>
-                <p className="text-white">{item?.total_tickets - sellAmount}</p>
-              </div>
-              {mode != 1 && (
-                <>
-                  <div className="text-center flex flex-col items-center">
+          <h1 className="text-[#fff]">Tickets Remaining</h1>
+          <p className="text-white">{item?.total_tickets - sellAmount}</p>
+        </div>
+              {mode !== 1 && (
+          <>
+            <div className="text-center flex flex-col items-center">
                     <img
                       src={BoughtIcon}
                       alt="TimingIcon"
                       className="mb-2 w-[60px]"
                     />
-                    <h1 className="text-[#fff]">Tickets Bought</h1>
-                    <p className="text-white">{sellAmount}</p>
-                  </div>
-                  <div className="text-center flex flex-col items-center">
+              <h1 className="text-[#fff]">Tickets Bought</h1>
+              <p className="text-white">{sellAmount}</p>
+            </div>
+            <div className="text-center flex flex-col items-center">
                     <img
                       src={WinningIcon}
                       alt="TimingIcon"
                       className="mb-2 w-[60px]"
                     />
-                    <h1 className="text-[#fff]">Winning Chance</h1>
-                    <p className="text-white">{winningChance}%</p>
-                  </div>
-                </>
-              )}
+              <h1 className="text-[#fff]">Winning Chance</h1>
+              <p className="text-white">{winningChance}%</p>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };

@@ -223,8 +223,8 @@ const RaffleProfile = () => {
                 walletAddress?.substr(walletAddress.length - 4, 4)}
             </div>
 
-            <div className="flex">
-              <div className="flex flex-col items-center">
+            <div className="flex flex-col sm:flex-row items-center">
+              <div className="flex flex-col items-center mb-4 sm:mb-0">
                 <button
                   type="button"
                   className="py-3 px-4 bg-[#03A9F4] rounded-md flex items-center"
@@ -240,7 +240,7 @@ const RaffleProfile = () => {
                   </span>
                 </button>
 
-                {twitter && <p className="text-red-500"> disconnect</p>}
+                {twitter && <p className="text-red-500 mt-2 ">Disconnect</p>}
               </div>
 
               <div className="flex flex-col items-center">
@@ -259,7 +259,7 @@ const RaffleProfile = () => {
                   </span>
                 </button>
 
-                {discord && <p className="text-red-500 ml-4">disconnect </p>}
+                {discord && <p className="text-red-500 mt-2 ">Disconnect</p>}
               </div>
             </div>
           </div>

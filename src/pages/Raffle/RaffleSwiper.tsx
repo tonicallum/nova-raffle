@@ -50,9 +50,9 @@ const RaffleSwiper = (props: any) => {
         onClick={() => swiperRef.current?.slidePrev()}
         className="absolute top-[45%] left-0 "
       >
-        <img src={Chevron} alt="RightChevron" className="max-w-[45px]" />
+        <img src={Chevron} alt="RightChevron" className=" w-[10px] sm:w-[45px]" />
       </button>
-      <div className="pl-[80px] pr-[80px] ">
+      <div className="sm:pl-[80px] sm:pr-[80px] pl-[20px] pr-[20px] ">
         <Swiper
           slidesPerView={3}
           spaceBetween={30}
@@ -159,7 +159,7 @@ const RaffleSwiper = (props: any) => {
         <img
           src={Chevron}
           alt="RightChevron"
-          className="max-w-[45px] rotate-180"
+          className="w-[10px] sm:w-[45px] rotate-180"
         />
       </button>
     </div>
