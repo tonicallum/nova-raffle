@@ -250,7 +250,7 @@ export const disconnectSocial = async (wallet: string, social :string) => {
   try {
     const result = await commonService({
       method: "post",
-      route: `${API_URL}/user/disconnect-social/${wallet}`,
+      route: `${API_URL}/user/disconnect-social/${wallet}/${social}`,
     })
     return result;
   }
