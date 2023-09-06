@@ -50,7 +50,7 @@ const RaffleProfile = () => {
       if (discord) {
         // toast.error(`You have already Discord Account`);
         // return;
-        console.log("ssssssssss")
+        console.log("ssssssssss", discord)
         setLoading(true);
         await disconnectSocial(storeData.address, "discord");
         setDiscord("");
