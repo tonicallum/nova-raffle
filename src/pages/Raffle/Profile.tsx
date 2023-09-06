@@ -50,44 +50,46 @@ const RaffleProfile = () => {
       if (discord) {
         // toast.error(`You have already Discord Account`);
         // return;
+        setLoading(true);
         await disconnectSocial(storeData.address, "discord");
         setDiscord("");
-      }
-      if (storeData.wallet !== "connected") {
-        toast.error("Connect your Wallet!");
-        return;
-      }
-      setLoading(true);
-      let user = await getUser(storeData.address);
-      let signedMessage = null;
-      if (!user) {
-        signedMessage = await window.ethereum.request({
-          method: "personal_sign",
-          params: ["Sign Message", storeData.address],
-        });
-      }
-      const verifyToken: any = await createUser(
-        storeData.address,
-        signedMessage
-      );
-      localStorage.setItem("token", JSON.stringify(verifyToken));
-      if (verifyToken) {
-        const res = window.open(
-          CONFIG.Backend_URL + "/api/oauth/discord?token=" + verifyToken
+      } else {
+        if (storeData.wallet !== "connected") {
+          toast.error("Connect your Wallet!");
+          return;
+        }
+        setLoading(true);
+        let user = await getUser(storeData.address);
+        let signedMessage = null;
+        if (!user) {
+          signedMessage = await window.ethereum.request({
+            method: "personal_sign",
+            params: ["Sign Message", storeData.address],
+          });
+        }
+        const verifyToken: any = await createUser(
+          storeData.address,
+          signedMessage
         );
-        if (res) {
-          setTimeout(() => {
-            toast.error(`It's time out to discord connecting`);
-            setLoading(false);
-            return;
-          }, 300 * 1000);
-          for (let i = 0; i < 1; ) {
-            const user: any = await getUser(storeData.address);
-            await delay(5 * 1000);
-            if (user.discordName) {
-              setDiscord(user.discordName);
-              toast.success(`Successfully connected`);
-              break;
+        localStorage.setItem("token", JSON.stringify(verifyToken));
+        if (verifyToken) {
+          const res = window.open(
+            CONFIG.Backend_URL + "/api/oauth/discord?token=" + verifyToken
+          );
+          if (res) {
+            setTimeout(() => {
+              toast.error(`It's time out to discord connecting`);
+              setLoading(false);
+              return;
+            }, 300 * 1000);
+            for (let i = 0; i < 1; ) {
+              const user: any = await getUser(storeData.address);
+              await delay(5 * 1000);
+              if (user.discordName) {
+                setDiscord(user.discordName);
+                toast.success(`Successfully connected`);
+                break;
+              }
             }
           }
         }
@@ -104,6 +106,7 @@ const RaffleProfile = () => {
       if (twitter) {
         // toast.error(`You have already Twitter Account`);
         // return;
+        setLoading(true);
         await disconnectSocial(storeData.address, "twitter");
         setTwitter("");
       } else {
@@ -132,6 +135,7 @@ const RaffleProfile = () => {
           setSocial(!social);
         }
       }
+      setLoading(false);
     } catch (error) {
       console.log("error", error);
       setLoading(false);
@@ -154,7 +158,7 @@ const RaffleProfile = () => {
         if (storeData.wallet === "connected") {
           setLoading(true);
           setWalletAddress(storeData.address);
-          const profile :any = await getProfile(storeData.address);
+          const profile: any = await getProfile(storeData.address);
           setParticipantLists(profile.myRaffles);
           setFavouriteRaffles([...profile.favoriteRaffles]);
           setFollowRaffles([...profile.followedRaffles]);
@@ -165,7 +169,7 @@ const RaffleProfile = () => {
             ticketsSold: profile.ticketsSold,
             salesVolume: profile.salesVolume,
             raffleBought: profile.raffleBought,
-            ticketBought:profile.ticketBought,
+            ticketBought: profile.ticketBought,
             raffleWon: profile.raffleWon,
             purchaseVolume: profile.purchaseVolume,
           });
@@ -240,13 +244,15 @@ const RaffleProfile = () => {
                   </span>
                 </button>
 
-                {twitter? (
-                    <p className="text-red-500 mt-2">Disconnect</p>
-                  ) : (
-                    <p className={`text-red-500 mt-2 ${!twitter && 'text-white'}`}>
-                        Disconnect
-                      </p>
-                  )}
+                {twitter ? (
+                  <p className="text-red-500 mt-2">Disconnect</p>
+                ) : (
+                  <p
+                    className={`text-red-500 mt-2 ${!twitter && "text-white"}`}
+                  >
+                    Disconnect
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col items-center">
@@ -265,13 +271,15 @@ const RaffleProfile = () => {
                   </span>
                 </button>
 
-                {discord? (
-                    <p className="text-red-500 mt-2">Disconnect</p>
-                  ) : (
-                    <p className={`text-red-500 mt-2 ${!discord && 'text-white'}`}>
-                        Disconnect
-                      </p>
-                  )}
+                {discord ? (
+                  <p className="text-red-500 mt-2">Disconnect</p>
+                ) : (
+                  <p
+                    className={`text-red-500 mt-2 ${!discord && "text-white"}`}
+                  >
+                    Disconnect
+                  </p>
+                )}
               </div>
             </div>
           </div>
