@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Countdown, { CountdownApi } from "react-countdown";
+import ShareButton from "../../components/ShareButton";
+
 
 import Navbar from "../../components/Navbar";
 import {
@@ -41,6 +43,7 @@ import {
 import { connectedChain, getBalance } from "../../utils";
 import { API_URL, TOAST_TIME_OUT } from "../../config/dev";
 import axios from "axios";
+
 
 const DetailRaffle = () => {
   const { id } = useParams();
@@ -409,21 +412,21 @@ const DetailRaffle = () => {
     const lastChars = address.slice(-4);
     return `${firstChars}...${lastChars}`;
   }
-  function handleShare() {
-    const url = window.location.href; // Current page URL
-  try {
-    const tempInput = document.createElement('input');
-    tempInput.value = url;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempInput);
+  // function handleShare() {
+  //   const url = window.location.href; // Current page URL
+  // try {
+  //   const tempInput = document.createElement('input');
+  //   tempInput.value = url;
+  //   document.body.appendChild(tempInput);
+  //   tempInput.select();
+  //   document.execCommand('copy');
+  //   document.body.removeChild(tempInput);
 
-    toast.success('URL copied to clipboard');
-  } catch (error) {
-    console.error('Error copying to clipboard:', error);
-  }
-  }
+  //   toast.success('URL copied to clipboard');
+  // } catch (error) {
+  //   console.error('Error copying to clipboard:', error);
+  // }
+  // }
 
   useEffect(() => {
     (async () => {
@@ -601,7 +604,7 @@ const DetailRaffle = () => {
                               MATIC
                             </span>
                           </button>
-                          <button
+                          {/* <button
                             type="button"
                             onClick={handleShare}
                             className="text-black bg-white rounded-[0.7rem] flex items-center justify-center py-3 px-5 nftItem-shadow"
@@ -611,7 +614,10 @@ const DetailRaffle = () => {
                               alt="Pricetag-icon"
                               className="w-[22px]"
                             />
-                          </button>
+                          </button> */}
+                          
+                          <ShareButton/>
+                          
                         </div>
 
                         <div className="relative">

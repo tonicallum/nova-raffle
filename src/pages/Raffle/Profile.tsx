@@ -240,7 +240,13 @@ const RaffleProfile = () => {
                   </span>
                 </button>
 
-                {twitter && <p className="text-red-500 mt-2 ">Disconnect</p>}
+                {twitter? (
+                    <p className="text-red-500 mt-2">Disconnect</p>
+                  ) : (
+                    <p className={`text-red-500 mt-2 ${!twitter && 'text-white'}`}>
+                        Disconnect
+                      </p>
+                  )}
               </div>
 
               <div className="flex flex-col items-center">
@@ -259,7 +265,13 @@ const RaffleProfile = () => {
                   </span>
                 </button>
 
-                {discord && <p className="text-red-500 mt-2 ">Disconnect</p>}
+                {discord? (
+                    <p className="text-red-500 mt-2">Disconnect</p>
+                  ) : (
+                    <p className={`text-red-500 mt-2 ${!discord && 'text-white'}`}>
+                        Disconnect
+                      </p>
+                  )}
               </div>
             </div>
           </div>
