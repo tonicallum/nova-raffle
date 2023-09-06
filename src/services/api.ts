@@ -249,7 +249,7 @@ export const createUser = async (wallet: string, signedMessage: string | null) =
 export const disconnectSocial = async (wallet: string, social :string) => {
   try {
     const result = await commonService({
-      method: "get",
+      method: "post",
       route: `${API_URL}/user/disconnect-social/${wallet}`,
     })
     return result;
