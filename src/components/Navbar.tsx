@@ -96,11 +96,11 @@ const Navbar = () => {
 
   return (
     <div className="header-section">
-    <div className="flex justify-between items-center py-3 px-4 sm:py-5 sm:px-4">
+    <div className="flex flex-col sm:flex-row justify-between items-center py-3 px-4 sm:py-5 sm:px-4">
       <Link to="/" className="sm:max-w-[165px]">
         <img src={Logo} alt="l" className="min-w-[60px]" />
       </Link>
-      <ul className="flex items-center gap-1 sm:gap-4 text-xs sm:text-base">
+      <ul className="flex items-center justify-between gap-3 sm:gap-4 text-xs sm:text-base">
         <li>
           <Link
             to="/leaderboard"
@@ -170,7 +170,7 @@ const Navbar = () => {
         <li>
             {walletStatus.status === `connected` ? (
             <div
-              className="text-[white] border-[white] border-solid border-[1px] rounded-[4px] py-[0.5rem] px-[1rem] cursor-pointer"
+              className="text-[white] border-[white] border-solid border-[1px] rounded-[4px] sm:py-[0.5rem] sm:px-[1rem] cursor-pointer"
               onClick={handleDisConnect}
             >
                 {walletStatus?.address
