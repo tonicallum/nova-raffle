@@ -223,7 +223,7 @@ const RaffleProfile = () => {
                 walletAddress?.substr(walletAddress.length - 4, 4)}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center">
+            <div className="flex flex-col lg:flex-row items-center">
               <div className="flex flex-col items-center mb-4 sm:mb-0">
                 <button
                   type="button"
