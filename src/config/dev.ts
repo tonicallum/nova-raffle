@@ -20,7 +20,7 @@ export const TOKENERC721 = TokenErc721;
 
 export const TOAST_TIME_OUT = 2000;
 export const INTERVAL = 6 * 1000;
-export const DECIMAL = 1000000000000000000;
+export const DECIMAL = 1000000;
 // export const CHAINID = '0x5' //Goerli
 export const CHAINID = "0x89"; //Polygon mainnet
 // export const CHAINID = "0x13881"; //polygon testnet

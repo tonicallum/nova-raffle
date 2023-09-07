@@ -341,7 +341,7 @@ const RaffleProfile = () => {
               <p className="text-[#1A1A1A] text-[24px]">Sales Volume</p>
               {/* <p className='text-[#8652FF] text-[26px] ' >{raffleStats.raffleBought}</p> */}
               <p className="text-[#8652FF] text-[26px]">
-                {raffleStats.salesVolume}
+                {raffleStats.salesVolume * 10 ** 12}
               </p>
             </div>
             <div className="flex flex-col gap-[8px]">
@@ -366,7 +366,7 @@ const RaffleProfile = () => {
             <div className="flex flex-col gap-[8px]">
               <p className="text-[#1A1A1A] text-[24px]">Purchase Volume</p>
               <p className="text-[#8652FF] text-[26px]">
-                {raffleStats.purchaseVolume}
+                {raffleStats.purchaseVolume * 10 ** 12}
               </p>
             </div>
           </div>
