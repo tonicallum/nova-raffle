@@ -270,14 +270,14 @@ const RaffleItem = (props: any) => {
             </div>
           )} */}
 
-          <div className="text-center mt-4 ">
-            <Link
-              to={`/raffle/detail/${raffle._id}`}
-              className="bg-[#8652FF] text-white rounded-[4px] py-[10px] px-[10px] md:px-[80px] button-hover"
-            >
-              View Raffle
-            </Link>
-          </div>
+              <div className="text-center mt-4">
+                <Link
+                  to={`/raffle/detail/${raffle._id}`}
+                  className="bg-[#8652FF] text-white rounded-[4px] py-2 px-4 sm:py-3 sm:px-6 md:py-3 md:px-6 lg:py-[10px] lg:px-[80px] button-hover text-xs sm:text-sm md:text-base lg:text-lg"
+                >
+                  View Raffle
+                </Link>
+              </div>
         </div>
       </div>
     </div>
