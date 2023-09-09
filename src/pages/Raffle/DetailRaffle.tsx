@@ -873,8 +873,10 @@ const DetailRaffle = () => {
                     <a href={`/profile/raffle/${nftInfo.walletAddress}`}>
                       <p>{ShowCreator}</p>
                     </a>
-
+                    <a href={`/profile/raffle/${nftInfo.walletAddress}`}>
                     <img src={IdCardIcon} />
+                    </a>
+                   
                     {isTwitter && <img src={TwitterIcon} />}
                     {isDiscord && <img src={DiscordIcon} />}
                   </div>
