@@ -877,8 +877,18 @@ const DetailRaffle = () => {
                     <img src={IdCardIcon} />
                     </a>
                    
-                    {isTwitter && <img src={TwitterIcon} />}
-                    {isDiscord && <img src={DiscordIcon} />}
+                    {isTwitter && 
+                     <a
+                     href={`https://twitter.com/${ShowCreator}`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                   >
+                      <img src={TwitterIcon} />
+                    </a>
+                    }
+                  
+                  {isDiscord && <img src={DiscordIcon} />}
+                    
                   </div>
                   {!nftInfo?.followed ? (
                     <button
