@@ -582,7 +582,7 @@ const DetailRaffle = () => {
                           onChange={(e) => {
                             const inputValue = e.target.value;
                             const maxAllowed =
-                              nftInfo.total_tickets - currentBuyTicket; // Replace with actual property name
+                              nftInfo.total_tickets - currentBuyTicket; 
                             if (
                               Number(inputValue) >= 0 &&
                               Number(inputValue) <= maxAllowed

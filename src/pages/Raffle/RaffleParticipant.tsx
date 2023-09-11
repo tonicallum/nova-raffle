@@ -50,7 +50,7 @@ const RaffleRarticipant = (props: any) => {
       />
     ) : (
       <div className="flex items-center gap-4 ">
-        <p>Starts In</p>
+        {/* <p>Starts In</p> */}
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -74,7 +74,7 @@ const RaffleRarticipant = (props: any) => {
       <p>Ended</p>
     ) : (
       <div>
-        <p>End in</p>
+        {/* <p>End in</p> */}
         <p>
           {days.toString().length === 1 ? `0${days}` : days}:
           {hours.toString().length === 1 ? `0${hours}` : hours}:
@@ -166,7 +166,11 @@ const RaffleRarticipant = (props: any) => {
                   alt="TimingIcon"
                   className="mb-2 w-[60px]"
                 />
-          <h1 className="text-[#fff]">Time Remaining</h1>
+          <p className="text-white text-[15px]">
+                {item?.start_date * 1000 > Date.now()
+                  ? "Starts in"
+                  : "Time remaining"}
+              </p>
           <p className="text-white">
             <Countdown
               ref={setStartCountdownRef}

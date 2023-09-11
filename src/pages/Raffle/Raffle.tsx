@@ -207,7 +207,7 @@ const Raffle = () => {
       <Navbar />
       {/* <Menus /> */}
       <div className="md:max-w-[100%] lg:w-full m-auto pt-8 px-4">
-        <div className="text-white rounded-[12px] bg-[#8652FF] py-[12px] px-[50px] max-w-fit  my-[0] mx-[auto] text-[24px] md:text-[42px] " >FEATURED ENDING SOON 
+        <div className="text-white rounded-[12px] bg-[#8652FF] py-[12px] sm:px-[50px] px-[25px] max-w-fit  my-[0] mx-[auto] text-[24px] md:text-[42px] " >FEATURED ENDING SOON 
         </div>
         <RaffleSwiper featuredData={featuredEndingSoon} />
         <div className="flex flex-col md:flex-row justify-between items-center mt-[32px] md:mt-[60px] ">
@@ -239,7 +239,7 @@ const Raffle = () => {
               onClick={handleFeatured}
               className={`${isFeatured
                 ? "rounded-[10px] raffle-status-active text-[#8652FF] py-3 px-7"
-                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] sm:border-[solid] border-[transparent]  text-[#666666] py-3 px-7 hover:text-[#8652FF]  hover:rounded-[10px]"
+                : "bg-white-500 hover:bg-[#F8F8FF] border-[1px] sm:border-[solid]   text-[#666666] py-3 px-7 hover:text-[#8652FF]  hover:rounded-[10px]"
                 }`}
             >
               Featured
