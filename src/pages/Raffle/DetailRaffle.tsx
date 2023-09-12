@@ -615,12 +615,23 @@ const DetailRaffle = () => {
                               className="w-[22px]"
                             />
                           </button> */}
-                          
+                           <div className="relative sm:hidden ">
+                          <p className="text-[#8652FF] text-center mt-2 ">
+                            You have:{" "}
+                            {walletBalance
+                              ? (
+                                  walletBalance -
+                                  amount * nftInfo.price
+                                ).toFixed(2)
+                              : 0}{" "}
+                            MATIC{" "}
+                          </p>
+                        </div>
                           <ShareButton/>
                           
                         </div>
 
-                        <div className="relative">
+                        <div className="relative hidden sm:block ">
                           <p className="text-[#8652FF] text-center mt-2 ">
                             You have:{" "}
                             {walletBalance
